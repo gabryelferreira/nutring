@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, FlatList, ActivityIndicator } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Input from '../../../components/Input/Input';
+import Network from '../../../network';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -29,7 +30,7 @@ const InicioHeader = () => {
     );
 }
 
-export default class Inicio extends Component {
+export default class Inicio extends Network {
 
     static navigationOptions = {
         headerTitle: (
@@ -37,8 +38,21 @@ export default class Inicio extends Component {
         )
     };
 
+    state = {
+        carregando: false,
+        dados: [],
+        offset: 0
+    }
+
+    nomes = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "W", "FODA-SE", "Y", "TUA TIA", "MATTHAUS", "Z"];
+
     constructor(props){
         super(props);
+    }
+
+    componentDidMount(){
+        console.log("to no didmount bb")
+        this.carregarDadosIniciais();
     }
 
     cadastrar(){
@@ -49,39 +63,80 @@ export default class Inicio extends Component {
         console.log("indo")
     }
 
+    carregarDadosIniciais() {
+        console.log("carregando seus dados iniciais bb")
+        this.setState({
+            offset: 0,
+            dados: []
+        }, this.carregarDados)
+    }
+
+    async carregarDados() {
+        let result = await this.callMethod("getFeed", { id_usuario: 1, offset: this.state.offset, limit: 10 })
+        if (result.success){
+            let dados = this.state.dados;
+            result.result.forEach(element => {
+                let dado = element;
+                dado.conteudo = dado.conteudo[0].url_conteudo;
+                console.log("conteudo = ", dado.conteudo)
+                dados.push(element)
+            });
+            console.log("settando estadooooooooo")
+            this.setState({
+                dados: dados
+            }, function() {
+                console.log("TODOS OS DADOS = ", this.state.dados)
+            });
+            
+            console.log("ofsset aqui embaixoxoo " + this.state.offset)
+        }
+    }
+
+    pegarDados(){
+        this.setState({
+            offset: this.state.offset + 10
+        }, this.carregarDados);        
+    }
+
     render(){
         let larguraImagem = imageWidth - 15*2 - imageWidth*0.2;
         return (
             <FlatList
-                data={[{key: 'a'}, {key: 'b'}]}
+                data={this.state.dados}
+                keyExtractor={(item, index) => item.id_post.toString()}
                 renderItem={({item}) => (
                     // <Text>{item.key}</Text>
 
                     <View style={styles.container}>
                         <View style={styles.viewFoto}>
-                            <Image style={{height: 52, width: 52, borderRadius: 52/2}} source={require('../../../assets/imgs/eu.jpg')}/>
+                            <Image style={{height: 52, width: 52, borderRadius: 52/2}} source={{uri: item.foto}}/>
                         </View>
                         <View style={styles.viewInfoEConteudo}>
                             <View style={styles.viewInfo}>
                                 <View style={styles.viewInfoTexto}>
-                                    <Text style={styles.nome}>Gabryel Ferreira</Text>
+                                    <Text style={styles.nome}>{item.nome}</Text>
                                     <Text style={styles.tempo}>30 min atrás</Text>
                                 </View>
                                 <View style={styles.viewInfoCurtidas}>
                                     <AutoHeightImage style={{marginRight: 7}} source={require('../../../assets/imgs/folha_nutring.png')} width={27}/>
-                                    <Text style={styles.curtidas}>125</Text>
+                                    <Text style={styles.curtidas}>{item.curtidas}</Text>
                                 </View>
                             </View>
                             <View style={styles.viewInfoDescricao}>
-                                <Text style={styles.texto}>Ela tira o pau da tcheca pra bota na boca, ela tira o pau da boca pra bota na tcheca</Text>
+                                <Text style={styles.texto}>{item.descricao}</Text>
                             </View>
                             <View style={styles.viewImagem}>
-                                <AutoHeightImage style={{borderRadius: 5}} source={require('../../../assets/imgs/foods/food4.jpg')} width={larguraImagem}/>
+                                <AutoHeightImage style={{borderRadius: 5}} source={{uri: item.conteudo}} width={larguraImagem}/>
                             </View>
                         </View>
                     </View>
 
                 )}
+                refreshing={this.state.carregando}
+                onRefresh={() => this.carregarDadosIniciais()}
+                onEndReached={() => this.pegarDados()}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={() => <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 20, marginBottom: 40 }}/>}
                 />
         );
     }

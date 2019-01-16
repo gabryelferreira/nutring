@@ -148,6 +148,7 @@ export default class Login extends Network {
                             returnKeyType={"next"}
                             onSubmitEditing={() => this.segundoInput.focus()}
                             blurOnSubmit={false}
+                            autoCapitalize = 'none'
                             />
                             <TextInput 
                             ref={(input) => this.segundoInput = input}
@@ -157,6 +158,7 @@ export default class Login extends Network {
                             onChangeText={(senha) => this.setState({senha})}
                             onSubmitEditing={() => this.login()}
                             secureTextEntry={true}
+                            autoCapitalize = 'none'
                             />
                             <TouchableOpacity onPress={() => this.login()} style={styles.botao}>
                                 {this.renderTextoBotao()}

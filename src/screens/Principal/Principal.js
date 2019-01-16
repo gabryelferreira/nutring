@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 const dimensions = Dimensions.get('window');
@@ -16,6 +16,25 @@ export default class Login extends Component {
 
     constructor(props){
         super(props);
+        this.isUsuarioLogado();
+    }
+
+    async isUsuarioLogado(){
+        console.log("alo")
+        try {
+            const value = await AsyncStorage.getItem('TASKS');
+            console.log("value = ", value)
+            if (value !== null) {
+                const resetAction = StackActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
+                });
+                this.props.navigation.dispatch(resetAction);
+            }
+        } catch (error) {
+            // Error retrieving data
+        }
+        
     }
 
     cadastrar(){

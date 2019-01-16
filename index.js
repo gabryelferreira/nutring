@@ -21,7 +21,6 @@ const NavigationOptions = {
 }
 
 
-
 const _Inicio = createStackNavigator({
     Home: {
         screen: Inicio,
@@ -67,8 +66,9 @@ const Tabs = createBottomTabNavigator({
         inactiveTintColor: 'rgba(255, 255, 255, .55)',
         activeTintColor: '#fff',
         style: {
-            backgroundColor: '#27ae60' // TabBar background
-        }
+            backgroundColor: '#27ae60', // TabBar background
+            height: 48
+        },
       }
 })
 
