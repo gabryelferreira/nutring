@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -16,34 +17,31 @@ export default class Login extends Component {
 
     constructor(props){
         super(props);
-        this.isUsuarioLogado();
-    }
-
-    async isUsuarioLogado(){
-        console.log("alo")
-        try {
-            const value = await AsyncStorage.getItem('TASKS');
-            console.log("value = ", value)
-            if (value !== null) {
+        // this.isUsuarioLogado();
+        AsyncStorage.getItem("userData").then((usuario) => {
+            if (usuario !== null) {
                 const resetAction = StackActions.reset({
                     index: 0,
                     actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
                 });
                 this.props.navigation.dispatch(resetAction);
             }
-        } catch (error) {
-            // Error retrieving data
-        }
+        }).catch((error) => {
+            console.error(error);
+        })
+    }
+
+    // async isUsuarioLogado(){
+    //     console.log("alo")
+    //     try {
+    //         const value = await AsyncStorage.getItem("userData");
+    //         console.log("value = ", value)
+            
+    //     } catch (error) {
+    //         console.error(error);
+    //     }
         
-    }
-
-    cadastrar(){
-        console.log("opa")
-    }
-
-    irParaLogin(){
-        console.log("indo")
-    }
+    // }
 
     render(){
         return (

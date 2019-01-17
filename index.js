@@ -66,7 +66,7 @@ const Tabs = createBottomTabNavigator({
         inactiveTintColor: 'rgba(255, 255, 255, .55)',
         activeTintColor: '#fff',
         style: {
-            backgroundColor: '#27ae60', // TabBar background
+            backgroundColor: '#20b351', // TabBar background
             height: 48
         },
       }

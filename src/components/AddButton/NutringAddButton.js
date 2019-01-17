@@ -1,19 +1,19 @@
 import React, {Component} from 'react';
 import {Animated, TouchableHighlight, View} from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
-const SIZE = 45;
+const SIZE = 42;
 class NutringAddButton extends Component {
 
     render() {
         return (
-            <View style={{
-                position: 'absolute',
-                top: -22,
-                backgroundColor: '#27ae60',
-                paddingVertical: 7,
-                paddingHorizontal: 10,
-                borderRadius: 40
-            }}>
+            // <View style={{
+            //     position: 'absolute',
+            //     top: -22,
+            //     backgroundColor: '#27ae60',
+            //     paddingVertical: 7,
+            //     paddingHorizontal: 10,
+            //     borderRadius: 40
+            // }}>
                 <View style={{
                     alignItems: 'center',
                 }}>
@@ -35,7 +35,7 @@ class NutringAddButton extends Component {
                         </View>
                     </TouchableHighlight>
                 </View>
-            </View>
+            // </View>
         );
     }
 }

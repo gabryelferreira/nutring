@@ -32,7 +32,7 @@ export default class Network extends Component {
             return result;
         } catch(error){
             console.error(error);
-            return 'error';
+            return {success: false, error: error}
         }
     }
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../components/Loader/Loader';
@@ -28,9 +28,6 @@ export default class Login extends Network {
     }
 
     static navigationOptions = {
-        // headerTitle: (
-        //     <ImagemNutring/>
-        // )
         header: (
             <View></View>
         )
@@ -51,15 +48,18 @@ export default class Login extends Network {
                     }
                 })
             } else {
+                await this.salvarDadosUsuario(result.result);
                 this.props.navigation.navigate("Tabs");
-                // const resetAction = StackActions.reset({
-                //     index: 0,
-                //     actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
-                // });
-                // this.props.navigation.dispatch(resetAction);
             }
         }
-        
+    }
+
+    async salvarDadosUsuario(usuario){
+        try {
+            await AsyncStorage.setItem("userData", JSON.stringify(usuario));
+        } catch(error){
+            console.error(error);
+        }
     }
     
     criarBotoes(){
@@ -72,7 +72,6 @@ export default class Login extends Network {
     
     abrirCadastro(){
         this.props.navigation.navigate('Principal');
-        // Alert.alert("indo para cadastro");
     }
 
     setModalState(visible){
@@ -92,7 +91,6 @@ export default class Login extends Network {
     }
 
     renderTextoBotao(){
-        console.log("state loading = " + this.state.loading)
         if (!this.state.loading){
             return <Text style={styles.textoBotao}>Entrar</Text>
         } else {
@@ -121,7 +119,6 @@ export default class Login extends Network {
                     onClose={() => this.setState({modal: {visible: false}})}
                     botoes={this.state.modal.botoes}
                 />
-                {/* <Image source={require('../assets/imgs/background-register.png')} style={styles.backgroundImage}/> */}
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
 
 
@@ -155,6 +152,7 @@ export default class Login extends Network {
                             placeholder="Senha" 
                             placeholderTextColor="rgb(153, 153, 153)" 
                             style={styles.input}
+                            value={this.state.senha}
                             onChangeText={(senha) => this.setState({senha})}
                             onSubmitEditing={() => this.login()}
                             secureTextEntry={true}
@@ -169,25 +167,12 @@ export default class Login extends Network {
                         </View>
                     </View>
 
-                    {/* <View style={styles.viewCadastro}>
-                        <TouchableOpacity onPress={() => this.abrirCadastro()} style={styles.cadastro}>
-                            <Text style={styles.textoCadastro}>Não tem uma conta? <Text style={[styles.textoCadastro, styles.textoCadastroLink]}>Cadastre-se.</Text></Text>
-                        </TouchableOpacity>
-                    </View> */}
-
                 </ScrollView>
-                <View style={{position: 'absolute', left: 0, bottom: 0, flex: 1, zIndex: -1}}>
+                {/* <View style={{position: 'absolute', left: 0, bottom: 0, flex: 1, zIndex: -1}}>
                     <AutoHeightImage source={require('../../assets/imgs/fundo.png')} width={imageWidth}/>
-                </View>
+                </View> */}
             </View>
         );
-        // return (
-        //     <View style={{flex: 1}}>
-        //         <View style={{position: 'absolute', left: 0, bottom: 0, flex: 1}}>
-        //             <AutoHeightImage source={require('../../assets/imgs/fundo.png')} width={imageWidth}/>
-        //         </View>
-        //     </View>
-        // );
     }
 }
 
@@ -265,7 +250,8 @@ const styles = {
         height: 60,
         marginTop: 7,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        elevation: 4
     },
     textoBotao: {
         color: '#fff',
