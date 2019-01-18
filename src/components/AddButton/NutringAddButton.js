@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Animated, TouchableHighlight, View} from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
-const SIZE = 42;
+const SIZE = 40;
 class NutringAddButton extends Component {
 
     render() {
@@ -12,7 +12,7 @@ class NutringAddButton extends Component {
             //     backgroundColor: '#27ae60',
             //     paddingVertical: 7,
             //     paddingHorizontal: 10,
-            //     borderRadius: 40
+            //     borderRadius: 80
             // }}>
                 <View style={{
                     alignItems: 'center',
@@ -31,7 +31,7 @@ class NutringAddButton extends Component {
                         }}
                     >
                         <View>
-                            <Icon name="plus" size={20} color="#27ae60"/>
+                            <Icon name="plus" size={18} color="#27ae60"/>
                         </View>
                     </TouchableHighlight>
                 </View>

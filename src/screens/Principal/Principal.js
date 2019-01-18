@@ -17,7 +17,6 @@ export default class Login extends Component {
 
     constructor(props){
         super(props);
-        // this.isUsuarioLogado();
         AsyncStorage.getItem("userData").then((usuario) => {
             if (usuario !== null) {
                 const resetAction = StackActions.reset({

@@ -3,11 +3,16 @@ import React, { Component } from 'react';
 import { AppRegistry, View, Text } from 'react-native';
 import Login from './src/screens/Login/Login';
 import Principal from './src/screens/Principal/Principal';
-import Inicio from './src/screens/Tabs/Inicio/Inicio';
+
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { name as appName } from './app.json';
 import Cadastro from './src/screens/Cadastro/Cadastro';
+
+import Feed from './src/screens/Tabs/Feed/Feed';
+import Perfil from './src/screens/Tabs/Perfil/Perfil';
+import Comentarios from './src/screens/Tabs/Comentarios/Comentarios';
+
 import AddButton from './src/components/AddButton/AddButton';
 import NutringAddButton from './src/components/AddButton/NutringAddButton';
 
@@ -20,17 +25,35 @@ const NavigationOptions = {
     },
 }
 
-
-const _Inicio = createStackNavigator({
-    Home: {
-        screen: Inicio,
+const InsideTabs = {
+    Feed: {
+        screen: Feed,
+        navigationOptions: NavigationOptions
+    },
+    Perfil: {
+        screen: Perfil,
+        navigationOptions: NavigationOptions
+    },
+    Comentarios: {
+        screen: Comentarios,
         navigationOptions: NavigationOptions
     }
-})
+}
+
+function addNewPage(_initialRouteName){
+    return createStackNavigator(
+        InsideTabs, {
+            initialRouteName: _initialRouteName
+        }
+    )
+}
+
+const _Feed = addNewPage('Feed');
+const _Perfil = addNewPage('Perfil');
 
 const Tabs = createBottomTabNavigator({
-    TabInicio: {
-        screen: _Inicio,
+    TabFeed: {
+        screen: _Feed,
         navigationOptions: {
             tabBarLabel: "Início",
             tabBarIcon: ({ tintColor }) => (
@@ -48,7 +71,7 @@ const Tabs = createBottomTabNavigator({
         })
     },
     TabPerfil: {
-        screen: Inicio,
+        screen: _Perfil,
         navigationOptions: {
             tabBarLabel: "Perfil",
             tabBarIcon: ({ tintColor }) => (

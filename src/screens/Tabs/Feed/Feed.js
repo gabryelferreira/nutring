@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, Image, Dimensions, FlatList, ActivityIndicator, Modal } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
@@ -30,7 +30,7 @@ const InicioHeader = () => {
     );
 }
 
-export default class Inicio extends Network {
+export default class Feed extends Network {
 
     static navigationOptions = {
         headerTitle: (
@@ -42,10 +42,12 @@ export default class Inicio extends Network {
         carregando: false,
         dados: [],
         offset: 0,
-        semMaisDados: false
+        semMaisDados: false,
+        modalComentarios: {
+            visible: false
+        }
     }
 
-    nomes = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "W", "FODA-SE", "Y", "TUA TIA", "MATTHAUS", "Z"];
 
     constructor(props){
         super(props);
@@ -93,7 +95,7 @@ export default class Inicio extends Network {
                         dados: dados
                     }, function() {
                         console.log("TODOS OS DADOS = ", this.state.dados)
-                    });                
+                    });
                 }
             }
         }
@@ -111,14 +113,51 @@ export default class Inicio extends Network {
         } else return <View style={{marginBottom: 20}}></View>
     }
 
+    returnLoader(index){
+        if (index == this.state.dados.length-1)
+            return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
+        return;
+    }
+
+    returnLoaderInicial(){
+        if (this.state.dados.length == 0)
+            return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 30 }}/>
+        return;
+    }
+
+    abrirComentarios(){
+        this.setState({
+            modalComentarios: {
+                visible: true
+            }
+        })
+    }
+
+    returnModal(){
+        if (this.state.modalComentarios.visible){
+            return (
+                <Modal>
+                    <View></View>
+                </Modal>
+            )
+        }
+        return;
+    }
+
     render(){
         return (
+            <View>
+                {this.returnModal()}
+                {this.returnLoaderInicial()}
             <FlatList
                 data={this.state.dados}
                 keyExtractor={(item, index) => item.id_post.toString()}
-                renderItem={({item}) => (
-
-                    <Post data={item}/>
+                renderItem={({item, index}) => (
+                    
+                    <View>
+                        <Post data={item} index={index} navigation={this.props.navigation}/>
+                        {this.returnLoader(index)}
+                    </View>
 
                 )}
                 refreshing={this.state.carregando}
@@ -129,6 +168,7 @@ export default class Inicio extends Network {
                 legacyImplementation={true}
                 enableEmptySections={true}
                 />
+            </View>
         );
     }
 }

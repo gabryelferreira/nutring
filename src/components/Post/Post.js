@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, Dimensions } from 'react-native';
+import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 
 const dimensions = Dimensions.get('window');
@@ -9,15 +9,20 @@ const imageWidth = dimensions.width;
 const Post = (props) => {
     let larguraImagem = imageWidth;
     let { foto, nome, curtidas, descricao, conteudo } = props.data;
+    let { index } = props;
     return (
         <View style={styles.container}>
             <View style={[styles.viewInfo, styles.wrapper]}>
                 <View style={styles.fotoETexto}>
                     <View style={styles.viewFoto}>
-                        <Image style={{height: 38, width: 38, borderRadius: 38/2}} source={{uri: foto}}/>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('Perfil')} style={{height: 38, width: 38, borderRadius: 38/2}}>
+                            <Image style={{height: 38, width: 38, borderRadius: 38/2, position: 'absolute', left: 0, top: 0}} source={{uri: foto}}/>
+                        </TouchableOpacity>
                     </View>
                     <View style={styles.viewInfoTexto}>
-                        <Text style={styles.nome}>{nome}</Text>
+                        <TouchableOpacity onPress={() => props.navigation.navigate('Perfil')}>
+                            <Text style={styles.nome}>{nome}</Text>
+                        </TouchableOpacity>
                         <Text style={styles.tempo}>30 min atrás</Text>
                     </View>
                 </View>
@@ -33,6 +38,17 @@ const Post = (props) => {
                 <View style={styles.viewImagem}>
                     <AutoHeightImage source={{uri: conteudo}} width={larguraImagem}/>
                 </View>
+                
+                <View style={[styles.wrapper, styles.viewComentarios]}>
+                    <View style={styles.viewComentario}>
+                        <View style={styles.bolinhaComentario}>
+                        </View>
+                        <Text style={styles.comentario}><Text onPress={() => props.navigation.navigate('Perfil')} style={styles.nomeComentario}>Joesley Freitas</Text>  <Text onPress={() => props.navigation.navigate('Comentarios')}>Wow! Parece delicipica E sempre vou comprar acoes na deep web.</Text></Text>
+                    </View>
+                </View>
+                <View style={styles.wrapper}>
+                        <Text onPress={() => props.navigation.navigate('Comentarios')} style={styles.verMais}>Ver mais 15 comentários</Text>
+                </View>
             </View>
         </View>
     );
@@ -44,7 +60,6 @@ const styles = {
     container: {
         flexDirection: 'column',
         paddingVertical: 20,
-        borderBottomWidth: 1,
         borderBottomColor: '#eee',
     },
     wrapper: {
@@ -79,7 +94,7 @@ const styles = {
         flex: .3,
         flexDirection: 'row',
         justifyContent: 'flex-end',
-        paddingTop: 3
+        // paddingTop: 3
     },
     curtidas: {
         fontSize: 17,
@@ -94,12 +109,46 @@ const styles = {
         flexDirection: 'column'
     },
     texto: {
-        marginBottom: 12,
+        marginBottom: 5,
         fontSize: 16,
         color: '#000'
     },
     viewImagem: {
-        marginTop: 10,
+        marginTop: 5,
         flexDirection: 'row'
-    }
+    },
+    viewComentarios: {
+        flex: 1,
+        flexDirection: 'column',
+        marginTop: 10
+    },
+    viewComentario: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    bolinhaComentario: {
+        height: 8,
+        width: 8,
+        borderRadius: 8/2,
+        backgroundColor: '#20b351',
+        marginRight: 7,
+        alignSelf: 'flex-start',
+        marginTop: 8
+    },
+    nomeComentario: {
+        fontSize: 15,
+        fontWeight: 'bold',
+        color: '#000',
+        marginRight: 10
+    },
+    comentario: {
+        fontSize: 14,
+        color: '#000'
+    },
+    verMais: {
+        color: '#aaa',
+        marginTop: 5,
+        fontSize: 15
+    },
 }
