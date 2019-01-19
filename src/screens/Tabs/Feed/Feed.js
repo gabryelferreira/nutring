@@ -85,11 +85,11 @@ export default class Feed extends Network {
                     })
                 } else {
                     let dados = this.state.dados;
-                    result.result.forEach(element => {
-                        let dado = element;
-                        dado.conteudo = dado.conteudo[0].url_conteudo;
+                    await result.result.forEach(async (element) => {
+                        let dado = await element;
+                        dado.conteudo = await dado.conteudo[0].url_conteudo;
                         console.log("conteudo = ", dado.conteudo)
-                        dados.push(element)
+                        await dados.push(element)
                     });
                     this.setState({
                         dados: dados

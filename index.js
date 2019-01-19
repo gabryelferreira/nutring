@@ -34,10 +34,6 @@ const InsideTabs = {
         screen: Perfil,
         navigationOptions: NavigationOptions
     },
-    Comentarios: {
-        screen: Comentarios,
-        navigationOptions: NavigationOptions
-    }
 }
 
 function addNewPage(_initialRouteName){
@@ -115,6 +111,10 @@ const AppNavigator = createStackNavigator({
                 <View></View>
             )
         }
+    },
+    Comentarios: {
+        screen: Comentarios,
+        navigationOptions: NavigationOptions
     }
 }, {
     initialRouteName: 'Principal'

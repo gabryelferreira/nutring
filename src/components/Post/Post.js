@@ -1,14 +1,38 @@
 import React from 'react';
 import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
 
 const Post = (props) => {
+
+    function returnTopComentario() {
+        if (props.data.top_comment){
+            return (
+                <View style={[styles.wrapper, styles.viewComentarios]}>
+                    <View style={styles.viewComentario}>
+                        <View style={styles.bolinhaComentario}>
+                        </View>
+                        <Text style={styles.comentario}><Text onPress={() => props.navigation.navigate('Perfil')} style={styles.nomeComentario}>{props.data.nome_usuario_comentario}</Text>  <Text onPress={() => props.navigation.navigate('Comentarios')}>{props.data.top_comment}</Text></Text>
+                    </View>
+                </View>
+            )
+        } else return;
+    }
+
+    function returnNumeroComentarios() {
+        if (props.data.comentarios > 1){
+            return (
+            <Text onPress={() => props.navigation.navigate('Comentarios')} style={styles.verMais}>{props.data.comentarios}</Text>
+            )
+        } else return;
+    }
+
     let larguraImagem = imageWidth;
-    let { foto, nome, curtidas, descricao, conteudo } = props.data;
+    let { foto, nome, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios } = props.data;
     let { index } = props;
     return (
         <View style={styles.container}>
@@ -23,7 +47,7 @@ const Post = (props) => {
                         <TouchableOpacity onPress={() => props.navigation.navigate('Perfil')}>
                             <Text style={styles.nome}>{nome}</Text>
                         </TouchableOpacity>
-                        <Text style={styles.tempo}>30 min atrás</Text>
+                        <Text style={styles.tempo}>{tempo_postado} atrás</Text>
                     </View>
                 </View>
                 <View style={styles.viewInfoCurtidas}>
@@ -38,16 +62,21 @@ const Post = (props) => {
                 <View style={styles.viewImagem}>
                     <AutoHeightImage source={{uri: conteudo}} width={larguraImagem}/>
                 </View>
-                
-                <View style={[styles.wrapper, styles.viewComentarios]}>
-                    <View style={styles.viewComentario}>
-                        <View style={styles.bolinhaComentario}>
-                        </View>
-                        <Text style={styles.comentario}><Text onPress={() => props.navigation.navigate('Perfil')} style={styles.nomeComentario}>Joesley Freitas</Text>  <Text onPress={() => props.navigation.navigate('Comentarios')}>Wow! Parece delicipica E sempre vou comprar acoes na deep web.</Text></Text>
+                <View style={styles.tabs}>
+                    <View style={styles.tab}>
+                        <Icon name="heart" color="#ccc" size={20}/>
+                        <Text style={{fontSize: 15, marginLeft: 5}}>Curtir</Text>
+                    </View>
+                    <View style={styles.tab}>
+                        <Icon name="comment" color="#ccc" size={20}/>
+                        <Text style={{fontSize: 15, marginLeft: 5}}>Comentar</Text>
                     </View>
                 </View>
+                
+                
+                    {returnTopComentario()}
                 <View style={styles.wrapper}>
-                        <Text onPress={() => props.navigation.navigate('Comentarios')} style={styles.verMais}>Ver mais 15 comentários</Text>
+                        {returnNumeroComentarios()}
                 </View>
             </View>
         </View>
@@ -151,4 +180,15 @@ const styles = {
         marginTop: 5,
         fontSize: 15
     },
+    tabs: {
+        flexDirection: 'row'
+    },
+    tab: {
+        flex: .5,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 5
+    }
 }
