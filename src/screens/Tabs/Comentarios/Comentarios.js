@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -22,24 +22,157 @@ export default class Comentarios extends Network {
         tabBarVisible: false
     };
 
+    constructor(props){
+        super(props);
+    }
+
+    state = {
+        carregando: false,
+        dados: [],
+        offset: 0,
+        semMaisDados: false,
+        modalComentarios: {
+            visible: false
+        },
+        id_post: this.props.navigation.getParam('id_post', '-1'),
+        comentario: "",
+        comentando: false
+    }
+
+    componentDidMount(){
+        console.log("to no didmount bb")
+        this.carregarDadosIniciais();
+    }
+
+    carregarDadosIniciais() {
+        this.setState({
+            offset: 0,
+            dados: [],
+            semMaisDados: false
+        }, this.carregarDados)
+    }
+
+    async carregarDados() {
+        console.log("to aquiii")
+        if (!this.state.semMaisDados){
+            let id_usuario = await this.getIdUsuarioLogado();
+            let result = await this.callMethod("getCommentsByIdPost", { id_post: this.state.id_post, id_usuario, limit: 10, offset: this.state.offset });
+            if (result.success){
+                if (result.result.length == 0){
+                    this.setState({
+                        semMaisDados: true
+                    })
+                } else {
+                    let dados = this.state.dados;
+                    for (var i = 0; i < result.result.length; i++){
+                        dados.push(result.result[i]);
+                    }
+                    this.setState({
+                        dados: dados
+                    }, function() {
+                        console.log("TODOS OS DADOS = ", this.state.dados)
+                    });
+                }
+            }
+        } else {
+            console.log("bbbbbbbbbbbb")
+        }
+        console.log("aaaaaaaaaaaaaa")
+    }
+
+    pegarDados(){
+        this.setState({
+            offset: this.state.offset + 10
+        }, this.carregarDados);        
+    }
+
+    returnFooterComponent(){
+        if (!this.state.semMaisDados){
+            return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 20, marginBottom: 40 }}/>
+        } else return <View style={{marginBottom: 20}}></View>
+    }
+
+    returnLoader(index){
+        if (index == this.state.dados.length-1 && !this.state.semMaisDados)
+            return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
+        return;
+    }
+
+    returnLoaderInicial(){
+        if (this.state.dados.length == 0)
+            return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 30 }}/>
+        return;
+    }
+
+    returnBotaoEnviar(){
+        if (!this.state.comentando)
+            return (
+                <View style={styles.botaoEnviar}>
+                    <Icon name="rocket" size={16} color="#F8F8F8" onPress={() => this.comentarPost()}/>
+                </View>
+            );
+        return <ActivityIndicator color="#27ae60"/>
+    }
+
+    async comentarPost(){
+        await this.setState({
+            comentando: true
+        })
+        let id_usuario = await this.getIdUsuarioLogado();
+        let result = await this.callMethod("commentPost", { id_post: this.state.id_post, id_usuario, comentario: this.state.comentario });
+        if (result.success){
+            let dados = this.state.dados;
+            await dados.unshift(result.result);
+            console.log("dados = ", dados)
+            await this.setState({
+                dados: []
+            })
+            await this.setState({
+                dados: dados
+            })
+            console.log("dados agora = ", this.state.dados)
+        }
+        await this.setState({
+            comentando: false,
+            comentario: ""
+        })
+    }
+
     render(){
         return (      
             <View style={{flex: 1}}>
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
-                    <Comentario/>
-                    <Comentario/>
-                    <Comentario/>
-                    
-                </ScrollView>
+                {this.returnLoaderInicial()}
+                <FlatList
+                    data={this.state.dados}
+                    keyExtractor={(item, index) => item.id_post.toString()}
+                    renderItem={({item, index}) => (
+                        
+                        <View>
+                            <Comentario data={item}/>
+                            {this.returnLoader(index)}
+                        </View>
+
+                    )}
+                    refreshing={this.state.carregando}
+                    onRefresh={() => this.carregarDadosIniciais()}
+                    onEndReached={() => this.pegarDados()}
+                    onEndReachedThreshold={0.5}
+                    ListFooterComponent={() => this.returnFooterComponent()}
+                    legacyImplementation={true}
+                    enableEmptySections={true}
+                />
                 <View style={styles.caixaTexto}>
                         <TextInput
                             placeholder="Escreva um comentário"
                             placeholderTextColor="rgb(153, 153, 153)"
+                            value={this.state.comentario}
+                            onChangeText={(comentario) => this.setState({comentario})}
                             style={styles.caixaTextoComentario}
+                            onSubmitEditing={() => this.comentarPost()}
                         />
-                    <View style={styles.botaoEnviar}>
-                        <Icon name="rocket" size={16} color="#F8F8F8"/>
-                    </View>
+                        <View style={styles.botaoEnviarGenerico}>
+                            {this.returnBotaoEnviar()}
+                        </View>
                 </View>
             </View>
         );
@@ -68,6 +201,13 @@ const styles = {
     },
     botaoEnviar: {
         backgroundColor: '#27ae60',
+        height: 40,
+        width: 40,
+        borderRadius: 40/2,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    botaoEnviarGenerico: {
         height: 40,
         width: 40,
         borderRadius: 40/2,

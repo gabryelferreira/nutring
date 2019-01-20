@@ -77,7 +77,8 @@ export default class Feed extends Network {
 
     async carregarDados() {
         if (!this.state.semMaisDados){
-            let result = await this.callMethod("getFeed", { id_usuario: 1, offset: this.state.offset, limit: 10 })
+            let id_usuario = await this.getIdUsuarioLogado();
+            let result = await this.callMethod("getFeed", { id_usuario: id_usuario, offset: this.state.offset, limit: 10 })
             if (result.success){
                 if (result.result.length == 0){
                     this.setState({
@@ -85,12 +86,10 @@ export default class Feed extends Network {
                     })
                 } else {
                     let dados = this.state.dados;
-                    await result.result.forEach(async (element) => {
-                        let dado = await element;
-                        dado.conteudo = await dado.conteudo[0].url_conteudo;
-                        console.log("conteudo = ", dado.conteudo)
-                        await dados.push(element)
-                    });
+                    for (var i = 0; i < result.result.length; i++){
+                        result.result[i].conteudo = result.result[i].conteudo[0].url_conteudo;
+                        dados.push(result.result[i]);
+                    }
                     this.setState({
                         dados: dados
                     }, function() {

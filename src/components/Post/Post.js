@@ -2,85 +2,147 @@ import React from 'react';
 import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Network from '../../network';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
 
-const Post = (props) => {
+class Post extends Network {
 
-    function returnTopComentario() {
-        if (props.data.top_comment){
+    constructor(props){
+        super(props);
+        this.state = {
+            data: this.props.data
+        }
+        // console.log("state = ", this.state.data)
+    }
+
+    // componentWillReceiveProps(props){
+    //     this.setState({data: props.data});
+    //     // console.log("props = ", props)
+    // }
+
+    async likeUnlikePost(id_post){
+        let id_usuario = await this.getIdUsuarioLogado();
+        let result = await this.callMethod("likeUnlikePost", { id_post, id_usuario });
+        if (result.success){
+            let data = this.state.data;
+            if (data.gostei){
+                data.curtidas -= 1;
+            } else {
+                data.curtidas += 1;
+            }
+            data.gostei = !data.gostei;
+            this.setState({data: data})
+        }
+    }
+
+    returnTopComentario(){
+        if (this.props.data.top_comment){
             return (
                 <View style={[styles.wrapper, styles.viewComentarios]}>
                     <View style={styles.viewComentario}>
                         <View style={styles.bolinhaComentario}>
                         </View>
-                        <Text style={styles.comentario}><Text onPress={() => props.navigation.navigate('Perfil')} style={styles.nomeComentario}>{props.data.nome_usuario_comentario}</Text>  <Text onPress={() => props.navigation.navigate('Comentarios')}>{props.data.top_comment}</Text></Text>
+                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.navigate('Perfil')} style={styles.nomeComentario}>{this.props.data.nome_usuario_comentario}</Text>  <Text onPress={() => this.props.navigation.navigate('Comentarios')}>{this.props.data.top_comment}</Text></Text>
                     </View>
                 </View>
             )
         } else return;
     }
 
-    function returnNumeroComentarios() {
-        if (props.data.comentarios > 1){
+    returnNumeroComentarios(){
+        if (this.props.data.comentarios > 1){
             return (
-            <Text onPress={() => props.navigation.navigate('Comentarios')} style={styles.verMais}>{props.data.comentarios}</Text>
+            <Text onPress={() => this.props.navigation.navigate('Comentarios', { id_post: this.state.data.id_post })} style={styles.verMais}>Ver todos os {this.props.data.comentarios} comentários</Text>
             )
         } else return;
     }
 
-    let larguraImagem = imageWidth;
-    let { foto, nome, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios } = props.data;
-    let { index } = props;
-    return (
-        <View style={styles.container}>
-            <View style={[styles.viewInfo, styles.wrapper]}>
-                <View style={styles.fotoETexto}>
-                    <View style={styles.viewFoto}>
-                        <TouchableOpacity onPress={() => props.navigation.navigate('Perfil')} style={{height: 38, width: 38, borderRadius: 38/2}}>
-                            <Image style={{height: 38, width: 38, borderRadius: 38/2, position: 'absolute', left: 0, top: 0}} source={{uri: foto}}/>
+    returnGostei(){
+        if (!this.state.data.gostei)
+            return <Icon name="heart" color="#444" size={25}/>
+        return <Icon name="heart" color="#27ae60" solid size={25}/>
+    }
+
+    returnTextoPostedAgo(tempo_postado){
+        if (tempo_postado == "agora"){
+            return <Text style={styles.tempo}>{tempo_postado}</Text>;
+        } else {
+            return <Text style={styles.tempo}>{tempo_postado} atrás</Text>;
+        }
+    }
+
+    returnTextoCurtidas(curtidas){
+        if (curtidas > 0){
+            return <Text style={{fontSize: 13, marginLeft: 7, color: '#444'}}>{curtidas}</Text>;
+        } else {
+            return <Text style={{fontSize: 13, marginLeft: 7, color: '#444'}}>Curtir</Text>;
+        }
+    }
+
+    returnTextoComentar(comentarios){
+        if (comentarios > 0){
+            return <Text style={{fontSize: 13, marginLeft: 7, color: '#444'}}>{comentarios}</Text>
+        } else {
+            return <Text style={{fontSize: 13, marginLeft: 7, color: '#444'}}>Comentar</Text>
+        }
+    }
+
+    render(){
+        let larguraImagem = imageWidth;
+        let { id_post, foto, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios } = this.state.data;
+        let { index } = this.props;
+        return (
+            <View style={styles.container}>
+                <View style={[styles.viewInfo, styles.wrapper]}>
+                    <View style={styles.fotoETexto}>
+                        <View style={styles.viewFoto}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil')} style={{height: 38, width: 38, borderRadius: 38/2}}>
+                                <Image style={{height: 38, width: 38, borderRadius: 38/2, position: 'absolute', left: 0, top: 0}} source={{uri: foto}}/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.viewInfoTexto}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil')}>
+                                <Text style={styles.nome}>{nome}</Text>
+                            </TouchableOpacity>
+                            {this.returnTextoPostedAgo(tempo_postado)}
+                        </View>
+                    </View>
+                    <View style={styles.viewInfoCurtidas}>
+                        <AutoHeightImage style={{marginRight: 7}} source={require('../../assets/imgs/folha_nutring.png')} width={27}/>
+                        <Text style={styles.curtidas}>{curtidas}</Text>
+                    </View>
+                </View>
+                <View style={styles.viewInfoEConteudo}>
+                    <View style={[styles.viewInfoDescricao, styles.wrapper]}>
+                        <Text style={styles.texto}>{descricao}</Text>
+                    </View>
+                    <View style={styles.viewImagem}>
+                        <AutoHeightImage source={{uri: conteudo}} width={larguraImagem}/>
+                    </View>
+                    <View style={styles.tabs}>
+                        <TouchableOpacity style={styles.tab} onPress={() => this.likeUnlikePost(id_post)}>
+                            {this.returnGostei()}
+                            {this.returnTextoCurtidas(curtidas)}
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.tab} onPress={() => this.props.navigation.navigate('Comentarios', { id_post: id_post })}>
+                            <Icon name="comment" color="#444" size={25}/>
+                            {this.returnTextoComentar(comentarios)}
                         </TouchableOpacity>
                     </View>
-                    <View style={styles.viewInfoTexto}>
-                        <TouchableOpacity onPress={() => props.navigation.navigate('Perfil')}>
-                            <Text style={styles.nome}>{nome}</Text>
-                        </TouchableOpacity>
-                        <Text style={styles.tempo}>{tempo_postado} atrás</Text>
+                    
+                    
+                        {this.returnTopComentario()}
+                    <View style={styles.wrapper}>
+                            {this.returnNumeroComentarios()}
                     </View>
-                </View>
-                <View style={styles.viewInfoCurtidas}>
-                    <AutoHeightImage style={{marginRight: 7}} source={require('../../assets/imgs/folha_nutring.png')} width={27}/>
-                    <Text style={styles.curtidas}>{curtidas}</Text>
                 </View>
             </View>
-            <View style={styles.viewInfoEConteudo}>
-                <View style={[styles.viewInfoDescricao, styles.wrapper]}>
-                    <Text style={styles.texto}>{descricao}</Text>
-                </View>
-                <View style={styles.viewImagem}>
-                    <AutoHeightImage source={{uri: conteudo}} width={larguraImagem}/>
-                </View>
-                <View style={styles.tabs}>
-                    <View style={styles.tab}>
-                        <Icon name="heart" color="#ccc" size={20}/>
-                        <Text style={{fontSize: 15, marginLeft: 5}}>Curtir</Text>
-                    </View>
-                    <View style={styles.tab}>
-                        <Icon name="comment" color="#ccc" size={20}/>
-                        <Text style={{fontSize: 15, marginLeft: 5}}>Comentar</Text>
-                    </View>
-                </View>
-                
-                
-                    {returnTopComentario()}
-                <View style={styles.wrapper}>
-                        {returnNumeroComentarios()}
-                </View>
-            </View>
-        </View>
-    );
+        );
+    }
+
 }
 
 export default Post;
@@ -146,10 +208,22 @@ const styles = {
         marginTop: 5,
         flexDirection: 'row'
     },
+    tabs: {
+        flexDirection: 'row',
+        paddingHorizontal: 10,
+        marginTop: 5
+    },
+    tab: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 10,
+        paddingHorizontal: 8,
+    },
     viewComentarios: {
         flex: 1,
         flexDirection: 'column',
-        marginTop: 10
+        marginTop: 5
     },
     viewComentario: {
         flex: 1,
@@ -180,15 +254,5 @@ const styles = {
         marginTop: 5,
         fontSize: 15
     },
-    tabs: {
-        flexDirection: 'row'
-    },
-    tab: {
-        flex: .5,
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingVertical: 10,
-        paddingHorizontal: 5
-    }
+    
 }

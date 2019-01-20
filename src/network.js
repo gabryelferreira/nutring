@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import urlencode from './url';
+import { AsyncStorage } from 'react-native';
 export default class Network extends Component {
 
-    url = "http://www.nutring.com.br/api/";
+    url = "http://nutring.com.br/api/";
     // url = "http://10.0.2.2/nutring-api/";
 
     constructor(props){
@@ -34,6 +35,19 @@ export default class Network extends Component {
             console.error(error);
             return {success: false, error: error}
         }
+    }
+
+    async getIdUsuarioLogado(){
+        console.log("alo")
+        try {
+            let value = await AsyncStorage.getItem("userData");
+            value = await JSON.parse(value);
+            console.log("olha o value caraiooo", value.id_usuario)
+            if (value) return value.id_usuario;
+            return;
+        } catch (error) {
+            console.error(error);
+        }   
     }
 
 }
