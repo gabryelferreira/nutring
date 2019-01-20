@@ -119,7 +119,7 @@ export default class Feed extends Network {
     }
 
     returnLoaderInicial(){
-        if (this.state.dados.length == 0)
+        if (this.state.dados.length == 0 && this.state.semMaisDados)
             return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 30 }}/>
         return;
     }

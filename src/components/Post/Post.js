@@ -111,8 +111,7 @@ class Post extends Network {
                         </View>
                     </View>
                     <View style={styles.viewInfoCurtidas}>
-                        <AutoHeightImage style={{marginRight: 7}} source={require('../../assets/imgs/folha_nutring.png')} width={27}/>
-                        <Text style={styles.curtidas}>{curtidas}</Text>
+                        <AutoHeightImage source={require('../../assets/imgs/folha_nutring.png')} width={27}/>
                     </View>
                 </View>
                 <View style={styles.viewInfoEConteudo}>
