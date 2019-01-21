@@ -94,7 +94,7 @@ export default class Comentarios extends Network {
 
     returnLoader(index){
         if (index == this.state.dados.length-1 && !this.state.semMaisDados)
-            return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
+            return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 15 }}/>
         return;
     }
 

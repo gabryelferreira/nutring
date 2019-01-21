@@ -90,6 +90,11 @@ export default class Feed extends Network {
                         result.result[i].conteudo = result.result[i].conteudo[0].url_conteudo;
                         dados.push(result.result[i]);
                     }
+                    if (result.result.length < 10){
+                        await this.setState({
+                            semMaisDados: true
+                        })
+                    }
                     this.setState({
                         dados: dados
                     }, function() {
@@ -113,13 +118,13 @@ export default class Feed extends Network {
     }
 
     returnLoader(index){
-        if (index == this.state.dados.length-1)
+        if (index == this.state.dados.length-1 && !this.state.semMaisDados)
             return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
         return;
     }
 
     returnLoaderInicial(){
-        if (this.state.dados.length == 0 && this.state.semMaisDados)
+        if (this.state.dados.length == 0 && !this.state.semMaisDados)
             return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 30 }}/>
         return;
     }
@@ -146,7 +151,6 @@ export default class Feed extends Network {
     render(){
         return (
             <View>
-                {this.returnModal()}
                 {this.returnLoaderInicial()}
             <FlatList
                 data={this.state.dados}

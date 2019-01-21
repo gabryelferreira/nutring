@@ -69,7 +69,7 @@ class Comentario extends Network {
                         <TouchableOpacity>
                             <Text style={styles.nome}>{nome}</Text>
                         </TouchableOpacity>
-                        <Text style={{fontSize: 13, color: '#555'}}>-</Text>
+                        <View style={{height: 4, width: 4, borderRadius: 4/2, backgroundColor: '#777', marginTop: 8}}></View>
                         {this.returnTextoPostedAgo(tempo_postado)}
                     </View>
                     <Text style={styles.comentario}>{comentario}</Text>
@@ -118,12 +118,13 @@ const styles = {
         fontSize: 13,
         color: '#555',
         maxHeight: 17,
-        marginRight: 3
+        marginRight: 5
     },
     tempo: {
-        fontSize: 12,
+        fontSize: 11,
         color: '#555',
-        marginLeft: 3
+        marginLeft: 5,
+        alignSelf: 'flex-end'
     },
     comentario: {
         fontSize: 15,
