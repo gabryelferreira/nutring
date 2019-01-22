@@ -42,7 +42,7 @@ export default class Network extends Component {
         try {
             let value = await AsyncStorage.getItem("userData");
             value = await JSON.parse(value);
-            console.log("olha o value caraiooo", value.id_usuario)
+            // console.log("olha o value caraiooo", value.id_usuario)
             if (value) return value.id_usuario;
             return;
         } catch (error) {

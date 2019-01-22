@@ -12,6 +12,7 @@ import Cadastro from './src/screens/Cadastro/Cadastro';
 import Feed from './src/screens/Tabs/Feed/Feed';
 import Perfil from './src/screens/Tabs/Perfil/Perfil';
 import Comentarios from './src/screens/Tabs/Comentarios/Comentarios';
+import Configuracoes from './src/screens/Tabs/Configuracoes/Configuracoes';
 
 import AddButton from './src/components/AddButton/AddButton';
 import NutringAddButton from './src/components/AddButton/NutringAddButton';
@@ -34,6 +35,10 @@ const InsideTabs = {
         screen: Perfil,
         navigationOptions: NavigationOptions
     },
+    Configuracoes: {
+        screen: Configuracoes,
+        navigationOptions: NavigationOptions
+    }
 }
 
 function addNewPage(_initialRouteName){
@@ -46,6 +51,7 @@ function addNewPage(_initialRouteName){
 
 const _Feed = addNewPage('Feed');
 const _Perfil = addNewPage('Perfil');
+const _Configuracoes = addNewPage('Configuracoes');
 
 const Tabs = createBottomTabNavigator({
     TabFeed: {
@@ -72,7 +78,8 @@ const Tabs = createBottomTabNavigator({
             tabBarLabel: "Perfil",
             tabBarIcon: ({ tintColor }) => (
                 <Icon
-                    name="user"
+                    name="user-secret"
+                    solid
                     size={22}
                     color={tintColor} />
             )
@@ -82,11 +89,10 @@ const Tabs = createBottomTabNavigator({
 {
     tabBarOptions: {
         showLabel: false,
-        inactiveTintColor: 'rgba(255, 255, 255, .55)',
-        activeTintColor: '#fff',
+        inactiveTintColor: '#c7c7c7',
+        activeTintColor: '#28b657',
         style: {
-            backgroundColor: '#20b351', // TabBar background
-            height: 48
+            backgroundColor: '#fff',
         },
       }
 })

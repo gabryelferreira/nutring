@@ -63,6 +63,11 @@ export default class Comentarios extends Network {
                         semMaisDados: true
                     })
                 } else {
+                    if (result.result.length < 10){
+                        await this.setState({
+                            semMaisDados: true
+                        })
+                    }
                     let dados = this.state.dados;
                     for (var i = 0; i < result.result.length; i++){
                         dados.push(result.result[i]);

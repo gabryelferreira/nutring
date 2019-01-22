@@ -45,7 +45,7 @@ class Post extends Network {
                     <View style={styles.viewComentario}>
                         <View style={styles.bolinhaComentario}>
                         </View>
-                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.navigate('Perfil')} style={styles.nomeComentario}>{this.props.data.nome_usuario_comentario}</Text>  <Text onPress={() => this.props.navigation.navigate('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.top_comment}</Text></Text>
+                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: this.state.data.id_usuario })} style={styles.nomeComentario}>{this.props.data.nome_usuario_comentario}</Text>  <Text onPress={() => this.props.navigation.navigate('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.top_comment}</Text></Text>
                     </View>
                 </View>
             )
@@ -91,20 +91,21 @@ class Post extends Network {
     }
 
     render(){
+        console.log("id usuario dessa porraaa", this.state.data.id_usuario)
         let larguraImagem = imageWidth;
-        let { id_post, foto, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios } = this.state.data;
+        let { id_usuario, id_post, foto, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios } = this.state.data;
         let { index } = this.props;
         return (
             <View style={styles.container}>
                 <View style={[styles.viewInfo, styles.wrapper]}>
                     <View style={styles.fotoETexto}>
                         <View style={styles.viewFoto}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil')} style={{height: 38, width: 38, borderRadius: 38/2}}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2}}>
                                 <Image style={{height: 38, width: 38, borderRadius: 38/2, position: 'absolute', left: 0, top: 0}} source={{uri: foto}}/>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.viewInfoTexto}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil')}>
+                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: id_usuario })}>
                                 <Text style={styles.nome}>{nome}</Text>
                             </TouchableOpacity>
                             {this.returnTextoPostedAgo(tempo_postado)}

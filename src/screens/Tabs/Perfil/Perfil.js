@@ -7,6 +7,7 @@ import Modalzin from '../../../components/Modal/Modal';
 import Network from '../../../network';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import FotoPerfil from '../../../components/FotoPerfil/FotoPerfil';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -14,14 +15,26 @@ const imageWidth = dimensions.width;
 
 export default class Perfil extends Network {
 
-    static navigationOptions = {
+    static navigationOptions = ({navigation}) => ({
         title: 'Perfil',
         headerRight: (
-            <TouchableOpacity style={{paddingRight: 10, flexDirection: 'row'}}>
-                <Icon name="cog" size={22} color="#000"/>
+            <TouchableOpacity onPress={() => {
+                AsyncStorage.removeItem("userData").then(() => {
+                    // const resetAction = StackActions.reset({
+                        // index: 0,
+                        // actions: [NavigationActions.navigate({ routeName: 'Feed' })],
+                    // });
+                    // navigation.dispatch(resetAction);
+                    navigation.navigate("Feed");
+                    navigation.navigate("Principal");
+                }).catch((error) => {
+                    console.error(error);
+                })
+            }} style={{paddingRight: 10, flexDirection: 'row'}}>
+                <Icon name="power-off" size={22} color="#000" style={[navigation.getParam('id_usuario_perfil', null) ? {height: 0} : {}]}/>
             </TouchableOpacity>
         )
-    };
+    });
 
     constructor(props){
         super(props);
@@ -29,26 +42,26 @@ export default class Perfil extends Network {
             tabSelecionada: 0,
             carregando: true,
             user: {
-                acessos: 0,
-                altura_m: 0.0,
-                cd_objetivo: "",
-                ds_objetivo: "",
+                descricao: null,
                 dt_nasc: "",
                 email: "",
                 foto: null,
                 id_usuario: 0,
                 idade: 0,
-                kcal_pratos: 0.0,
+                is_seguindo: false,
+                is_seguindo_voce: false,
                 nome: "",
-                peso_kg: 0,
-                pratos_feitos: 0,
+                posts: "",
+                seguidores: "",
+                seguindo: "",
                 sexo: "",
-                token: "",
-                vl_objetivo_kg: 0,
+                sou_eu: "",
             },
             offset: 0,
             dados: [],
-            semMaisDados: false
+            semMaisDados: false,
+            seguindo: false,
+            parandoDeSeguir: false
         }
     }
 
@@ -62,8 +75,9 @@ export default class Perfil extends Network {
             carregando: true,
             carregandoInicial: true
         })
-        let id_usuario = await this.getIdUsuarioLogado()
-        let result = await this.callMethod("getPerfil", { id_usuario });
+        let id_usuario = await this.getIdUsuarioLogado();
+        let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', id_usuario);
+        let result = await this.callMethod("getPerfilV2", { id_usuario, id_usuario_perfil });
         if (result.success){
             this.setState({
                 user: result.result,
@@ -71,18 +85,20 @@ export default class Perfil extends Network {
         }
     }
 
-    carregarFotosIniciais() {
+    async carregarFotosIniciais() {
         console.log("carregando seus dados iniciais bb")
-        this.setState({
+        await this.setState({
             offset: 0,
             dados: [],
             semMaisDados: false
-        }, this.carregarDados)
+        })
+        this.carregarDados();
     }
 
     async carregarDados() {
         if (!this.state.semMaisDados){
-            let id_usuario = await this.getIdUsuarioLogado();
+            let _id_usuario = await this.getIdUsuarioLogado();
+            let id_usuario = this.props.navigation.getParam('id_usuario_perfil', _id_usuario);
             let result = await this.callMethod("getFotosByIdUsuario", { id_usuario: id_usuario, offset: this.state.offset, limit: 18 })
             if (result.success){
                 if (result.result.length == 0){
@@ -99,8 +115,9 @@ export default class Perfil extends Network {
                             semMaisDados: true
                         })
                     }
-                    this.setState({
-                        dados: dados
+                    await this.setState({
+                        dados: dados,
+                        offset: this.state.offset + 18
                     }, function() {
                         console.log("TODOS OS DADOS = ", this.state.dados)
                     });
@@ -114,9 +131,7 @@ export default class Perfil extends Network {
     }
 
     pegarDados(){
-        this.setState({
-            offset: this.state.offset + 18
-        }, this.carregarDados);        
+        this.carregarDados();        
     }
 
     returnHeaderComponent(){
@@ -138,26 +153,123 @@ export default class Perfil extends Network {
         return;
     }
 
-    returnFoto(index){
-        if (this.state.carregando){
-            return null;
+    async deslogar(){
+        try {
+            await AsyncStorage.removeItem("userData");
+            const resetAction = StackActions.reset({
+                index: 0,
+                actions: [NavigationActions.navigate({ routeName: 'Feed' })],
+            });
+            this.props.navigation.dispatch(resetAction);
+            this.props.navigation.navigate('Principal');
+        } catch (error) {
+            console.error(error);
         }
-        if (index % 3 == 0){
+    }
+
+    editarPerfil(){
+
+    }
+
+    async seguir(){
+        let id_usuario = await this.getIdUsuarioLogado();
+        let id_seguido = this.props.navigation.getParam('id_usuario_perfil', -1);
+        await this.setState({
+            seguindo: true
+        })
+        let result = await this.callMethod("follow", { id_usuario, id_seguido });
+        if (result.success){
+            let user = this.state.user;
+            user.is_seguindo = true;
+            user.seguidores = user.seguidores + 1;
+            await this.setState({
+                user: user
+            })
+        }
+        await this.setState({
+            seguindo: false
+        })
+    }
+
+    async pararDeSeguir(){
+        let id_usuario = await this.getIdUsuarioLogado();
+        let id_seguido = this.props.navigation.getParam('id_usuario_perfil', -1);
+        await this.setState({
+            parandoDeSeguir: true
+        })
+        let result = await this.callMethod("unfollow", { id_usuario, id_seguido });
+        if (result.success){
+            let user = this.state.user;
+            user.is_seguindo = false;
+            user.seguidores = user.seguidores - 1;
+            await this.setState({
+                user: user
+            })
+        }
+        await this.setState({
+            parandoDeSeguir: false
+        })
+    }
+
+    renderBotaoSeguir(){
+        if (this.state.parandoDeSeguir || this.state.seguindo)
+            return this.renderBotaoCarregandoSeguindo();
+        if (this.state.user.sou_eu){
             return (
-                <View style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', marginBottom: 2}}>
-                    <Image source={{uri: 'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80'}} style={{flex: 1, height: undefined, width: undefined}}/>
-                </View>
+                <TouchableOpacity style={styles.botaoEditar} onPress={() => this.editarPerfil()}>
+                    <Text style={styles.textoBotaoEditar}>Editar Perfil</Text>
+                </TouchableOpacity>
+            );
+        }
+        if (this.state.user.is_seguindo){
+            return (
+                <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
+                    <Text style={styles.textoBotaoEditar}>Seguindo</Text>
+                    <View style={{position: 'absolute', right: 10, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
+                        <Icon name="check" color="#28b657" size={13} />
+                    </View>
+                </TouchableOpacity>
             );
         }
         return (
-            <View style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', paddingLeft: 2, marginBottom: 2}}>
-                <Image source={{uri: 'https://images.unsplash.com/photo-1504754524776-8f4f37790ca0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1350&q=80'}} style={{flex: 1, height: undefined, width: undefined}}/>
-            </View>
+            <TouchableOpacity style={styles.botaoEditar} onPress={() => this.seguir()}>
+                <Text style={styles.textoBotaoEditar}>Seguir</Text>
+            </TouchableOpacity>
         );
     }
 
+    renderBotaoCarregandoSeguindo(){
+        if (this.state.seguindo){
+            return (
+                <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
+                    <Text style={styles.textoBotaoEditar}>Seguindo</Text>
+                    <View style={{position: 'absolute', right: 10, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
+                        <ActivityIndicator color="#ccc" size="small" />
+                    </View>
+                </TouchableOpacity>
+            );
+        }
+        if (this.state.parandoDeSeguir){
+            return (
+                <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
+                    <Text style={styles.textoBotaoEditar}>Seguir</Text>
+                    <View style={{position: 'absolute', right: 10, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
+                        <ActivityIndicator color="#ccc" size="small" />
+                    </View>
+                </TouchableOpacity>
+            );
+        }
+    }
+
+    renderDescricao(){
+        if (this.state.user.descricao){
+            return <Text style={styles.descricao}>{descricao}</Text>;
+        }
+        return null;
+    }
+
     renderInfoPerfil(){
-        let { nome } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts } = this.state.user;
         return (
             <View style={styles.viewPerfil}>
                 <View style={styles.viewInfo}>
@@ -169,31 +281,29 @@ export default class Perfil extends Network {
                         <Icon name="map-marker-alt" color="#000" size={15} style={{marginRight: 5}}/>
                         <Text style={styles.localizacao}>Santos - SP</Text>
                     </View>
-                    <Text style={styles.descricao}>Eu vo fica monstro p krl iboa</Text>
-                    <TouchableOpacity style={styles.botaoEditar}>
-                        <Text style={styles.textoBotaoEditar}>Seguir</Text>
-                    </TouchableOpacity>
+                    {this.renderDescricao()}
+                    {this.renderBotaoSeguir()}
                     <View style={styles.tabs}>
                         <View style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
                             <View style={styles.infoTab}>
                                 {/* <Icon name="utensils" size={15} color="#aaa"/> */}
                                 <Text style={styles.tabTitulo}>PRATOS</Text>
                             </View>
-                            <Text style={styles.tabTexto}>11</Text>
+                            <Text style={styles.tabTexto}>{posts}</Text>
                         </View>
                         <View style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
                             <View style={styles.infoTab}>
                                 {/* <Icon name="chart-line" size={15} color="#aaa"/> */}
                                 <Text style={styles.tabTitulo}>SEGUIDORES</Text>
                             </View>
-                            <Text style={styles.tabTexto}>255</Text>
+                            <Text style={styles.tabTexto}>{seguidores}</Text>
                         </View>
                         <View style={styles.tab}>
                             <View style={styles.infoTab}>
                                 {/* <Icon name="running" size={15} color="#aaa"/> */}
                                 <Text style={styles.tabTitulo}>SEGUINDO</Text>
                             </View>
-                            <Text style={styles.tabTexto}>11</Text>
+                            <Text style={styles.tabTexto}>{seguindo}</Text>
                         </View>
                     </View>
                 </View>
@@ -230,20 +340,15 @@ export default class Perfil extends Network {
         );
     }
 
-    render(){
-        let { nome, foto } = this.state.user;
-        return (      
-            <View style={{flex: 1}}>
-                {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}> */}
-                    {this.returnLoaderInicial()}
+    returnFotos(){
+        if (!this.state.carregando){
+            return (
                 <FlatList
                 data={this.state.dados}
                 keyExtractor={(item, index) => item.id_post.toString()}
                 numColumns={3}
                 renderItem={({item, index}) => (
-                    <View>
-                        {this.returnFoto(index)}
-                    </View>
+                    <FotoPerfil data={item} index={index}/>
                 )}
                 refreshing={false}
                 onRefresh={() => this.getPerfil()}
@@ -252,6 +357,17 @@ export default class Perfil extends Network {
                 ListHeaderComponent={() => this.returnHeaderComponent()}
                 ListFooterComponent={() => this.returnFooterComponent()}
                 />
+            );
+        } else return null;
+    }
+
+    render(){
+        let { nome, foto } = this.state.user;
+        return (      
+            <View style={{flex: 1}}>
+                {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}> */}
+                    {this.returnLoaderInicial()}
+                    {this.returnFotos()}
 
 
                         {/*fotos aqui*/}
@@ -296,11 +412,14 @@ const styles = {
     },
     botaoEditar: {
         marginTop: 15,
-        paddingHorizontal: 60,
+        width: 175,
+        justifyContent: 'center',
+        alignItems: 'center',
         paddingVertical: 2,
         borderWidth: 1,
         borderColor: '#bbb',
-        borderRadius: 5
+        borderRadius: 5,
+        flexDirection: 'row'
     },
     textoBotaoEditar: {
         color: '#000',
@@ -317,7 +436,7 @@ const styles = {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        paddingHorizontal: 15
+        width: 100,
     },
     infoTab: {
         flexDirection: 'row',
