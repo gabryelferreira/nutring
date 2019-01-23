@@ -32,7 +32,7 @@ export default class Network extends Component {
             console.log("RESULT", result)
             let error = await this.treatError(result);
             if (error)
-                this.logoutUser();
+                await this.logoutUser();
             return result;
         } catch(error){
             console.error(error);
@@ -82,7 +82,16 @@ export default class Network extends Component {
         }   
     }
 
-    logoutUser(){
+    async removerUsuario(){
+        try {
+            await AsyncStorage.removeItem("userData");
+        } catch(error){
+            console.error(error);
+        }
+    }
+
+    async logoutUser(){
+        await this.removerUsuario();
         this.props.navigation.navigate("Principal");
       }
 

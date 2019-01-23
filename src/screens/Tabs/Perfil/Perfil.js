@@ -328,8 +328,8 @@ export default class Perfil extends Network {
 
                 <View style={styles.fotos}>
                     <View style={styles.tabsFotos}>
-                        <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 0})}>
-                            <Icon name="grip-horizontal" solid size={22} style={[this.state.tabSelecionada == 0 ? {color: '#27ae60'} : {color: '#777'}]}/>
+                        <TouchableOpacity style={styles.tabFotos} activeOpacity={1}>
+                            <Icon name="grip-horizontal" solid size={22} style={[this.state.tabSelecionada == 0 ? {color: '#000'} : {color: '#000'}]}/>
                         </TouchableOpacity>
                         {/* <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 1})}>
                             <Icon name="star" solid size={22} style={[this.state.tabSelecionada == 1 ? {color: '#27ae60'} : {color: '#777'}]}/>

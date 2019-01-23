@@ -7,7 +7,7 @@ const SemDadosPerfil = ({ icone, titulo, texto, seta }) => {
     function returnSeta(){
         if (seta){
             return (
-                <Icon name={'arrow-down'} color="#aaa" size={22} style={{marginTop: 35}}/>
+                <Icon name={'chevron-down'} color="#aaa" size={22} style={{marginTop: 35}}/>
             );
         }
         return <View style={{marginBottom: 25}}></View>;

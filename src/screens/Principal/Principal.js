@@ -27,8 +27,9 @@ export default class Login extends Component {
 
     async isUsuarioLogado(){
         try {
-            const value = await AsyncStorage.getItem("userData");
-            if (value){
+            let user = await AsyncStorage.getItem("userData");
+            user = JSON.parse(user);
+            if (user && user.token){
                 const resetAction = StackActions.reset({
                     index: 0,
                     actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
