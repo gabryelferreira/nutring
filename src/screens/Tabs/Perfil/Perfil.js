@@ -401,8 +401,7 @@ const styles = {
         fontSize: 20,
         fontWeight: 'bold',
         color: '#000',
-        marginTop: 15,
-        fontFamily: 'Coiny-Regular.ttf'
+        marginTop: 15
     },
     localizacao: {
         color: '#000',
