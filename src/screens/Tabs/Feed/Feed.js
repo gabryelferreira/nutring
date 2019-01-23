@@ -40,6 +40,7 @@ export default class Feed extends Network {
 
     state = {
         carregando: false,
+        carregandoInicial: true,
         dados: [],
         offset: 0,
         semMaisDados: false,
@@ -70,8 +71,8 @@ export default class Feed extends Network {
         console.log("carregando seus dados iniciais bb")
         this.setState({
             offset: 0,
-            dados: [],
-            semMaisDados: false
+            semMaisDados: false,
+            carregandoInicial: true
         }, this.carregarDados)
     }
 
@@ -82,27 +83,34 @@ export default class Feed extends Network {
             if (result.success){
                 if (result.result.length == 0){
                     this.setState({
-                        semMaisDados: true
+                        semMaisDados: true,
+                        carregandoInicial: false
                     })
                 } else {
-                    let dados = this.state.dados;
+                    let dados = [];
+                    if (!this.state.carregandoInicial){
+                        dados = this.state.dados;
+                    }
                     for (var i = 0; i < result.result.length; i++){
                         result.result[i].conteudo = result.result[i].conteudo[0].url_conteudo;
                         dados.push(result.result[i]);
                     }
                     if (result.result.length < 10){
                         await this.setState({
-                            semMaisDados: true
+                            semMaisDados: true,
+                            carregandoInicial: false
                         })
                     }
                     this.setState({
-                        dados: dados
+                        dados: dados,
+                        carregandoInicial: false
                     }, function() {
                         console.log("TODOS OS DADOS = ", this.state.dados)
                     });
                 }
             }
         }
+        
     }
 
     pegarDados(){
@@ -124,8 +132,9 @@ export default class Feed extends Network {
     }
 
     returnLoaderInicial(){
-        if (this.state.dados.length == 0 && !this.state.semMaisDados)
+        if (this.state.dados.length == 0 && !this.state.semMaisDados){
             return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 30 }}/>
+        }
         return;
     }
 
@@ -150,8 +159,6 @@ export default class Feed extends Network {
 
     render(){
         return (
-            <View>
-                {this.returnLoaderInicial()}
             <FlatList
                 data={this.state.dados}
                 keyExtractor={(item, index) => item.id_post.toString()}
@@ -163,7 +170,7 @@ export default class Feed extends Network {
                     </View>
 
                 )}
-                refreshing={this.state.carregando}
+                refreshing={this.state.carregandoInicial}
                 onRefresh={() => this.carregarDadosIniciais()}
                 onEndReached={() => this.pegarDados()}
                 onEndReachedThreshold={0.5}
@@ -171,7 +178,6 @@ export default class Feed extends Network {
                 legacyImplementation={true}
                 enableEmptySections={true}
                 />
-            </View>
         );
     }
 }

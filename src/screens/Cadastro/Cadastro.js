@@ -175,7 +175,12 @@ export default class Cadastro extends Network {
                     this.showModal("E-mail já cadastrado", "Esse e-mail já está cadastro em nosso sistema.");
                 } else {
                     await this.salvarDadosUsuario(result.result);
-                    this.props.navigation.navigate("Tabs");
+                    const resetAction = StackActions.reset({
+                        index: 0,
+                        actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
+                    });
+                    
+                    this.props.navigation.dispatch(resetAction);
                 }
             } else {
                 this.showModal("Ocorreu um erro!", "Verifique sua internet e tente novamente em alguns instantes.");

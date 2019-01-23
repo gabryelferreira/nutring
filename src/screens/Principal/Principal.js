@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, AsyncStorage } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { StackActions, NavigationActions } from 'react-navigation';
 
@@ -17,32 +17,45 @@ export default class Login extends Component {
 
     constructor(props){
         super(props);
-        AsyncStorage.getItem("userData").then((usuario) => {
-            if (usuario !== null) {
+        this.state = {
+            carregando: true
+        }
+        setTimeout(() => {
+            this.isUsuarioLogado();
+        }, 750);
+    }
+
+    async isUsuarioLogado(){
+        try {
+            const value = await AsyncStorage.getItem("userData");
+            if (value){
                 const resetAction = StackActions.reset({
                     index: 0,
                     actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
                 });
                 this.props.navigation.dispatch(resetAction);
+            } else {
+                await this.setState({
+                    carregando: false
+                })
             }
-        }).catch((error) => {
+        } catch (error) {
+            await this.setState({
+                carregando: false
+            })
             console.error(error);
-        })
+        }
+
     }
 
-    // async isUsuarioLogado(){
-    //     console.log("alo")
-    //     try {
-    //         const value = await AsyncStorage.getItem("userData");
-    //         console.log("value = ", value)
-            
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-        
-    // }
-
     render(){
+        if (this.state.carregando){
+            return (
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator size="large" color="#28b657"/>
+                </View>
+            );
+        }
         return (
             <View style={{flex: 1}}>
                 <View style={styles.view}>

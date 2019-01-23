@@ -33,6 +33,14 @@ export default class Login extends Network {
         )
     };
 
+    async salvarNavigation(navigation){
+        try {
+            await AsyncStorage.setItem("navigation", JSON.stringify(navigation));
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     async login(){
         this.setState({loading: true});
         let result = await this.callMethod("login", {email: this.state.email, senha: this.state.senha})
@@ -49,7 +57,13 @@ export default class Login extends Network {
                 })
             } else {
                 await this.salvarDadosUsuario(result.result);
-                this.props.navigation.navigate("Tabs");
+                // await this.salvarNavigation(this.props.navigation);
+                const resetAction = StackActions.reset({
+                    index: 0,
+                    actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
+                });
+                
+                this.props.navigation.dispatch(resetAction);
             }
         }
     }

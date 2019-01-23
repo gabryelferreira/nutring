@@ -14,7 +14,8 @@ class Comentario extends Network {
     constructor(props){
         super(props);
         this.state = {
-            data: this.props.data
+            data: this.props.data,
+            navigation: this.props.navigation
         }
     }
 
@@ -57,18 +58,19 @@ class Comentario extends Network {
 
     render(){
         let larguraImagem = imageWidth;
-        let { id_comentario, id_post, comentario, curtidas, foto, nome, tempo_postado } = this.state.data;
+        let { id_comentario, id_post, comentario, curtidas, foto, nome, tempo_postado, id_usuario } = this.state.data;
+        // let { navigation } = this.state.navigation;
         return (
             <View style={styles.container}>
                 <View style={styles.viewFoto}>
-                    <Image source={{uri: 'https://noticiasdetv.com/wp-content/uploads/2017/11/Marcela-Fetter-2.png'}} style={{height: 38, width: 38, borderRadius: 38/2}}/>
+                    <TouchableOpacity onPress={() => this.state.navigation.navigate('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000'}}>
+                        <Image source={{uri: foto}}  style={{height: 38, width: 38, borderRadius: 38/2, }}/>
+                    </TouchableOpacity>
                 </View>
 
                 <View style={styles.viewInfo}>
                     <View style={styles.viewInfoTexto}>
-                        <TouchableOpacity>
-                            <Text style={styles.nome}>{nome}</Text>
-                        </TouchableOpacity>
+                        <Text style={styles.nome}>{nome}</Text>
                         <View style={{height: 4, width: 4, borderRadius: 4/2, backgroundColor: '#777', marginTop: 8}}></View>
                         {this.returnTextoPostedAgo(tempo_postado)}
                     </View>
@@ -78,10 +80,6 @@ class Comentario extends Network {
                             {this.returnGostei()}
                             {this.returnTextoCurtidas(curtidas)}
                         </TouchableOpacity>
-                        {/* <TouchableOpacity style={styles.tab} onPress={() => this.props.navigation.navigate('Comentarios', { id_post: id_post })}>
-                            <Icon name="comment" color="#444" size={15}/>
-                            <Text style={{fontSize: 13, marginLeft: 7, color: '#444'}}>{comentarios}</Text>
-                        </TouchableOpacity> */}
                     </View>
                 </View>
 

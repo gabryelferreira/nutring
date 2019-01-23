@@ -29,13 +29,12 @@ export default class Configuracoes extends Network {
     render(){
         return (      
             <View style={{flex: 1}}>
-                {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}> */}
+                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
 
-
-                        {/*fotos aqui*/}
+                    
                         
 
-                {/* </ScrollView> */}
+                </ScrollView>
             </View>
         );
     }

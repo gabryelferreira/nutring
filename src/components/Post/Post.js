@@ -45,7 +45,7 @@ class Post extends Network {
                     <View style={styles.viewComentario}>
                         <View style={styles.bolinhaComentario}>
                         </View>
-                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: this.state.data.id_usuario })} style={styles.nomeComentario}>{this.props.data.nome_usuario_comentario}</Text>  <Text onPress={() => this.props.navigation.navigate('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.top_comment}</Text></Text>
+                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: this.state.data.id_usuario_comentario })} style={styles.nomeComentario}>{this.props.data.nome_usuario_comentario}</Text>  <Text onPress={() => this.props.navigation.navigate('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.top_comment}</Text></Text>
                     </View>
                 </View>
             )

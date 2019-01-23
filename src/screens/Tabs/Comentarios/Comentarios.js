@@ -28,6 +28,7 @@ export default class Comentarios extends Network {
 
     state = {
         carregando: false,
+        carregandoInicial: true,
         dados: [],
         offset: 0,
         semMaisDados: false,
@@ -47,8 +48,8 @@ export default class Comentarios extends Network {
     carregarDadosIniciais() {
         this.setState({
             offset: 0,
-            dados: [],
-            semMaisDados: false
+            semMaisDados: false,
+            carregandoInicial: true
         }, this.carregarDados)
     }
 
@@ -60,24 +61,34 @@ export default class Comentarios extends Network {
             if (result.success){
                 if (result.result.length == 0){
                     this.setState({
-                        semMaisDados: true
+                        semMaisDados: true,
+                        carregandoInicial: false
                     })
                 } else {
                     if (result.result.length < 10){
                         await this.setState({
-                            semMaisDados: true
+                            semMaisDados: true,
+                            carregandoInicial: false
                         })
                     }
-                    let dados = this.state.dados;
+                    let dados = [];
+                    if (!this.state.carregandoInicial){
+                        dados = this.state.dados;
+                    }
                     for (var i = 0; i < result.result.length; i++){
                         dados.push(result.result[i]);
                     }
                     this.setState({
-                        dados: dados
+                        dados: dados,
+                        carregandoInicial: false
                     }, function() {
                         console.log("TODOS OS DADOS = ", this.state.dados)
                     });
                 }
+            } else {
+                this.setState({
+                    carregandoInicial: false
+                })
             }
         } else {
             console.log("bbbbbbbbbbbb")
@@ -146,19 +157,18 @@ export default class Comentarios extends Network {
     render(){
         return (      
             <View style={{flex: 1}}>
-                {this.returnLoaderInicial()}
                 <FlatList
                     data={this.state.dados}
                     keyExtractor={(item, index) => item.id_post.toString()}
                     renderItem={({item, index}) => (
                         
                         <View>
-                            <Comentario data={item}/>
+                            <Comentario data={item} navigation={this.props.navigation}/>
                             {this.returnLoader(index)}
                         </View>
 
                     )}
-                    refreshing={this.state.carregando}
+                    refreshing={this.state.carregandoInicial}
                     onRefresh={() => this.carregarDadosIniciais()}
                     onEndReached={() => this.pegarDados()}
                     onEndReachedThreshold={0.5}

@@ -14,7 +14,7 @@ export default class Network extends Component {
 
     async callMethod(_function, args = undefined){
         let options = {};
-
+        await this.setAuthorization();
         options.headers = this.headers;
 
         options.method = 'post';
@@ -25,7 +25,7 @@ export default class Network extends Component {
         }
         options.body = urlencode(data);
 
-        console.log("body = ", options.body);
+        // console.log("body = ", options.body);
         try {
             let result = await fetch(this.url + _function, options);
             result = await result.json();
@@ -37,14 +37,32 @@ export default class Network extends Component {
         }
     }
 
+    async setAuthorization(){
+        let user = await this.getUsuarioLogado();
+        if (user && user.token){
+          this.headers["Authorization"] = user.token;
+        } else {
+          this.headers["Authorization"] = "";
+        }
+    }
+
+    async getUsuarioLogado(){
+        try {
+            let value = await AsyncStorage.getItem("userData");
+            value = await JSON.parse(value);
+            return value;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     async getIdUsuarioLogado(){
-        console.log("alo")
         try {
             let value = await AsyncStorage.getItem("userData");
             value = await JSON.parse(value);
             // console.log("olha o value caraiooo", value.id_usuario)
             if (value) return value.id_usuario;
-            return;
+            return null;
         } catch (error) {
             console.error(error);
         }   

@@ -8,6 +8,7 @@ import Network from '../../../network';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FotoPerfil from '../../../components/FotoPerfil/FotoPerfil';
+import SemDadosPerfil from '../../../components/SemDadosPerfil/SemDadosPerfil';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -20,12 +21,6 @@ export default class Perfil extends Network {
         headerRight: (
             <TouchableOpacity onPress={() => {
                 AsyncStorage.removeItem("userData").then(() => {
-                    // const resetAction = StackActions.reset({
-                        // index: 0,
-                        // actions: [NavigationActions.navigate({ routeName: 'Feed' })],
-                    // });
-                    // navigation.dispatch(resetAction);
-                    navigation.navigate("Feed");
                     navigation.navigate("Principal");
                 }).catch((error) => {
                     console.error(error);
@@ -41,6 +36,7 @@ export default class Perfil extends Network {
         this.state = {
             tabSelecionada: 0,
             carregando: true,
+            carregandoInicial: true,
             user: {
                 descricao: null,
                 dt_nasc: "",
@@ -89,7 +85,6 @@ export default class Perfil extends Network {
         console.log("carregando seus dados iniciais bb")
         await this.setState({
             offset: 0,
-            dados: [],
             semMaisDados: false
         })
         this.carregarDados();
@@ -106,7 +101,10 @@ export default class Perfil extends Network {
                         semMaisDados: true
                     })
                 } else {
-                    let dados = this.state.dados;
+                    let dados = [];
+                    if (!this.state.carregandoInicial){
+                        dados = this.state.dados;
+                    }
                     for (var i = 0; i < result.result.length; i++){
                         dados.push(result.result[i]);
                     }
@@ -135,16 +133,17 @@ export default class Perfil extends Network {
     }
 
     returnHeaderComponent(){
-        if (!this.state.carregandoInicial){
-            return this.renderInfoPerfil();
-        }
-        return null;
+        return this.renderInfoPerfil();
     }
 
     returnFooterComponent(){
         if (!this.state.semMaisDados && !this.state.carregandoInicial){
             return <ActivityIndicator color="#27ae60" size="large" style={{ marginVertical: 20 }}/>
-        } else return null;
+        } else if (!this.state.carregandoInicial && this.state.semMaisDados && this.state.dados.length == 0){
+            return (
+                <SemDadosPerfil icone={"utensils"} titulo={"Ainda não há pratos"} texto={"Que tal publicar um hoje? ;)"} seta={true}/>
+            );
+        } return null;
     }
 
     returnLoaderInicial(){
@@ -269,12 +268,12 @@ export default class Perfil extends Network {
     }
 
     renderInfoPerfil(){
-        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto } = this.state.user;
         return (
             <View style={styles.viewPerfil}>
                 <View style={styles.viewInfo}>
                     <View style={styles.viewFoto}>
-                        <Image style={{height: 110, width: 110, borderRadius: 110/2}} source={{uri: 'https://noticiasdetv.com/wp-content/uploads/2017/11/Marcela-Fetter-2.png'}}/>
+                        <Image style={{height: 110, width: 110, borderRadius: 110/2}} source={{uri: foto}}/>
                     </View>
                     <Text style={styles.nome}>{nome}</Text>
                     <View style={{flexDirection: 'row'}}>
@@ -328,12 +327,12 @@ export default class Perfil extends Network {
                         <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 0})}>
                             <Icon name="grip-horizontal" solid size={22} style={[this.state.tabSelecionada == 0 ? {color: '#27ae60'} : {color: '#777'}]}/>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 1})}>
+                        {/* <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 1})}>
                             <Icon name="star" solid size={22} style={[this.state.tabSelecionada == 1 ? {color: '#27ae60'} : {color: '#777'}]}/>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 2})}>
                             <Icon name="user" solid size={22} style={[this.state.tabSelecionada == 2 ? {color: '#27ae60'} : {color: '#777'}]}/>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </View>
             </View>
@@ -341,24 +340,29 @@ export default class Perfil extends Network {
     }
 
     returnFotos(){
-        if (!this.state.carregando){
+        if (this.state.carregandoInicial && !this.state.user.nome){
             return (
-                <FlatList
-                data={this.state.dados}
-                keyExtractor={(item, index) => item.id_post.toString()}
-                numColumns={3}
-                renderItem={({item, index}) => (
-                    <FotoPerfil data={item} index={index}/>
-                )}
-                refreshing={false}
-                onRefresh={() => this.getPerfil()}
-                onEndReached={() => this.pegarDados()}
-                onEndReachedThreshold={0.5}
-                ListHeaderComponent={() => this.returnHeaderComponent()}
-                ListFooterComponent={() => this.returnFooterComponent()}
-                />
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator size="large" color="#28b657"/>
+                </View>
             );
-        } else return null;
+        }
+        return (
+            <FlatList
+            data={this.state.dados}
+            keyExtractor={(item, index) => item.id_post.toString()}
+            numColumns={3}
+            renderItem={({item, index}) => (
+                <FotoPerfil data={item} index={index}/>
+            )}
+            refreshing={false}
+            onRefresh={() => this.getPerfil()}
+            onEndReached={() => this.pegarDados()}
+            onEndReachedThreshold={0.5}
+            ListHeaderComponent={() => this.returnHeaderComponent()}
+            ListFooterComponent={() => this.returnFooterComponent()}
+            />
+        );
     }
 
     render(){
@@ -366,7 +370,6 @@ export default class Perfil extends Network {
         return (      
             <View style={{flex: 1}}>
                 {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}> */}
-                    {this.returnLoaderInicial()}
                     {this.returnFotos()}
 
 
