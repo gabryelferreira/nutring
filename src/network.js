@@ -30,12 +30,25 @@ export default class Network extends Component {
             let result = await fetch(this.url + _function, options);
             result = await result.json();
             console.log("RESULT", result)
+            let error = await this.treatError(result);
+            if (error)
+                this.logoutUser();
             return result;
         } catch(error){
             console.error(error);
             return {success: false, error: error}
         }
     }
+
+    treatError(result){
+        if (result && result.error){
+          if (result.error == "NOT_AUTHORIZED"){
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
 
     async setAuthorization(){
         let user = await this.getUsuarioLogado();
@@ -62,10 +75,15 @@ export default class Network extends Component {
             value = await JSON.parse(value);
             // console.log("olha o value caraiooo", value.id_usuario)
             if (value) return value.id_usuario;
+            this.logoutUser();
             return null;
         } catch (error) {
             console.error(error);
         }   
     }
+
+    logoutUser(){
+        this.props.navigation.navigate("Principal");
+      }
 
 }

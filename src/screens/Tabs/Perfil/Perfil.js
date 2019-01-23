@@ -167,7 +167,11 @@ export default class Perfil extends Network {
     }
 
     editarPerfil(){
-
+        AsyncStorage.removeItem("userData").then(() => {
+            // navigation.navigate("Principal");
+        }).catch((error) => {
+            console.error(error);
+        })
     }
 
     async seguir(){
