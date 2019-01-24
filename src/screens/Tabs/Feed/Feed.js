@@ -4,6 +4,9 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
 import Post from '../../../components/Post/Post';
+import UsuarioCard from '../../../components/UsuarioCard/UsuarioCard';
+import { ScrollView } from 'react-native-gesture-handler';
+import Novidades from '../../../components/Novidades/Novidades';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -11,11 +14,11 @@ const imageWidth = dimensions.width;
 
 const InicioHeader = () => {
     return (
-        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 20}}>
+        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20}}>
             {/* <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', borderWidth: 1, borderColor: '#eee', height: 30, width: 30, borderRadius: 30/2}}>
                 <Image style={{height: 30, width: 30, borderRadius: 30/2, borderWidth: 1, borderColor: '#eee'}} source={require('../../../assets/imgs/eu.jpg')}/>
             </View> */}
-            <AutoHeightImage style={{alignSelf: 'center'}} source={require('../../../assets/imgs/nutring-color.png')} width={110}/>
+            <AutoHeightImage style={{alignSelf: 'center'}} source={require('../../../assets/imgs/nutring-color.png')} width={100}/>
             {/* <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
                 <Icon style={{marginRight: 20}}
                     name="search"
@@ -40,10 +43,12 @@ export default class Feed extends Network {
 
     state = {
         carregando: false,
-        carregandoInicial: true,
+        carregandoInicial: false,
+        usuarios: [],
         dados: [],
         offset: 0,
         semMaisDados: false,
+        semMaisUsuarios: false,
         modalComentarios: {
             visible: false
         }
@@ -55,24 +60,15 @@ export default class Feed extends Network {
     }
 
     componentDidMount(){
-        console.log("to no didmount bb")
-        this.carregarDadosIniciais();
-    }
-
-    cadastrar(){
-        console.log("opa")
-    }
-
-    irParaLogin(){
-        console.log("indo")
+        this.carregarDados();
     }
 
     carregarDadosIniciais() {
-        console.log("carregando seus dados iniciais bb")
         this.setState({
             offset: 0,
             semMaisDados: false,
-            carregandoInicial: true
+            carregandoInicial: true,
+            usuarios: []
         }, this.carregarDados)
     }
 
@@ -81,11 +77,20 @@ export default class Feed extends Network {
             let id_usuario = await this.getIdUsuarioLogado();
             let result = await this.callMethod("getFeed", { id_usuario: id_usuario, offset: this.state.offset, limit: 10 })
             if (result.success){
-                if (result.result.length == 0){
-                    this.setState({
+                if (result.result.length == 0 && this.state.offset == 0){
+                    await this.setState({
+                        semMaisDados: true,
+                        offset: 0,
+                        carregandoInicial: false,
+                        dados: []
+                    })
+                    this.carregarUsuarios();
+                } else if (result.result.length == 0 && this.state.dados.length != 0){
+                    await this.setState({
                         semMaisDados: true,
                         carregandoInicial: false
                     })
+                        
                 } else {
                     let dados = [];
                     if (!this.state.carregandoInicial){
@@ -101,11 +106,9 @@ export default class Feed extends Network {
                             carregandoInicial: false
                         })
                     }
-                    this.setState({
+                    await this.setState({
                         dados: dados,
                         carregandoInicial: false
-                    }, function() {
-                        console.log("TODOS OS DADOS = ", this.state.dados)
                     });
                 }
             }
@@ -113,10 +116,24 @@ export default class Feed extends Network {
         
     }
 
-    pegarDados(){
-        this.setState({
-            offset: this.state.offset + 10
-        }, this.carregarDados);        
+    async pegarDados(){
+        if (!this.state.carregando){
+            await this.setState({
+                offset: this.state.offset + 10
+            });
+            await this.carregarDados();
+        }
+    }
+
+
+    async carregarUsuarios(){
+        let id_usuario = await this.getIdUsuarioLogado();
+        let result = await this.callMethod("getTopUsers", { id_usuario });
+        if (result.success){
+            await this.setState({
+                usuarios: result.result
+            })
+        }
     }
 
     returnFooterComponent(){
@@ -125,9 +142,14 @@ export default class Feed extends Network {
         } else return <View style={{marginBottom: 20}}></View>
     }
 
-    returnLoader(index){
-        if (index == this.state.dados.length-1 && !this.state.semMaisDados)
-            return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
+    returnLoader(index, campo){
+        if (campo == 'dados'){
+            if (index == this.state.dados.length-1 && !this.state.semMaisDados)
+                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 0, marginBottom: 85 }}/>
+        }
+        if (campo == 'usuarios')
+            if (index == this.state.usuarios.length-1 && !this.state.semMaisUsuarios)
+                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
         return;
     }
 
@@ -157,7 +179,38 @@ export default class Feed extends Network {
         return;
     }
 
-    render(){
+    renderUsuarios(){
+        return this.state.usuarios.map((usuario) => {
+            return (
+                <UsuarioCard key={usuario.id_usuario} usuario={usuario} navigation={this.props.navigation}/>
+            );
+        })
+    }
+
+    returnUsuarios(){
+        if (this.state.usuarios.length > 0){
+            return (
+                <ScrollView contentContainerStyle={{flexGrow: 1}}>
+                    <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 30, paddingHorizontal: 50}}>
+                        <Text style={{fontSize: 60, fontWeight: 'bold', color: '#000', textAlign: 'center'}}>Ei!</Text>
+                        <Text style={{fontSize: 17, color: '#000', textAlign: 'center'}}>O seu Feed está vazio :(</Text>
+                        <Text style={{fontSize: 17, color: '#000', textAlign: 'center'}}>Aqui vão algumas sugestões de quem seguir!</Text>
+                    </View>
+                    <View style={{flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 20}}>
+                        {this.renderUsuarios()}
+                    </View>
+                </ScrollView>
+            );
+        } return null;
+    }
+
+    returnNovidades(){
+        if (this.state.dados.length > 0)
+            return <Novidades navigation={this.props.navigation} />
+        return null;
+    }
+
+    renderFeed(){
         return (
             <FlatList
                 data={this.state.dados}
@@ -165,19 +218,38 @@ export default class Feed extends Network {
                 renderItem={({item, index}) => (
                     
                     <View>
+                        
                         <Post data={item} index={index} navigation={this.props.navigation}/>
-                        {this.returnLoader(index)}
+                        {this.returnLoader(index, 'dados')}
                     </View>
 
                 )}
                 refreshing={this.state.carregandoInicial}
-                onRefresh={() => this.carregarDadosIniciais()}
-                onEndReached={() => this.pegarDados()}
+                onRefresh={async () => await this.carregarDadosIniciais()}
+                onEndReached={async () => await this.pegarDados()}
                 onEndReachedThreshold={0.5}
-                ListFooterComponent={() => this.returnFooterComponent()}
                 legacyImplementation={true}
                 enableEmptySections={true}
                 />
+        );
+    }
+
+    render(){
+        if (this.state.semMaisDados && this.state.dados.length == 0){
+            return (
+                <View style={{flex: 1, flexDirection: 'column'}}>
+                    
+                    {this.returnUsuarios()}
+                </View>
+            );
+        }
+        return (
+            
+            <View>
+                {this.returnNovidades()}
+                {this.renderFeed()}
+            </View>
+                
         );
     }
 }

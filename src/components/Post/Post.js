@@ -91,7 +91,6 @@ class Post extends Network {
     }
 
     render(){
-        console.log("id usuario dessa porraaa", this.state.data.id_usuario)
         let larguraImagem = imageWidth;
         let { id_usuario, id_post, foto, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios } = this.state.data;
         let { index } = this.props;

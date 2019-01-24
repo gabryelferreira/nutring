@@ -23,6 +23,7 @@ const NavigationOptions = {
         borderColor: '#ddd',
         elevation: 1,
         shadowOpacity: 0,
+        height: 50
     },
 }
 
@@ -78,7 +79,7 @@ const Tabs = createBottomTabNavigator({
             tabBarLabel: "Perfil",
             tabBarIcon: ({ tintColor }) => (
                 <Icon
-                    name="user-secret"
+                    name="user"
                     solid
                     size={22}
                     color={tintColor} />

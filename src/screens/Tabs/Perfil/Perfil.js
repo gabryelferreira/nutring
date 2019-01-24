@@ -77,6 +77,7 @@ export default class Perfil extends Network {
         if (result.success){
             this.setState({
                 user: result.result,
+                carregandoInicial: false
             }, this.carregarFotosIniciais)
         }
     }
@@ -133,7 +134,15 @@ export default class Perfil extends Network {
     }
 
     returnHeaderComponent(){
-        return this.renderInfoPerfil();
+        if (this.state.user.nome)
+            return this.renderInfoPerfil();
+        return null;
+    }
+
+    getTextoSemFotos(){
+        if (this.state.user.sou_eu)
+            return "Que tal publicar um hoje? ;)";
+        return "Esse usuário não possui publicações"
     }
 
     returnFooterComponent(){
@@ -141,7 +150,7 @@ export default class Perfil extends Network {
             return <ActivityIndicator color="#27ae60" size="large" style={{ marginVertical: 20 }}/>
         } else if (!this.state.carregandoInicial && this.state.semMaisDados && this.state.dados.length == 0){
             return (
-                <SemDadosPerfil icone={"utensils"} titulo={"Ainda não há pratos"} texto={"Que tal publicar um hoje? ;)"} seta={true}/>
+                <SemDadosPerfil icone={"utensils"} titulo={"Ainda não há pratos"} texto={this.getTextoSemFotos()} seta={this.state.user.sou_eu}/>
             );
         } return null;
     }
@@ -167,11 +176,7 @@ export default class Perfil extends Network {
     }
 
     editarPerfil(){
-        AsyncStorage.removeItem("userData").then(() => {
-            // navigation.navigate("Principal");
-        }).catch((error) => {
-            console.error(error);
-        })
+        
     }
 
     async seguir(){
@@ -344,13 +349,6 @@ export default class Perfil extends Network {
     }
 
     returnFotos(){
-        if (this.state.carregandoInicial && !this.state.user.nome){
-            return (
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657"/>
-                </View>
-            );
-        }
         return (
             <FlatList
             data={this.state.dados}
@@ -359,7 +357,7 @@ export default class Perfil extends Network {
             renderItem={({item, index}) => (
                 <FotoPerfil data={item} index={index}/>
             )}
-            refreshing={false}
+            refreshing={this.state.carregandoInicial}
             onRefresh={() => this.getPerfil()}
             onEndReached={() => this.pegarDados()}
             onEndReachedThreshold={0.5}
