@@ -165,7 +165,7 @@ export default class Cadastro extends Network {
     }
 
     async cadastrar(){
-        if (await this.validarDados() == true){
+        if (await this.validarDados() == true && !this.state.loading){
             await this.setState({loading: true});
             let user = { nome: this.state.nome, email: this.state.email, senha: this.state.senha, sexo: this.state.sexo, dt_nasc: this.returnDataFormatada(this.state.dt_nasc) };
             user = JSON.stringify(user);

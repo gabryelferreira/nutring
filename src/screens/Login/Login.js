@@ -42,28 +42,30 @@ export default class Login extends Network {
     }
 
     async login(){
-        this.setState({loading: true});
-        let result = await this.callMethod("login", {email: this.state.email, senha: this.state.senha})
-        this.setState({loading: false})
-        if (result.success){
-            if (result.result == "INVALID_LOGIN"){
-                this.setState({
-                    modal: {
-                        title: "Login inválido",
-                        subTitle: "Essa conta não foi encontrada. O que deseja fazer?",
-                        visible: true,
-                        botoes: this.criarBotoes()
-                    }
-                })
-            } else {
-                await this.salvarDadosUsuario(result.result);
-                // await this.salvarNavigation(this.props.navigation);
-                const resetAction = StackActions.reset({
-                    index: 0,
-                    actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
-                });
-                
-                this.props.navigation.dispatch(resetAction);
+        if (!this.state.loading){
+            this.setState({loading: true});
+            let result = await this.callMethod("login", {email: this.state.email, senha: this.state.senha})
+            this.setState({loading: false})
+            if (result.success){
+                if (result.result == "INVALID_LOGIN"){
+                    this.setState({
+                        modal: {
+                            title: "Login inválido",
+                            subTitle: "Essa conta não foi encontrada. O que deseja fazer?",
+                            visible: true,
+                            botoes: this.criarBotoes()
+                        }
+                    })
+                } else {
+                    await this.salvarDadosUsuario(result.result);
+                    // await this.salvarNavigation(this.props.navigation);
+                    const resetAction = StackActions.reset({
+                        index: 0,
+                        actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
+                    });
+                    
+                    this.props.navigation.dispatch(resetAction);
+                }
             }
         }
     }
