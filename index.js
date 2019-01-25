@@ -1,6 +1,6 @@
 /** @format */
 import React, { Component } from 'react';
-import { AppRegistry, View, Text } from 'react-native';
+import { AppRegistry, View, Text, Animated, Easing } from 'react-native';
 import Login from './src/screens/Login/Login';
 import Principal from './src/screens/Principal/Principal';
 
@@ -8,11 +8,13 @@ import { createStackNavigator, createAppContainer, createBottomTabNavigator } fr
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { name as appName } from './app.json';
 import Cadastro from './src/screens/Cadastro/Cadastro';
+import BuscarEspecifico from './src/screens/BuscarEspecifico/BuscarEspecifico';
 
 import Feed from './src/screens/Tabs/Feed/Feed';
 import Perfil from './src/screens/Tabs/Perfil/Perfil';
 import Comentarios from './src/screens/Tabs/Comentarios/Comentarios';
 import Configuracoes from './src/screens/Tabs/Configuracoes/Configuracoes';
+import Buscar from './src/screens/Tabs/Buscar/Buscar';
 
 import AddButton from './src/components/AddButton/AddButton';
 import NutringAddButton from './src/components/AddButton/NutringAddButton';
@@ -32,6 +34,10 @@ const InsideTabs = {
         screen: Feed,
         navigationOptions: NavigationOptions
     },
+    Buscar: {
+        screen: Buscar,
+        navigationOptions: NavigationOptions
+    },
     Perfil: {
         screen: Perfil,
         navigationOptions: NavigationOptions
@@ -39,19 +45,22 @@ const InsideTabs = {
     Configuracoes: {
         screen: Configuracoes,
         navigationOptions: NavigationOptions
-    }
+    },
 }
 
 function addNewPage(_initialRouteName){
     return createStackNavigator(
         InsideTabs, {
-            initialRouteName: _initialRouteName
+            initialRouteName: _initialRouteName,
+            
         }
     )
 }
 
 const _Feed = addNewPage('Feed');
+const _Buscar = addNewPage('Buscar');
 const _Perfil = addNewPage('Perfil');
+const _BuscarEspecifico = addNewPage('BuscarEspecifico');
 const _Configuracoes = addNewPage('Configuracoes');
 
 const Tabs = createBottomTabNavigator({
@@ -62,6 +71,18 @@ const Tabs = createBottomTabNavigator({
             tabBarIcon: ({ tintColor }) => (
                 <Icon
                     name="home"
+                    size={22}
+                    color={tintColor} />
+            )
+        }
+    },
+    TabBuscar: {
+        screen: _Buscar,
+        navigationOptions: {
+            tabBarLabel: "Buscar",
+            tabBarIcon: ({ tintColor }) => (
+                <Icon
+                    name="search"
                     size={22}
                     color={tintColor} />
             )
@@ -122,9 +143,20 @@ const AppNavigator = createStackNavigator({
     Comentarios: {
         screen: Comentarios,
         navigationOptions: NavigationOptions
+    },
+    BuscarEspecifico: {
+        screen: BuscarEspecifico,
+        navigationOptions: NavigationOptions
     }
 }, {
-    initialRouteName: 'Principal'
+    initialRouteName: 'Principal',
+    transitionConfig : () => ({
+        transitionSpec: {
+            duration: 0,
+            timing: Animated.timing,
+            easing: Easing.step0,
+        },
+    }),
 }
 );
 
