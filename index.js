@@ -18,7 +18,7 @@ import Buscar from './src/screens/Tabs/Buscar/Buscar';
 
 import AddButton from './src/components/AddButton/AddButton';
 import NutringAddButton from './src/components/AddButton/NutringAddButton';
-import Salvos from './src/screens/Tabs/Salvos/Salvos';
+import Notificacoes from './src/screens/Tabs/Notificacoes/Notificacoes';
 import EditarConta from './src/screens/Tabs/Configuracoes/EditarConta/EditarConta';
 import Ajuda from './src/screens/Tabs/Configuracoes/Ajuda/Ajuda';
 import Privacidade from './src/screens/Tabs/Configuracoes/Privacidade/Privacidade';
@@ -53,8 +53,8 @@ const InsideTabs = {
         screen: Configuracoes,
         navigationOptions: NavigationOptions
     },
-    Salvos: {
-        screen: Salvos,
+    Notificacoes: {
+        screen: Notificacoes,
         navigationOptions: NavigationOptions
     },
     EditarConta: {
@@ -83,7 +83,7 @@ function addNewPage(_initialRouteName){
 const _Feed = addNewPage('Feed');
 const _Buscar = addNewPage('Buscar');
 const _Perfil = addNewPage('Perfil');
-const _Salvos = addNewPage('Salvos');
+const _Notificacoes = addNewPage('Notificacoes');
 const _BuscarEspecifico = addNewPage('BuscarEspecifico');
 const _Configuracoes = addNewPage('Configuracoes');
 
@@ -118,10 +118,10 @@ const Tabs = createBottomTabNavigator({
             tabBarIcon: <NutringAddButton /> // Plus button component
         })
     },
-    TabSalvos: {
-        screen: _Salvos,
+    TabNotificacoes: {
+        screen: _Notificacoes,
         navigationOptions: {
-            tabBarLabel: "Salvos",
+            tabBarLabel: "Notificacoes",
             tabBarIcon: ({ tintColor }) => (
                 <Icon
                     name="bell"
