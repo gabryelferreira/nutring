@@ -679,9 +679,7 @@ export default class Cadastro extends Network {
                 autoCapitalize = 'none'
                 maxLength={100}
                 />
-                <TouchableOpacity onPress={() => this.cadastrar()} style={styles.botao}>
-                    {this.renderBotaoLogin()}
-                </TouchableOpacity>
+                {this.renderBotaoLogin()}
             </View>
         );
     }

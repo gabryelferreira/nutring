@@ -139,18 +139,18 @@ export default class Login extends Network {
 
 
                     <View style={styles.viewLogin}>
-                    <View style={{alignItems: 'center'}}>
-                        <AutoHeightImage source={require('../../assets/imgs/nutring-color.png')} width={260}/>
-                        <Text style={{marginTop: 10}}>Você mais saudável</Text>
-                    </View>
-                    <View style={styles.botoesOpcao}>
+                        <View style={{alignItems: 'center', justifyContent: 'flex-end', flex: .5}}>
+                            <AutoHeightImage source={require('../../assets/imgs/nutring-color.png')} width={260}/>
+                            <Text style={{marginTop: 10}}>Você mais saudável</Text>
+                        </View>
+                    {/* <View style={styles.botoesOpcao}>
                         <TouchableOpacity style={[styles.botaoOpcao, styles.botaoVerde]}>
                             <Text style={[styles.textoBranco, styles.textoBotaoOpcao]}>Pessoa</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => this.mudarOpcao()} style={styles.botaoOpcao}>
                             <Text style={[styles.textoVerde, styles.textoBotaoOpcao]}>Restaurante</Text>
                         </TouchableOpacity>
-                    </View>
+                    </View> */}
                         <View style={styles.container}>
                             <TextInput 
                             placeholder="Usuário ou email" 
@@ -197,20 +197,17 @@ const styles = {
         flexDirection: 'column',
         paddingHorizontal: 30,
         paddingVertical: 30,
+        justifyContent: 'flex-start',
+        flex: .5,
+        paddingTop: 50
     },
     backgroundImage: {
         height: imageHeight,
         width: imageWidth,
         position: 'absolute'
     },
-    viewLogo: {
-        flex: .5,
-        flexDirection: 'column',
-        justifyContent: 'flex-end',
-        alignItems: 'center'
-    },
     viewLogin: {
-        flex: .8,
+        flex: 1,
         flexDirection: 'column',
         justifyContent: 'center'
     },
