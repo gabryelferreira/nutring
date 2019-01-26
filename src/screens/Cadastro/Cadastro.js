@@ -229,9 +229,9 @@ export default class Cadastro extends Network {
         let valido = false;
         await this.setState({loading: true});
         if (this.state.opcao == "RESTAURANTE"){
-            valido = this.validarDadosRestaurante();
+            valido = await this.validarDadosRestaurante();
         } else {
-            valido = this.validarDados();
+            valido = await this.validarDados();
         }
         if (valido){
             let user;
@@ -284,7 +284,7 @@ export default class Cadastro extends Network {
                 this.showModal("Ocorreu um erro!", "Verifique sua internet e tente novamente em alguns instantes.");
             }
         } else {
-            this.showModal("Erros a vista", this.state.campoErro)
+            this.showModal("Dados inválidos", this.state.campoErro)
         }
         await this.setState({loading: false});
     }
