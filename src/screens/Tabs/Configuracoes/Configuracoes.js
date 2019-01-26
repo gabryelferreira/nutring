@@ -8,6 +8,8 @@ import Network from '../../../network';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FotoPerfil from '../../../components/FotoPerfil/FotoPerfil';
+import Opcao from '../../../components/Opcao/Opcao';
+import Separador from '../../../components/Separador/Separador';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -21,17 +23,78 @@ export default class Configuracoes extends Network {
 
     constructor(props){
         super(props);
+        this.state = {
+            modal: {
+                visible: false,
+                titulo: "",
+                subTitulo: "",
+                botoes: this.criarBotoes()
+            },
+            navigation: this.props.navigation
+        }
+    }
+
+    criarBotoes(){
+        let botoes = [
+            {chave: "SAIR", texto: "Sair", color: '#27ae60', fontWeight: 'bold'},
+            {chave: "CANCELAR", texto: "Cancelar"},
+        ]
+        return botoes;
+    }
+
+    getModalClick(key){
+        this.setModalState(false);
+        if (key == "SAIR"){
+            this.deslogar();
+        }
+    }
+
+    setModalState(visible){
+        this.setState({
+            modal: {
+                visible: visible
+            }
+        })
     }
 
     componentDidMount(){
     }
 
+    abrirConfirmacaoSair(){
+        this.setState({
+            modal: {
+                visible: true,
+                titulo: "Confirmar saída",
+                subTitulo: "Tem certeza que deseja fazer logout do Nutring?",
+                botoes: this.criarBotoes()
+            }
+        })
+    }
+
+    deslogar(){
+        this.logoutUser();
+    }
+
+
     render(){
-        return (      
+        return (
             <View style={{flex: 1}}>
+                <Modalzin 
+                    titulo={this.state.modal.titulo} 
+                    subTitulo={this.state.modal.subTitulo} 
+                    visible={this.state.modal.visible} 
+                    onClick={(key) => this.getModalClick(key)}
+                    onClose={() => this.setState({modal: {visible: false}})}
+                    botoes={this.state.modal.botoes}
+                />
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
 
-                    
+                    <Opcao icone={"user-circle"} texto={"Editar conta"} seta={true} onPress={() => this.props.navigation.navigate("EditarConta")}/>
+                    <Opcao icone={"question-circle"} texto={"Ajuda"} seta={true} onPress={() => this.props.navigation.navigate("Ajuda")}/>
+                    <Opcao icone={"key"} texto={"Privacidade"} seta={true} onPress={() => this.props.navigation.navigate("Privacidade")}/>
+                    <Separador/>
+                    <Opcao icone={"external-link-alt"} texto={"Nutring Calorias"}/>
+                    <Opcao icone={"sign-out-alt"} texto={"Sair"} onPress={() => this.abrirConfirmacaoSair()}/>
                         
 
                 </ScrollView>

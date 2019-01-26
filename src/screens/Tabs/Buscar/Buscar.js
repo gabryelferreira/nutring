@@ -63,9 +63,6 @@ export default class Buscar extends Network {
       this.props.navigation.setParams({
           modalAberto: false
       })
-      this.setState({
-          modalAberto: false
-      })
   }
 
   renderImagens(){

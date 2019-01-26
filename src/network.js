@@ -93,6 +93,6 @@ export default class Network extends Component {
     async logoutUser(){
         await this.removerUsuario();
         this.props.navigation.navigate("Principal");
-      }
+    }
 
 }

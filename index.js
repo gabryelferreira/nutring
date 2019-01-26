@@ -18,6 +18,13 @@ import Buscar from './src/screens/Tabs/Buscar/Buscar';
 
 import AddButton from './src/components/AddButton/AddButton';
 import NutringAddButton from './src/components/AddButton/NutringAddButton';
+import Salvos from './src/screens/Tabs/Salvos/Salvos';
+import EditarConta from './src/screens/Tabs/Configuracoes/EditarConta/EditarConta';
+import Ajuda from './src/screens/Tabs/Configuracoes/Ajuda/Ajuda';
+import Privacidade from './src/screens/Tabs/Configuracoes/Privacidade/Privacidade';
+import AlterarUsuario from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarUsuario';
+import AlterarEmail from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarEmail';
+import AlterarSenha from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarSenha';
 
 const NavigationOptions = {
     headerStyle: {
@@ -46,6 +53,22 @@ const InsideTabs = {
         screen: Configuracoes,
         navigationOptions: NavigationOptions
     },
+    Salvos: {
+        screen: Salvos,
+        navigationOptions: NavigationOptions
+    },
+    EditarConta: {
+        screen: EditarConta,
+        navigationOptions: NavigationOptions
+    },
+    Ajuda: {
+        screen: Ajuda,
+        navigationOptions: NavigationOptions
+    },
+    Privacidade: {
+        screen: Privacidade,
+        navigationOptions: NavigationOptions
+    },
 }
 
 function addNewPage(_initialRouteName){
@@ -60,6 +83,7 @@ function addNewPage(_initialRouteName){
 const _Feed = addNewPage('Feed');
 const _Buscar = addNewPage('Buscar');
 const _Perfil = addNewPage('Perfil');
+const _Salvos = addNewPage('Salvos');
 const _BuscarEspecifico = addNewPage('BuscarEspecifico');
 const _Configuracoes = addNewPage('Configuracoes');
 
@@ -71,7 +95,7 @@ const Tabs = createBottomTabNavigator({
             tabBarIcon: ({ tintColor }) => (
                 <Icon
                     name="home"
-                    size={22}
+                    size={20}
                     color={tintColor} />
             )
         }
@@ -83,7 +107,7 @@ const Tabs = createBottomTabNavigator({
             tabBarIcon: ({ tintColor }) => (
                 <Icon
                     name="search"
-                    size={22}
+                    size={20}
                     color={tintColor} />
             )
         }
@@ -94,6 +118,19 @@ const Tabs = createBottomTabNavigator({
             tabBarIcon: <NutringAddButton /> // Plus button component
         })
     },
+    TabSalvos: {
+        screen: _Salvos,
+        navigationOptions: {
+            tabBarLabel: "Salvos",
+            tabBarIcon: ({ tintColor }) => (
+                <Icon
+                    name="bell"
+                    solid
+                    size={20}
+                    color={tintColor} />
+            )
+        }
+    },
     TabPerfil: {
         screen: _Perfil,
         navigationOptions: {
@@ -102,7 +139,7 @@ const Tabs = createBottomTabNavigator({
                 <Icon
                     name="user"
                     solid
-                    size={22}
+                    size={20}
                     color={tintColor} />
             )
         }
@@ -113,6 +150,7 @@ const Tabs = createBottomTabNavigator({
         showLabel: false,
         inactiveTintColor: '#c7c7c7',
         activeTintColor: '#28b657',
+        
         style: {
             backgroundColor: '#fff',
         },
@@ -146,6 +184,18 @@ const AppNavigator = createStackNavigator({
     },
     BuscarEspecifico: {
         screen: BuscarEspecifico,
+        navigationOptions: NavigationOptions
+    },
+    AlterarUsuario: {
+        screen: AlterarUsuario,
+        navigationOptions: NavigationOptions
+    },
+    AlterarEmail: {
+        screen: AlterarEmail,
+        navigationOptions: NavigationOptions
+    },
+    AlterarSenha: {
+        screen: AlterarSenha,
         navigationOptions: NavigationOptions
     }
 }, {

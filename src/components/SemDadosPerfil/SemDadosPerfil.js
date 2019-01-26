@@ -16,8 +16,8 @@ const SemDadosPerfil = ({ icone, titulo, texto, seta }) => {
     return (
         <View style={{flexDirection: 'column', alignItems: 'center', marginTop: 35, marginBottom: 10}}>
             <Icon name={icone} color="#000" size={30}/>
-            <Text style={{fontSize: 18, color: '#000', textAlign: 'center', fontWeight: 'bold', marginTop: 12, marginBottom: 4}}>{titulo}</Text>
-            <Text style={{fontSize: 13, color: '#000', textAlign: 'center', fontWeight: 'bold'}}>{texto}</Text>
+            <Text style={{fontSize: 20, color: '#000', textAlign: 'center', fontWeight: 'bold', marginTop: 12, marginBottom: 4}}>{titulo}</Text>
+            <Text style={{fontSize: 12, color: '#000', textAlign: 'center'}}>{texto}</Text>
             {returnSeta()}
         </View>
     );

@@ -172,7 +172,7 @@ export default class Cadastro extends Network {
             let result = await this.callMethod("registerV2", { user })
             if (result.success){
                 if (result.result == "EMAIL_EXISTS"){
-                    this.showModal("E-mail já cadastrado", "Esse e-mail já está cadastro em nosso sistema.");
+                    this.showModal("Email já cadastrado", "Esse email já está cadastro em nosso sistema.");
                 } else {
                     await this.salvarDadosUsuario(result.result);
                     const resetAction = StackActions.reset({
@@ -284,7 +284,7 @@ export default class Cadastro extends Network {
                             
                             <TextInput 
                             ref={(input) => this.quartoInput = input}
-                            placeholder="E-mail" 
+                            placeholder="Email" 
                             placeholderTextColor="rgb(153, 153, 153)" 
                             style={styles.input}
                             value={this.state.email}

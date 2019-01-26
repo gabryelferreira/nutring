@@ -153,7 +153,7 @@ export default class Login extends Network {
                     </View>
                         <View style={styles.container}>
                             <TextInput 
-                            placeholder="Usuário ou e-mail" 
+                            placeholder="Usuário ou email" 
                             placeholderTextColor="rgb(153, 153, 153)" 
                             style={styles.input}
                             onChangeText={(email) => this.setState({email})}

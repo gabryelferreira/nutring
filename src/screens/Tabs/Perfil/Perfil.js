@@ -20,13 +20,9 @@ export default class Perfil extends Network {
         title: 'Perfil',
         headerRight: (
             <TouchableOpacity onPress={() => {
-                AsyncStorage.removeItem("userData").then(() => {
-                    navigation.navigate("Principal");
-                }).catch((error) => {
-                    console.error(error);
-                })
+                navigation.navigate("Configuracoes");
             }} style={{paddingRight: 10, flexDirection: 'row'}}>
-                <Icon name="power-off" size={22} color="#000" style={[navigation.getParam('id_usuario_perfil', null) ? {height: 0} : {}]}/>
+                <Icon name="cog" size={22} color="#000" style={[navigation.getParam('id_usuario_perfil', null) ? {height: 0} : {}]}/>
             </TouchableOpacity>
         )
     });
@@ -69,7 +65,7 @@ export default class Perfil extends Network {
     async getPerfil(){
         await this.setState({
             carregando: true,
-            carregandoInicial: true
+            carregandoInicial: true,
         })
         let id_usuario = await this.getIdUsuarioLogado();
         let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', id_usuario);
@@ -86,7 +82,8 @@ export default class Perfil extends Network {
         console.log("carregando seus dados iniciais bb")
         await this.setState({
             offset: 0,
-            semMaisDados: false
+            semMaisDados: false,
+            dados: []
         })
         this.carregarDados();
     }
@@ -285,7 +282,7 @@ export default class Perfil extends Network {
                         <Image style={{height: 110, width: 110, borderRadius: 110/2}} source={{uri: foto}}/>
                     </View>
                     <Text style={styles.nome}>{nome}</Text>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{flexDirection: 'row', marginTop: 5}}>
                         <Icon name="map-marker-alt" color="#000" size={15} style={{marginRight: 5}}/>
                         <Text style={styles.localizacao}>Santos - SP</Text>
                     </View>
@@ -407,7 +404,7 @@ const styles = {
     },
     localizacao: {
         color: '#000',
-        fontSize: 12
+        fontSize: 12,
     },
     descricao: {
         marginTop: 10,
