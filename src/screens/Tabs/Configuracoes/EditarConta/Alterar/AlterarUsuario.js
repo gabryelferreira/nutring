@@ -39,6 +39,7 @@ export default class AlterarUsuario extends Network {
                             onSubmitEditing={() => this.segundoInput.focus()}
                             blurOnSubmit={false}
                             autoCapitalize={"none"}
+                            small={true}
                         />
                         <Input label={"Novo usuário"} 
                                 inputRef={(input) => {this.segundoInput = input}}
@@ -47,6 +48,7 @@ export default class AlterarUsuario extends Network {
                             value={this.state.usuarioNovo}
                             onSubmitEditing={() => this.alterarUsuario()}
                             autoCapitalize={"none"}
+                            small={true}
                         />
                         <View style={{marginVertical: 5}}>
                             <Sugestoes/>

@@ -86,7 +86,7 @@ export default class Cadastro extends Network {
             );
         } else {
             return (
-                <TouchableOpacity onPress={() => this.cadastrar()} style={styles.botao}>
+                <TouchableOpacity style={styles.botao}>
                     <ActivityIndicator animating color="#fff"/>
                 </TouchableOpacity>
             );

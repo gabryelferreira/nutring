@@ -39,6 +39,7 @@ export default class AlterarEmail extends Network {
                             onSubmitEditing={() => this.segundoInput.focus()}
                             blurOnSubmit={false}
                             autoCapitalize={"none"}
+                            small={true}
                         />
                         <Input label={"Novo email"} 
                                 inputRef={(input) => {this.segundoInput = input}}
@@ -47,6 +48,7 @@ export default class AlterarEmail extends Network {
                             value={this.state.emailNovo}
                             onSubmitEditing={() => this.alterarEmail()}
                             autoCapitalize={"none"}
+                            small={true}
                         />
                         <View style={{marginVertical: 5, flex: .7}}>
                             <Text style={{fontSize: 11, color: '#000'}}>Seu email não será mostrado em seu perfil do Nutring.</Text>

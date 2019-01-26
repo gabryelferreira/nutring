@@ -19,7 +19,7 @@ const Input = (props) => {
             {returnLabel()}
             <View style={styles.viewInput}>
                 <TextInput
-                    style={styles.input}
+                    style={[props.small ? [styles.input, styles.inputPequeno] : [styles.input, styles.inputGrande]]}
                     onChangeText={props.onChangeText}
                     value={props.value ? props.value : ''}
                     returnKeyType={props.returnKeyType}
@@ -49,16 +49,22 @@ const styles = {
         flexDirection: 'row'
     },
     input: {
-        flex: 1,
         borderRadius: 30,
-        paddingHorizontal: 25,
-        paddingVertical: 15,
         color: '#000',
+        paddingHorizontal: 25,
         fontSize: 15,
         backgroundColor: '#fafafa',
         borderWidth: 1,
         borderColor: '#ddd',
         marginTop: 7,
         marginBottom: 7
+    },
+    inputPequeno: {
+        flex: .7,
+        height: 40
+    },
+    inputGrande: {
+        flex: 1,
+        paddingVertical: 15,
     }
 }

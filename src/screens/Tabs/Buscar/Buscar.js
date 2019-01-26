@@ -148,7 +148,7 @@ export default class Buscar extends Network {
                 <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Restaurantes</Text>
             </View>
         </View>
-        <ScrollView horizontal={true} style={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
             <Card imagem={'https://pbs.twimg.com/media/CIreT36WwAA2ofe.jpg'}/>
             <Card imagem={'https://pbs.twimg.com/media/CIreT36WwAA2ofe.jpg'}/>
             <Card imagem={'https://pbs.twimg.com/media/CIreT36WwAA2ofe.jpg'}/>
@@ -161,7 +161,7 @@ export default class Buscar extends Network {
                 <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Pratos</Text>
             </View>
         </View>
-        <ScrollView horizontal={true} style={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
             <Card imagem={"https://www.jasminealimentos.com/wp-content/uploads/2016/02/iStock-511814034.jpg"}/>
             <Card imagem={"https://www.jasminealimentos.com/wp-content/uploads/2016/02/iStock-511814034.jpg"}/>
             <Card imagem={"https://www.jasminealimentos.com/wp-content/uploads/2016/02/iStock-511814034.jpg"}/>
@@ -172,7 +172,7 @@ export default class Buscar extends Network {
 
         <Text style={[styles.titulo, styles.paddingHorizontal]}>Para você</Text>
         
-        <ScrollView horizontal={true} style={{paddingHorizontal: 15, paddingTop: 5, paddingBottom: 10}} showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingTop: 5, paddingBottom: 10}} showsHorizontalScrollIndicator={false}>
             <View style={[styles.filtro, styles.filtroSelecionado]}>
                 <Text style={styles.textoFiltro}>Vegetais</Text>
             </View>

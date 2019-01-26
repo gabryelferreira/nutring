@@ -42,6 +42,7 @@ export default class AlterarSenha extends Network {
                             blurOnSubmit={false}
                             autoCapitalize={"none"}
                             secureTextEntry={true}
+                            small={true}
                         />
                         <Input label={"Nova senha"} 
                                 inputRef={(input) => {this.segundoInput = input}}
@@ -52,6 +53,7 @@ export default class AlterarSenha extends Network {
                             autoCapitalize={"none"}
                             blurOnSubmit={false}
                             secureTextEntry={true}
+                            small={true}
                         />
                         <Input label={"Confirme a nova senha"} 
                                 inputRef={(input) => {this.terceiroInput = input}}
@@ -61,6 +63,7 @@ export default class AlterarSenha extends Network {
                             onSubmitEditing={() => this.alterarSenha()}
                             autoCapitalize={"none"}
                             secureTextEntry={true}
+                            small={true}
                         />
                         <View style={{marginVertical: 10}}>
                             <BotaoPequeno texto={"Alterar senha"} onPress={() => this.alterarSenha()}/>
