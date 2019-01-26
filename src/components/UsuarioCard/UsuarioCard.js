@@ -21,12 +21,11 @@ export default class UsuarioCard extends Network {
     }
 
     async seguir(){
-        let id_usuario = await this.getIdUsuarioLogado();
         let id_seguido = this.state.usuario.id_usuario;
         await this.setState({
             seguindo: true
         })
-        let result = await this.callMethod("follow", { id_usuario, id_seguido });
+        let result = await this.callMethod("follow", { id_seguido });
         if (result.success){
             let usuario = this.state.usuario;
             usuario.is_seguindo = true;
@@ -41,12 +40,11 @@ export default class UsuarioCard extends Network {
     }
 
     async pararDeSeguir(){
-        let id_usuario = await this.getIdUsuarioLogado();
         let id_seguido = this.state.usuario.id_usuario;
         await this.setState({
             parandoDeSeguir: true
         })
-        let result = await this.callMethod("unfollow", { id_usuario, id_seguido });
+        let result = await this.callMethod("unfollow", { id_seguido });
         if (result.success){
             let usuario = this.state.usuario;
             usuario.is_seguindo = false;

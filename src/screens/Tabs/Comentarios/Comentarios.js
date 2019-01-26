@@ -56,8 +56,7 @@ export default class Comentarios extends Network {
     async carregarDados() {
         console.log("to aquiii")
         if (!this.state.semMaisDados){
-            let id_usuario = await this.getIdUsuarioLogado();
-            let result = await this.callMethod("getCommentsByIdPost", { id_post: this.state.id_post, id_usuario, limit: 10, offset: this.state.offset });
+            let result = await this.callMethod("getCommentsByIdPost", { id_post: this.state.id_post, limit: 10, offset: this.state.offset });
             if (result.success){
                 if (result.result.length == 0){
                     this.setState({
@@ -134,8 +133,7 @@ export default class Comentarios extends Network {
         await this.setState({
             comentando: true
         })
-        let id_usuario = await this.getIdUsuarioLogado();
-        let result = await this.callMethod("commentPost", { id_post: this.state.id_post, id_usuario, comentario: this.state.comentario });
+        let result = await this.callMethod("commentPost", { id_post: this.state.id_post, comentario: this.state.comentario });
         if (result.success){
             let dados = this.state.dados;
             await dados.unshift(result.result);

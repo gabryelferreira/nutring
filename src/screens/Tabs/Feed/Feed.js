@@ -74,8 +74,7 @@ export default class Feed extends Network {
 
     async carregarDados() {
         if (!this.state.semMaisDados){
-            let id_usuario = await this.getIdUsuarioLogado();
-            let result = await this.callMethod("getFeed", { id_usuario: id_usuario, offset: this.state.offset, limit: 10 })
+            let result = await this.callMethod("getFeed", { offset: this.state.offset, limit: 10 })
             if (result.success){
                 if (result.result.length == 0 && this.state.offset == 0){
                     await this.setState({
@@ -127,8 +126,7 @@ export default class Feed extends Network {
 
 
     async carregarUsuarios(){
-        let id_usuario = await this.getIdUsuarioLogado();
-        let result = await this.callMethod("getTopUsers", { id_usuario });
+        let result = await this.callMethod("getTopUsers");
         if (result.success){
             await this.setState({
                 usuarios: result.result

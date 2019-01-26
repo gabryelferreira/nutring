@@ -184,7 +184,7 @@ const AppNavigator = createStackNavigator({
     },
     BuscarEspecifico: {
         screen: BuscarEspecifico,
-        navigationOptions: NavigationOptions
+        navigationOptions: NavigationOptions,
     },
     AlterarUsuario: {
         screen: AlterarUsuario,

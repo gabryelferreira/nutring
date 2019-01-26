@@ -1,20 +1,22 @@
 import React, { Component } from 'react';
 import { View, Text, TextInput } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-
+import Label from '../Label/Label';
 
 const Input = (props) => {
 
-    function doNothing(){
-
+    returnLabel = () => {
+        if (props.label){
+            return (
+                <Label label={props.label} icone={props.icone}/>
+            );
+        }
+        return null;
     }
 
     return (
         <View style={styles.container}>
-            <View style={styles.flexRow}>
-                <Icon name={props.icone} solid color="#000" size={16}/>
-                <Text style={styles.label}>{props.label}</Text>
-            </View>
+            {returnLabel()}
             <View style={styles.viewInput}>
                 <TextInput
                     style={styles.input}
@@ -26,6 +28,9 @@ const Input = (props) => {
                     secureTextEntry={props.secureTextEntry}
                     autoCapitalize={props.autoCapitalize}
                     ref={props.inputRef}
+                    maxLength={props.maxLength}
+                    placeholderTextColor={props.placeholderTextColor}
+                    keyboardType={props.keyboardType}
                     />
             </View>
         </View>
@@ -40,26 +45,20 @@ const styles = {
         flexDirection: 'column',
         alignItems: 'flex-start'
     },
-    flexRow: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 10,
-    },
-    label: {
-        fontWeight: 'bold',
-        color: '#222',
-        marginLeft: 5
-    },
     viewInput: {
-        height: 40,
         flexDirection: 'row'
     },
     input: {
-        flex: .7,
-        borderRadius: 20,
-        paddingHorizontal: 15,
-        backgroundColor: '#f5f5f5',
+        flex: 1,
+        borderRadius: 30,
+        paddingHorizontal: 25,
+        paddingVertical: 15,
+        color: '#000',
+        fontSize: 15,
+        backgroundColor: '#fafafa',
         borderWidth: 1,
-        borderColor: '#f2f2f2'
+        borderColor: '#ddd',
+        marginTop: 7,
+        marginBottom: 7
     }
 }

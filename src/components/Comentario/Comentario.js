@@ -20,8 +20,7 @@ class Comentario extends Network {
     }
 
     async likeUnlikeComment(id_comentario){
-        let id_usuario = await this.getIdUsuarioLogado();
-        let result = await this.callMethod("likeUnlikeComment", { id_comentario, id_usuario });
+        let result = await this.callMethod("likeUnlikeComment", { id_comentario });
         if (result.success){
             let data = this.state.data;
             if (data.gostei){

@@ -24,8 +24,7 @@ class Post extends Network {
     // }
 
     async likeUnlikePost(id_post){
-        let id_usuario = await this.getIdUsuarioLogado();
-        let result = await this.callMethod("likeUnlikePost", { id_post, id_usuario });
+        let result = await this.callMethod("likeUnlikePost", { id_post });
         if (result.success){
             let data = this.state.data;
             if (data.gostei){

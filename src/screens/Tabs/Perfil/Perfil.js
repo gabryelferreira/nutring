@@ -22,7 +22,7 @@ export default class Perfil extends Network {
             <TouchableOpacity onPress={() => {
                 navigation.navigate("Configuracoes");
             }} style={{paddingRight: 10, flexDirection: 'row'}}>
-                <Icon name="cog" size={22} color="#000" style={[navigation.getParam('id_usuario_perfil', null) ? {height: 0} : {}]}/>
+                <Icon name="cog" size={22} color="#000" style={[navigation.getParam('id_usuario_perfil', "") ? {height: 0} : {}]}/>
             </TouchableOpacity>
         )
     });
@@ -67,9 +67,8 @@ export default class Perfil extends Network {
             carregando: true,
             carregandoInicial: true,
         })
-        let id_usuario = await this.getIdUsuarioLogado();
-        let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', id_usuario);
-        let result = await this.callMethod("getPerfilV2", { id_usuario, id_usuario_perfil });
+        let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', "");
+        let result = await this.callMethod("getPerfilV2", { id_usuario_perfil });
         if (result.success){
             this.setState({
                 user: result.result,
@@ -90,9 +89,8 @@ export default class Perfil extends Network {
 
     async carregarDados() {
         if (!this.state.semMaisDados){
-            let _id_usuario = await this.getIdUsuarioLogado();
-            let id_usuario = this.props.navigation.getParam('id_usuario_perfil', _id_usuario);
-            let result = await this.callMethod("getFotosByIdUsuario", { id_usuario: id_usuario, offset: this.state.offset, limit: 18 })
+            let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', "");
+            let result = await this.callMethod("getFotosByIdUsuario", { id_usuario_perfil, offset: this.state.offset, limit: 18 })
             if (result.success){
                 if (result.result.length == 0){
                     this.setState({
@@ -177,8 +175,7 @@ export default class Perfil extends Network {
     }
 
     async seguir(){
-        let id_usuario = await this.getIdUsuarioLogado();
-        let id_seguido = this.props.navigation.getParam('id_usuario_perfil', -1);
+        let id_seguido = this.props.navigation.getParam('id_usuario_perfil', "");
         await this.setState({
             seguindo: true
         })
@@ -197,12 +194,11 @@ export default class Perfil extends Network {
     }
 
     async pararDeSeguir(){
-        let id_usuario = await this.getIdUsuarioLogado();
-        let id_seguido = this.props.navigation.getParam('id_usuario_perfil', -1);
+        let id_seguido = this.props.navigation.getParam('id_usuario_perfil', "");
         await this.setState({
             parandoDeSeguir: true
         })
-        let result = await this.callMethod("unfollow", { id_usuario, id_seguido });
+        let result = await this.callMethod("unfollow", { id_seguido });
         if (result.success){
             let user = this.state.user;
             user.is_seguindo = false;
