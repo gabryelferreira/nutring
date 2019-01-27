@@ -181,7 +181,7 @@ export default class Perfil extends Network {
         await this.setState({
             seguindo: true
         })
-        let result = await this.callMethod("follow", { id_usuario, id_seguido });
+        let result = await this.callMethod("follow", { id_seguido });
         if (result.success){
             let user = this.state.user;
             user.is_seguindo = true;
