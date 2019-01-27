@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "853732623229",
+    "firebase_url": "https://nutring-e6104.firebaseio.com",
+    "project_id": "nutring-e6104",
+    "storage_bucket": "nutring-e6104.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853732623229:android:2b54506283e01d1e",
+        "android_client_info": {
+          "package_name": "com.nutring.nutring"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853732623229-ekapkq56v7oha9mm4slc272iskjo8e8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXJCa7IEDV8yN10CniFLWU2_RSeGdaJ8Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

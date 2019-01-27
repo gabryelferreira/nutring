@@ -289,7 +289,7 @@ export default class Perfil extends Network {
             <View style={styles.viewPerfil}>
                 <View style={styles.viewInfo}>
                     <View style={styles.viewFoto}>
-                        <Image style={{height: 110, width: 110, borderRadius: 110/2}} source={{uri: foto}}/>
+                        <Image style={{height: 80, width: 80, borderRadius: 80/2}} source={{uri: foto}}/>
                     </View>
                     <Text style={styles.nome}>{nome}</Text>
                     {this.renderLocalizacao()}
@@ -328,7 +328,7 @@ export default class Perfil extends Network {
                     <View style={styles.receitas}>
                         <View style={styles.receita}>
                             <TouchableOpacity style={styles.bolaReceita}>
-                                <Icon name="plus" size={22} color="#000"/>
+                                <Icon name="plus" size={18} color="#000"/>
                             </TouchableOpacity>
                             <Text style={styles.textoReceita}>Nova receita</Text>
                         </View>
@@ -390,37 +390,37 @@ export default class Perfil extends Network {
 
 const styles = {
     viewPerfil: {
-        marginTop: 30
+        marginTop: 20
     },
     viewInfo: {
         flexDirection: 'column',
         alignItems: 'center'
     },
     viewFoto: {
-        height: 110,
-        width: 110,
-        borderRadius: 110/2,
+        height: 80,
+        width: 80,
+        borderRadius: 80/2,
         elevation: 30,
         backgroundColor: '#000'
     },
     nome: {
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#000',
-        marginTop: 15
+        marginTop: 10
     },
     localizacao: {
         color: '#000',
         fontSize: 12,
     },
     descricao: {
-        marginTop: 10,
+        marginTop: 5,
         color: '#000',
-        fontSize: 14
+        fontSize: 13
     },
     botaoEditar: {
-        marginTop: 15,
-        width: 175,
+        marginTop: 10,
+        width: 140,
         justifyContent: 'center',
         alignItems: 'center',
         paddingVertical: 2,
@@ -431,12 +431,12 @@ const styles = {
     },
     textoBotaoEditar: {
         color: '#000',
-        fontSize: 15,
+        fontSize: 13,
         fontWeight: 'bold'
     },
     tabs: {
         flexDirection: 'row',
-        marginTop: 20,
+        marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -453,13 +453,13 @@ const styles = {
         marginTop: 3
     },
     tabTitulo: {
-        fontSize: 10,
+        fontSize: 9,
         color: '#aaa',
         marginLeft: 5,
         letterSpacing: 1.1
     },
     tabTexto: {
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
         color: '#222'
     },
@@ -484,7 +484,7 @@ const styles = {
         color: '#333',
     },
     receitas: {
-        paddingVertical: 10,
+        marginTop: 10,
         flexDirection: 'row'
     },
     receita: {
@@ -494,9 +494,9 @@ const styles = {
         alignItems: 'center'
     },
     bolaReceita: {
-        height: 60,
-        width: 60,
-        borderRadius: 60/2,
+        height: 50,
+        width: 50,
+        borderRadius: 50/2,
         borderColor: '#ddd',
         borderWidth: 1,
         justifyContent: 'center',
