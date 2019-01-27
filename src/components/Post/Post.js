@@ -24,9 +24,16 @@ class Post extends Network {
     // }
 
     async likeUnlikePost(id_post){
+        let data = this.state.data;
+        if (data.gostei){
+            data.curtidas -= 1;
+        } else {
+            data.curtidas += 1;
+        }
+        data.gostei = !data.gostei;
+        this.setState({data: data})
         let result = await this.callMethod("likeUnlikePost", { id_post });
-        if (result.success){
-            let data = this.state.data;
+        if (!result.success){
             if (data.gostei){
                 data.curtidas -= 1;
             } else {

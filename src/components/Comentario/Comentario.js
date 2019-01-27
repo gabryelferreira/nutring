@@ -20,9 +20,16 @@ class Comentario extends Network {
     }
 
     async likeUnlikeComment(id_comentario){
+        let data = this.state.data;
+        if (data.gostei){
+            data.curtidas -= 1;
+        } else {
+            data.curtidas += 1;
+        }
+        data.gostei = !data.gostei;
+        this.setState({data: data})
         let result = await this.callMethod("likeUnlikeComment", { id_comentario });
-        if (result.success){
-            let data = this.state.data;
+        if (!result.success){
             if (data.gostei){
                 data.curtidas -= 1;
             } else {
