@@ -14,6 +14,7 @@ const SearchBar = ({onPress, onChangeText, value, navigation}) => {
                 value={value}
                 placeholder="Procure pessoas, restaurantes e pratos"
                 style={styles.caixaDeTexto}
+                returnKeyType="search"
                 />
             <TouchableOpacity onPress={onPress}>
                 <Icon name="times-circle" size={18} solid style={{marginHorizontal: 5}} />

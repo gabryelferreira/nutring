@@ -19,7 +19,7 @@ const Input = (props) => {
             {returnLabel()}
             <View style={styles.viewInput}>
                 <TextInput
-                    style={[props.small ? [styles.input, styles.inputPequeno] : [styles.input, styles.inputGrande]]}
+                    style={[props.small ? [props.multiline ? [styles.input, styles.inputPequeno] : [styles.input, styles.inputPequeno, styles.inputSuperPequeno]] : [styles.input, styles.inputGrande]]}
                     onChangeText={props.onChangeText}
                     value={props.value ? props.value : ''}
                     returnKeyType={props.returnKeyType}
@@ -31,6 +31,10 @@ const Input = (props) => {
                     maxLength={props.maxLength}
                     placeholderTextColor={props.placeholderTextColor}
                     keyboardType={props.keyboardType}
+                    multiline={props.multiline}
+                    numberOfLines={props.numberOfLines}
+                    autoCorrect={false}
+                    autoComplete={false}
                     />
             </View>
         </View>
@@ -52,7 +56,7 @@ const styles = {
         borderRadius: 30,
         color: '#000',
         paddingHorizontal: 25,
-        fontSize: 15,
+        fontSize: 14,
         backgroundColor: '#fafafa',
         borderWidth: 1,
         borderColor: '#ddd',
@@ -61,10 +65,12 @@ const styles = {
     },
     inputPequeno: {
         flex: .7,
+    },
+    inputSuperPequeno: {
         height: 40
     },
     inputGrande: {
         flex: 1,
-        paddingVertical: 15,
+        paddingVertical: 10,
     }
 }

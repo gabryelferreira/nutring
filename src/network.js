@@ -3,8 +3,8 @@ import urlencode from './url';
 import { AsyncStorage } from 'react-native';
 export default class Network extends Component {
 
-    url = "http://nutring.com.br/api/";
-    // url = "http://10.0.2.2/nutring-api/";
+    // url = "http://nutring.com.br/api/";
+    url = "http://10.0.2.2/nutring-api/";
 
     constructor(props){
         super(props);
@@ -25,8 +25,8 @@ export default class Network extends Component {
         }
         options.body = urlencode(data);
 
-        // console.log("body = ", options.body);
         console.log("function = " + _function)
+        console.log("body = ", options.body);
         try {
             let result = await fetch(this.url + _function, options);
             result = await result.json();

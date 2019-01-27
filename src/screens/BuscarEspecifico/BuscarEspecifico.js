@@ -7,22 +7,28 @@ import { HeaderBackButton } from 'react-navigation';
 
 
 import { StackActions, NavigationActions } from 'react-navigation';
+import { ScrollView } from 'react-native-gesture-handler';
 
-export default class Buscar extends Network {
+export default class BuscarEspecifico extends Network {
 
     static navigationOptions = ({ navigation }) => 
   ({
     header: (
-        <View style={{
-            borderBottom: 1,
-            borderColor: '#ddd',
-            elevation: 1,
-            shadowOpacity: 0,
-            height: 50,
-            overflow: 'hidden',
-            justifyContent: 'center'
-        }}>
-            <SearchBar navigation={navigation} onChangeText={navigation.getParam('procurar')}/>
+        <View style={{flex: 1}}>
+            <View style={{
+                borderBottom: 1,
+                borderColor: '#ddd',
+                elevation: 1,
+                shadowOpacity: 0,
+                height: 50,
+                overflow: 'hidden',
+                justifyContent: 'center'
+            }}>
+                <SearchBar navigation={navigation} onChangeText={navigation.getParam('procurar')}/>
+            </View>
+            <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+            
+            </ScrollView>
         </View>
     )
   });

@@ -704,7 +704,7 @@ export default class Cadastro extends Network {
                     onClose={() => this.setState({modal: {visible: false}})}
                     botoes={this.state.modal.botoes}
                 />
-                <ScrollView>
+                <ScrollView keyboardShouldPersistTaps={"handled"}>
 
 
                     <View style={styles.viewCadastro}>

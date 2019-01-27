@@ -171,7 +171,9 @@ export default class Perfil extends Network {
     }
 
     editarPerfil(){
-        
+        this.props.navigation.navigate("EditarPerfil", {
+            onGoBack: () => this.getPerfil(),
+          });
     }
 
     async seguir(){
@@ -262,9 +264,21 @@ export default class Perfil extends Network {
         }
     }
 
+    renderLocalizacao(){
+        if (this.state.user.cidade && this.state.user.estado){
+            return (
+                <View style={{flexDirection: 'row', marginTop: 5}}>
+                    <Icon name="map-marker-alt" color="#000" size={15} style={{marginRight: 5}}/>
+                    <Text style={styles.localizacao}>{this.state.user.cidade} - {this.state.user.estado}</Text>
+                </View>
+            );
+        }
+        return null;
+    }
+
     renderDescricao(){
         if (this.state.user.descricao){
-            return <Text style={styles.descricao}>{descricao}</Text>;
+            return <Text style={styles.descricao}>{this.state.user.descricao}</Text>;
         }
         return null;
     }
@@ -278,10 +292,7 @@ export default class Perfil extends Network {
                         <Image style={{height: 110, width: 110, borderRadius: 110/2}} source={{uri: foto}}/>
                     </View>
                     <Text style={styles.nome}>{nome}</Text>
-                    <View style={{flexDirection: 'row', marginTop: 5}}>
-                        <Icon name="map-marker-alt" color="#000" size={15} style={{marginRight: 5}}/>
-                        <Text style={styles.localizacao}>Santos - SP</Text>
-                    </View>
+                    {this.renderLocalizacao()}
                     {this.renderDescricao()}
                     {this.renderBotaoSeguir()}
                     <View style={styles.tabs}>

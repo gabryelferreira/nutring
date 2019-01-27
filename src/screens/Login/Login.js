@@ -135,7 +135,7 @@ export default class Login extends Network {
                     onClose={() => this.setState({modal: {visible: false}})}
                     botoes={this.state.modal.botoes}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
+                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
 
 
                     <View style={styles.viewLogin}>

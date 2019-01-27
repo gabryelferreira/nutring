@@ -1,12 +1,24 @@
 import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 
-const BotaoPequeno = ({texto, onPress}) => {
-    return (
-        <TouchableOpacity style={styles.botao} onPress={onPress}>
-            <Text style={styles.textoBotao}>{texto}</Text>
-        </TouchableOpacity>
-    );
+const BotaoPequeno = ({texto, onPress, loading}) => {
+
+    botao = () => {
+        if (loading){
+            return (
+                <TouchableOpacity style={styles.botao}>
+                    <ActivityIndicator animating color="#fff"/>
+                </TouchableOpacity>
+            );
+        }
+        return (
+            <TouchableOpacity style={styles.botao} onPress={onPress}>
+                <Text style={styles.textoBotao}>{texto}</Text>
+            </TouchableOpacity>
+        );
+    }
+
+    return botao();
 }
 
 export default BotaoPequeno;

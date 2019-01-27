@@ -5,6 +5,7 @@ import Opcao from '../../../../../components/Opcao/Opcao';
 import Input from '../../../../../components/Input/Input'
 import Sugestoes from '../../../../../components/Sugestoes/Sugestoes';
 import BotaoPequeno from '../../../../../components/Botoes/BotaoPequeno';
+import Modalzin from '../../../../../components/Modal/Modal';
 
 export default class AlterarSenha extends Network {
 
@@ -20,19 +21,88 @@ export default class AlterarSenha extends Network {
         this.state = {
             senhaAtual: "",
             novaSenha: "",
-            repetirSenha: ""
+            repetirSenha: "",
+            senhaAlterada: false,
+            modal: {
+                visible: false,
+                titulo: "",
+                subTitulo: ""
+            },
+            loading: false
         }
     }
 
-    alterarSenha(){
-        console.log("alterando o fdp");
+    getModalClick(){
+        this.setState({
+            modal: {
+                visible: false
+            }
+        })
+        if (this.state.senhaAlterada){
+            this.props.navigation.goBack(null);
+        }
+    }
+
+    validarDados(){
+        if (!this.state.senhaAtual.trim() || !this.state.novaSenha.trim() || !this.state.repetirSenha.trim()){
+            this.showModal("Campos inválidos", "Preencha todos os campos corretamente para alterar sua senha.");
+            return false;
+        }
+        return true;
+    }
+
+    async alterarSenha(){
+        if (this.validarDados()){
+            this.setState({
+                loading: true
+            })
+            let result = await this.callMethod("alterarSenha", { senhaAtual: this.state.senhaAtual, novaSenha: this.state.novaSenha, repetirSenha: this.state.repetirSenha });
+            if (result.success){
+                if (result.result == "INVALIDO"){
+                    this.showModal("Campos inválidos", "Preencha os campos corretamente para poder alterar sua senha.");
+                } else if (result.result == "SENHA_ALTERADA"){
+                    this.setState({
+                        senhaAlterada: true
+                    })
+                    this.showModal("Senha alterada", "Sua senha foi alterada com sucesso.");
+                } else if (result.result == "SENHA_INCORRETA"){
+                    this.showModal("Senha incorreta", "Coloque a sua senha atual correta para poder alterá-la.");
+                } else if (result.result == "SENHA_DIFERENTE"){
+                    this.showModal("Senhas não coincidem", "O campo de confirmar a senha não.");
+                } else if (result.result == "SENHA_IGUAL"){
+                    this.showModal("Senha inválida", "A senha solicitada é a mesma da sua senha atual.");
+                }
+            } else {
+                this.showModal("Ocorreu um erro", "Verifique sua internet e tente novamente.");
+            }
+            this.setState({
+                loading: false
+            })
+        }
+    }
+
+    showModal(titulo, subTitulo){
+        this.setState({
+            modal: {
+                visible: true,
+                titulo: titulo,
+                subTitulo: subTitulo
+            }
+        })
     }
 
 
     render(){
         return (
             <View style={{flex: 1}}>
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
+                <Modalzin 
+                    titulo={this.state.modal.titulo} 
+                    subTitulo={this.state.modal.subTitulo} 
+                    visible={this.state.modal.visible} 
+                    onClick={() => this.getModalClick()}
+                    onClose={() => this.getModalClick()}
+                />
+                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}  keyboardShouldPersistTaps={"handled"}>
                     <View style={styles.container}>
                         <Input label={"Senha atual"} icone={"lock"}
                             onChangeText={(senhaAtual) => this.setState({senhaAtual})}
@@ -66,7 +136,7 @@ export default class AlterarSenha extends Network {
                             small={true}
                         />
                         <View style={{marginVertical: 10}}>
-                            <BotaoPequeno texto={"Alterar senha"} onPress={() => this.alterarSenha()}/>
+                            <BotaoPequeno texto={"Alterar senha"} onPress={() => this.alterarSenha()} loading={this.state.loading}/>
                         </View>
                     </View>
                 </ScrollView>
