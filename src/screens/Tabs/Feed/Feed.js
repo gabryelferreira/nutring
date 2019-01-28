@@ -73,12 +73,14 @@ export default class Feed extends Network {
         }, this.carregarDados)
     }
 
+    async salvarToken(token){
+        let result = await this.callMethod("salvarToken", { token });
+    }
+
     async carregarDados() {
         const fcmToken = await firebase.messaging().getToken();
         if (fcmToken) {
-            console.log("TOKEN = ", fcmToken)
-        } else {
-            console.log("SEM TOKEN");
+            this.salvarToken(fcmToken);
         }
         if (!this.state.semMaisDados){
             let result = await this.callMethod("getFeed", { offset: this.state.offset, limit: 10 })

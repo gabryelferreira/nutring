@@ -25,6 +25,7 @@ import Privacidade from './src/screens/Tabs/Configuracoes/Privacidade/Privacidad
 import AlterarUsuario from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarUsuario';
 import AlterarEmail from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarEmail';
 import AlterarSenha from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarSenha';
+import EnviarNotificacao from './src/screens/Tabs/Configuracoes/EnviarNotificacao/EnviarNotificacao';
 import EditarPerfil from './src/screens/Tabs/Perfil/EditarPerfil/EditarPerfil';
 
 const NavigationOptions = {
@@ -201,6 +202,10 @@ const AppNavigator = createStackNavigator({
     },
     EditarPerfil: {
         screen: EditarPerfil,
+        navigationOptions: NavigationOptions
+    },
+    EnviarNotificacao: {
+        screen: EnviarNotificacao,
         navigationOptions: NavigationOptions
     }
 }, {

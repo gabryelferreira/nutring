@@ -30,7 +30,9 @@ export default class Configuracoes extends Network {
                 subTitulo: "",
                 botoes: this.criarBotoes()
             },
-            navigation: this.props.navigation
+            navigation: this.props.navigation,
+            isRestaurante: false,
+            loading: true
         }
     }
 
@@ -58,6 +60,22 @@ export default class Configuracoes extends Network {
     }
 
     componentDidMount(){
+        this.isRestaurante();
+    }
+
+    async isRestaurante(){
+        let result = await this.callMethod("isRestaurante");
+        if (result.success){
+            this.setState({
+                isRestaurante: result.result,
+                loading: false
+            })
+        } else {
+            this.setState({
+                loading: false
+            })
+        }
+        
     }
 
     abrirConfirmacaoSair(){
@@ -75,8 +93,21 @@ export default class Configuracoes extends Network {
         this.logoutUser();
     }
 
+    renderEnviarNotificacoes(){
+        if (this.state.isRestaurante){
+            return <Opcao icone={"share-square"} texto={"Enviar notificação"} seta={true} onPress={() => this.props.navigation.navigate("EnviarNotificacao")}/>;
+        }
+        return null;
+    }
 
     render(){
+        if (this.state.loading){
+            return (
+                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator color="#27ae60" size="large"/>
+                </View>
+            );
+        }
         return (
             <View style={{flex: 1}}>
                 <Modalzin 
@@ -88,7 +119,7 @@ export default class Configuracoes extends Network {
                     botoes={this.state.modal.botoes}
                 />
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
-
+                    {this.renderEnviarNotificacoes()}
                     <Opcao icone={"user-circle"} texto={"Editar conta"} seta={true} onPress={() => this.props.navigation.navigate("EditarConta")}/>
                     <Opcao icone={"question-circle"} texto={"Ajuda"} seta={true} onPress={() => this.props.navigation.navigate("Ajuda")}/>
                     <Opcao icone={"key"} texto={"Privacidade"} seta={true} onPress={() => this.props.navigation.navigate("Privacidade")}/>
