@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:853732623229:android:2b54506283e01d1e",
+        "mobilesdk_app_id": "1:853732623229:android:5feea29ba5413c68",
         "android_client_info": {
-          "package_name": "com.nutring.nutring"
+          "package_name": "com.nutring"
         }
       },
       "oauth_client": [

@@ -7,6 +7,7 @@ import Post from '../../../components/Post/Post';
 import UsuarioCard from '../../../components/UsuarioCard/UsuarioCard';
 import { ScrollView } from 'react-native-gesture-handler';
 import Novidades from '../../../components/Novidades/Novidades';
+import firebase from 'react-native-firebase';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -73,6 +74,12 @@ export default class Feed extends Network {
     }
 
     async carregarDados() {
+        const fcmToken = await firebase.messaging().getToken();
+        if (fcmToken) {
+            console.log("TOKEN = ", fcmToken)
+        } else {
+            console.log("SEM TOKEN");
+        }
         if (!this.state.semMaisDados){
             let result = await this.callMethod("getFeed", { offset: this.state.offset, limit: 10 })
             if (result.success){
