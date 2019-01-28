@@ -74,7 +74,7 @@ export default class Feed extends Network {
     }
 
     async salvarToken(token){
-        let result = await this.callMethod("salvarToken", { token });
+        this.callMethod("salvarToken", { token });
     }
 
     async carregarDados() {
