@@ -17,14 +17,23 @@ const imageWidth = dimensions.width;
 export default class Perfil extends Network {
 
     static navigationOptions = ({navigation}) => ({
-        title: 'Perfil',
+        title: navigation.getParam('nome', 'Perfil'),
         headerRight: (
             <TouchableOpacity onPress={() => {
                 navigation.navigate("Configuracoes");
             }} style={{paddingRight: 10, flexDirection: 'row'}}>
-                <Icon name="cog" size={22} color="#000" style={[navigation.getParam('id_usuario_perfil', "") ? {height: 0} : {}]}/>
+                <Icon name="cog" size={22} color={navigation.getParam('cor_texto', '#fff')} style={[navigation.getParam('id_usuario_perfil', "") ? {height: 0} : {}]}/>
             </TouchableOpacity>
         ),
+        headerTintColor: navigation.getParam('cor_texto', '#fff'),
+        headerStyle: {
+            backgroundColor: navigation.getParam('cor_fundo', '#fff'),
+            borderBottom: 1,
+            borderColor: '#ddd',
+            elevation: 1,
+            shadowOpacity: 0,
+            height: 50,
+        }
     });
 
     constructor(props){
@@ -54,13 +63,18 @@ export default class Perfil extends Network {
             dados: [],
             semMaisDados: false,
             seguindo: false,
-            parandoDeSeguir: false
+            parandoDeSeguir: false,
+            cor_fundo: '#fff',
+            cor_texto: '#000'
         }
     }
 
     componentDidMount(){
         console.log("to no didmount bb")
         this.getPerfil();
+        this.props.navigation.setParams({
+            cor_fundo: '#fff'
+        })
     }
 
     async getPerfil(){
@@ -71,6 +85,21 @@ export default class Perfil extends Network {
         let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', "");
         let result = await this.callMethod("getPerfilV2", { id_usuario_perfil });
         if (result.success){
+            this.props.navigation.setParams({
+                nome: result.result.nome
+            })
+            if (result.result.cor_fundo)
+                this.props.navigation.setParams({
+                    cor_fundo: result.result.cor_fundo
+                })
+            if (result.result.cor_texto)
+                this.props.navigation.setParams({
+                    cor_texto: result.result.cor_texto
+                })
+            else
+                this.props.navigation.setParams({
+                    cor_texto: "#000"
+                })
             this.setState({
                 user: result.result,
                 carregandoInicial: false
