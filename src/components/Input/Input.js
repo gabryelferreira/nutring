@@ -14,6 +14,17 @@ const Input = (props) => {
         return null;
     }
 
+    renderHashtag = () => {
+        if (props.hashtag){
+            return (
+                <View style={{position: 'absolute', left: 0, top: 0, bottom: 0, width: 30, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{fontSize: 14, color: '#777'}}>#</Text>
+                </View>
+            );
+        }
+        return null;
+    }
+
     return (
         <View style={styles.container}>
             {returnLabel()}
@@ -36,6 +47,7 @@ const Input = (props) => {
                     autoCorrect={false}
                     autoComplete={false}
                     />
+                    {renderHashtag()}
             </View>
         </View>
     );

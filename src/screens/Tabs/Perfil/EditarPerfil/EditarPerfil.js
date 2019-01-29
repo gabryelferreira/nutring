@@ -20,31 +20,30 @@ export default class EditarPerfil extends Network {
         super(props);
         this.state = {
             descricao: "",
-            carregandoDados: true,
+            carregandoDados: false,
             modal: {
                 visible: false,
                 titulo: "",
                 subTitulo: ""
             },
-            loading: false
+            user: {},
+            loading: false,
+            cor_fundo: "",
+            cor_texto: ""
         }
     }
 
     componentDidMount(){
-        this.getPerfilAlteracao();
+        this.setState({
+            user: this.props.navigation.getParam("user", {})
+        }, this.setDados)
     }
 
-    async getPerfilAlteracao(){
-        let result = await this.callMethod("getPerfilAlteracao");
-        if (result.success){
-            this.setState({
-                descricao: result.result.descricao
-            })
-        } else {
-            this.showModal("Ocorreu um erro", "Não conseguimos pegar seus dados. Verifique sua internet.");
-        }
+    setDados(){
         this.setState({
-            carregandoDados: false
+            descricao: this.state.user.descricao,
+            cor_fundo: this.state.user.cor_fundo,
+            cor_texto: this.state.user.cor_texto
         })
     }
 
@@ -56,11 +55,8 @@ export default class EditarPerfil extends Network {
         })
     }
 
-    async editarPerfil(){
-        this.setState({
-            loading: true
-        })
-        let result = await this.callMethod("editarPerfil", { descricao: this.state.descricao });
+    async editarPerfilCliente(){
+        let result = await this.callMethod("editarPerfil", { descricao: this.state.descricao, tipo_edicao: 'CLIENTE' });
         if (result.success){
             this.props.navigation.state.params.onGoBack();
             this.props.navigation.goBack();
@@ -72,6 +68,35 @@ export default class EditarPerfil extends Network {
         })
     }
 
+    async editarPerfilRestaurante(){
+        let result = await this.callMethod("editarPerfil", { descricao: this.state.descricao, cor_fundo: this.state.cor_fundo, cor_texto: this.state.cor_texto, tipo_edicao: 'RESTAURANTE' });
+        if (result.success){
+            if (result.result == "PERFIL_ALTERADO"){
+                this.props.navigation.state.params.onGoBack();
+                this.props.navigation.goBack();
+            } else {
+                this.showModal("Ocorreu um erro", result.result);
+            }
+        } else {
+            this.showModal("Ocorreu um erro", "Verifique sua internet e tente novamente.");
+        }
+        this.setState({
+            loading: false
+        })
+    }
+
+    async editarPerfil(){
+        this.setState({
+            loading: true
+        })
+        if (this.state.user.is_restaurante){
+            this.editarPerfilRestaurante();
+        } else {
+            this.editarPerfilCliente();
+        }
+        
+    }
+
     showModal(titulo, subTitulo){
         this.setState({
             modal: {
@@ -80,6 +105,41 @@ export default class EditarPerfil extends Network {
                 subTitulo: subTitulo
             }
         })
+    }
+
+    renderCoresRestaurante(){
+        if (this.state.user.is_restaurante){
+            return (
+                <View>
+                    <Input label={"Cor de fundo"}
+                        icone={"palette"}
+                        inputRef={(input) => this.segundoInput = input}
+                        onChangeText={(cor_fundo) => this.setState({cor_fundo})}
+                        value={this.state.cor_fundo}
+                        onSubmitEditing={() => this.terceiroInput.focus()}
+                        autoCapitalize={"none"}
+                        small={true}
+                        blurOnSubmit={false}
+                        maxLength={6}
+                        returnKeyType={"next"}
+                        hashtag={true}
+                    />
+                    <Input label={"Cor do texto"}
+                        icone={"palette"}
+                        inputRef={(input) => this.terceiroInput = input}
+                        onChangeText={(cor_texto) => this.setState({cor_texto})}
+                        value={this.state.cor_texto}
+                        onSubmitEditing={() => this.editarPerfil()}
+                        autoCapitalize={"none"}
+                        small={true}
+                        maxLength={6}
+                        returnKeyType={"send"}
+                        hashtag={true}
+                    />
+                </View>
+            );
+        }
+        return null;
     }
 
     render(){
@@ -101,17 +161,17 @@ export default class EditarPerfil extends Network {
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                     <View style={styles.container}>
                         <Input label={"Descrição"}
-                                icone={"comment"}
+                            icone={"comment"}
                             onChangeText={(descricao) => this.setState({descricao})}
                             value={this.state.descricao}
-                            onSubmitEditing={() => this.editarPerfil()}
                             autoCapitalize={"sentences"}
                             small={true}
                             multiline={true}
                             numberOfLines={4}
                             maxLength={255}
-                            returnKeyType={"none"}
+                            returnKeyType={'none'}
                         />
+                        {this.renderCoresRestaurante()}
                         <View style={{marginVertical: 5, flex: .7}}>
                             <Text style={{fontSize: 11, color: '#000'}}>A descrição ficará visível para quem acessar seu perfil.</Text>
                             {/* <Text style={{fontSize: 11, color: '#000'}}>Pode ficar tranquilo ;)</Text> */}

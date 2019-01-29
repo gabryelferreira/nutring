@@ -90,11 +90,11 @@ export default class Perfil extends Network {
             })
             if (result.result.cor_fundo)
                 this.props.navigation.setParams({
-                    cor_fundo: result.result.cor_fundo
+                    cor_fundo: '#' + result.result.cor_fundo
                 })
             if (result.result.cor_texto)
                 this.props.navigation.setParams({
-                    cor_texto: result.result.cor_texto
+                    cor_texto: '#' + result.result.cor_texto
                 })
             else
                 this.props.navigation.setParams({
@@ -325,7 +325,9 @@ export default class Perfil extends Network {
                         <Image style={{height: 80, width: 80, borderRadius: 80/2}} source={{uri: foto}}/>
                     </View>
                     <Text style={styles.nome}>{nome}</Text>
-                    {this.renderDescricao()}
+                    <View style={{flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 30}}>
+                        {this.renderDescricao()}
+                    </View>
                     {this.renderBotaoSeguir()}
                     <View style={styles.tabs}>
                         <View style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
@@ -393,8 +395,8 @@ export default class Perfil extends Network {
 
     renderInfoPerfilRestaurante(){
         let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa } = this.state.user;
-        let background = cor_fundo ? cor_fundo : '#fff';
-        let color = cor_texto ? cor_texto : '#000';
+        let background = cor_fundo ? '#' + cor_fundo : '#fff';
+        let color = cor_texto ? '#' + cor_texto : '#000';
         return (
             <View style={styles.viewPerfilRestaurante}>
                 <View style={styles.capa}>
@@ -420,8 +422,8 @@ export default class Perfil extends Network {
                     <Text style={styles.tituloRestaurante}>{nome}</Text>
                     {this.renderLocalizacao()}
 
-                    <View style={[styles.modalInfoRestaurante, {backgroundColor: background}, [cor_fundo ? {borderColor: cor_fundo} : {}]]}>
-                        <View style={[styles.barraDescricaoRestaurante, [cor_fundo ? {borderBottomColor: cor_fundo} : {}]]}>
+                    <View style={[styles.modalInfoRestaurante, {backgroundColor: background}, [background ? {borderColor: background} : {}]]}>
+                        <View style={[styles.barraDescricaoRestaurante, [background ? {borderBottomColor: background} : {}]]}>
                             {this.renderDescricaoRestaurante(color)}
                         </View>
                         <View style={{flexDirection: 'row', justifyContent: 'center'}}>
@@ -532,7 +534,8 @@ const styles = {
     descricao: {
         marginTop: 5,
         color: '#000',
-        fontSize: 13
+        fontSize: 13,
+        textAlign: 'center'
     },
     botaoEditar: {
         marginTop: 10,
@@ -541,7 +544,7 @@ const styles = {
         alignItems: 'center',
         paddingVertical: 2,
         borderWidth: 1,
-        borderColor: '#bbb',
+        borderColor: '#ddd',
         borderRadius: 5,
         flexDirection: 'row'
     },
