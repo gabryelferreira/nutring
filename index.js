@@ -49,7 +49,6 @@ const InsideTabs = {
     },
     Perfil: {
         screen: Perfil,
-        navigationOptions: NavigationOptions
     },
     Configuracoes: {
         screen: Configuracoes,
@@ -156,7 +155,7 @@ const Tabs = createBottomTabNavigator({
         style: {
             backgroundColor: '#fff',
         },
-      }
+      },
 })
 
 const AppNavigator = createStackNavigator({

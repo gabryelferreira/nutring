@@ -45,7 +45,6 @@ export default class Login extends Network {
         if (!this.state.loading){
             this.setState({loading: true});
             let result = await this.callMethod("login", {email: this.state.email, senha: this.state.senha})
-            this.setState({loading: false})
             if (result.success){
                 if (result.result == "INVALID_LOGIN"){
                     this.setState({
@@ -56,6 +55,7 @@ export default class Login extends Network {
                             botoes: this.criarBotoes()
                         }
                     })
+                    this.setState({loading: false})
                 } else {
                     await this.salvarDadosUsuario(result.result);
                     // await this.salvarNavigation(this.props.navigation);
@@ -66,6 +66,15 @@ export default class Login extends Network {
                     
                     this.props.navigation.dispatch(resetAction);
                 }
+            } else {
+                this.setState({
+                    modal: {
+                        title: "Ocorreu um erro",
+                        subTitle: "Parece que você está sem internet. Verifique-a e tente novamente.",
+                        visible: true
+                    }
+                })
+                this.setState({loading: false})
             }
         }
     }
