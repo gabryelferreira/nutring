@@ -34,7 +34,7 @@ const NavigationOptions = {
         borderColor: '#ddd',
         elevation: 1,
         shadowOpacity: 0,
-        height: 50
+        height: 50,
     },
 }
 

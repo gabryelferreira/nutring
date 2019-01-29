@@ -24,7 +24,7 @@ export default class Perfil extends Network {
             }} style={{paddingRight: 10, flexDirection: 'row'}}>
                 <Icon name="cog" size={22} color="#000" style={[navigation.getParam('id_usuario_perfil', "") ? {height: 0} : {}]}/>
             </TouchableOpacity>
-        )
+        ),
     });
 
     constructor(props){
@@ -48,6 +48,7 @@ export default class Perfil extends Network {
                 seguindo: "",
                 sexo: "",
                 sou_eu: "",
+                cnpj: ""
             },
             offset: 0,
             dados: [],
@@ -129,6 +130,8 @@ export default class Perfil extends Network {
     }
 
     returnHeaderComponent(){
+        if (this.state.user.cnpj)
+            return this.renderInfoPerfilRestaurante();
         if (this.state.user.nome)
             return this.renderInfoPerfil();
         return null;
@@ -173,6 +176,7 @@ export default class Perfil extends Network {
     editarPerfil(){
         this.props.navigation.navigate("EditarPerfil", {
             onGoBack: () => this.getPerfil(),
+            user: this.state.user
           });
     }
 
@@ -214,20 +218,20 @@ export default class Perfil extends Network {
         })
     }
 
-    renderBotaoSeguir(){
+    renderBotaoSeguir(color = "#000"){
         if (this.state.parandoDeSeguir || this.state.seguindo)
-            return this.renderBotaoCarregandoSeguindo();
+            return this.renderBotaoCarregandoSeguindo(color);
         if (this.state.user.sou_eu){
             return (
                 <TouchableOpacity style={styles.botaoEditar} onPress={() => this.editarPerfil()}>
-                    <Text style={styles.textoBotaoEditar}>Editar Perfil</Text>
+                    <Text style={[styles.textoBotaoEditar, {color: color}]}>Editar Perfil</Text>
                 </TouchableOpacity>
             );
         }
         if (this.state.user.is_seguindo){
             return (
                 <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
-                    <Text style={styles.textoBotaoEditar}>Seguindo</Text>
+                    <Text style={[styles.textoBotaoEditar, {color: color}]}>Seguindo</Text>
                     <View style={{position: 'absolute', right: 10, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
                         <Icon name="check" color="#28b657" size={13} />
                     </View>
@@ -236,16 +240,16 @@ export default class Perfil extends Network {
         }
         return (
             <TouchableOpacity style={styles.botaoEditar} onPress={() => this.seguir()}>
-                <Text style={styles.textoBotaoEditar}>Seguir</Text>
+                <Text style={[styles.textoBotaoEditar, {color: color}]}>Seguir</Text>
             </TouchableOpacity>
         );
     }
 
-    renderBotaoCarregandoSeguindo(){
+    renderBotaoCarregandoSeguindo(color = "#000"){
         if (this.state.seguindo){
             return (
                 <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
-                    <Text style={styles.textoBotaoEditar}>Seguindo</Text>
+                    <Text style={[styles.textoBotaoEditar, {color: color}]}>Seguindo</Text>
                     <View style={{position: 'absolute', right: 10, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
                         <ActivityIndicator color="#ccc" size="small" />
                     </View>
@@ -255,7 +259,7 @@ export default class Perfil extends Network {
         if (this.state.parandoDeSeguir){
             return (
                 <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
-                    <Text style={styles.textoBotaoEditar}>Seguir</Text>
+                    <Text style={[styles.textoBotaoEditar, {color: color}]}>Seguir</Text>
                     <View style={{position: 'absolute', right: 10, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
                         <ActivityIndicator color="#ccc" size="small" />
                     </View>
@@ -268,7 +272,7 @@ export default class Perfil extends Network {
         if (this.state.user.cidade && this.state.user.estado){
             return (
                 <View style={{flexDirection: 'row', marginTop: 5}}>
-                    <Icon name="map-marker-alt" color="#000" size={15} style={{marginRight: 5}}/>
+                    <Icon name="map-marker-alt" color="#fff" size={14} style={{marginRight: 5}}/>
                     <Text style={styles.localizacao}>{this.state.user.cidade} - {this.state.user.estado}</Text>
                 </View>
             );
@@ -292,7 +296,6 @@ export default class Perfil extends Network {
                         <Image style={{height: 80, width: 80, borderRadius: 80/2}} source={{uri: foto}}/>
                     </View>
                     <Text style={styles.nome}>{nome}</Text>
-                    {this.renderLocalizacao()}
                     {this.renderDescricao()}
                     {this.renderBotaoSeguir()}
                     <View style={styles.tabs}>
@@ -334,6 +337,94 @@ export default class Perfil extends Network {
                         </View>
                     </View>
                 </View>
+
+                <View style={styles.fotos}>
+                    <View style={styles.tabsFotos}>
+                        <TouchableOpacity style={styles.tabFotos} activeOpacity={1}>
+                            <Icon name="grip-horizontal" solid size={22} style={[this.state.tabSelecionada == 0 ? {color: '#000'} : {color: '#000'}]}/>
+                        </TouchableOpacity>
+                        {/* <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 1})}>
+                            <Icon name="star" solid size={22} style={[this.state.tabSelecionada == 1 ? {color: '#27ae60'} : {color: '#777'}]}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 2})}>
+                            <Icon name="user" solid size={22} style={[this.state.tabSelecionada == 2 ? {color: '#27ae60'} : {color: '#777'}]}/>
+                        </TouchableOpacity> */}
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
+    renderDescricaoRestaurante(color = '#000'){
+        if (this.state.user.descricao){
+            return <Text style={[styles.descricaoRestaurante, {color: color}]}>{this.state.user.descricao}</Text>;
+        }
+        return <Text style={[styles.descricaoRestaurante, {color: color}]}>Conheça o {this.state.user.nome}!</Text>;
+    }
+
+    renderInfoPerfilRestaurante(){
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa } = this.state.user;
+        let background = cor_fundo ? cor_fundo : '#fff';
+        let color = cor_texto ? cor_texto : '#000';
+        return (
+            <View style={styles.viewPerfilRestaurante}>
+                <View style={styles.capa}>
+                    <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2}]}></View>
+                    <Image source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
+                </View>
+
+                {/*começo do perfil*/}
+                <View style={styles.viewInfoRestaurante}>
+                
+                    <View style={styles.viewInfoContato}>
+                        <View style={styles.infoContato}><Icon name="comment" size={18} solid color="#fff"/></View>
+                        <View style={{height: 105, width: 105, borderRadius: 105/2}}>
+                            <Image style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto}}/>
+                            <View style={{position: 'absolute', left: 0, right: 0, bottom: -12, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end'}}>
+                                <AutoHeightImage source={require('../../../assets/imgs/folhinha_da_macunha.png')}  width={30}/>
+                            
+                            </View>
+                        </View>
+                        <View style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></View>
+                    </View>
+
+                    <Text style={styles.tituloRestaurante}>{nome}</Text>
+                    {this.renderLocalizacao()}
+
+                    <View style={[styles.modalInfoRestaurante, {backgroundColor: background}, [cor_fundo ? {borderColor: cor_fundo} : {}]]}>
+                        <View style={[styles.barraDescricaoRestaurante, [cor_fundo ? {borderBottomColor: cor_fundo} : {}]]}>
+                            {this.renderDescricaoRestaurante(color)}
+                        </View>
+                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                            {this.renderBotaoSeguir(color)}
+                        </View>
+                        <View style={styles.tabs}>
+                            <View style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
+                                <View style={styles.infoTab}>
+                                    {/* <Icon name="utensils" size={15} color="#aaa"/> */}
+                                    <Text style={[styles.tabTitulo, {color: color}]}>PRATOS</Text>
+                                </View>
+                                <Text style={[styles.tabTexto, {color: color}]}>{posts}</Text>
+                            </View>
+                            <View style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
+                                <View style={styles.infoTab}>
+                                    {/* <Icon name="chart-line" size={15} color="#aaa"/> */}
+                                    <Text style={[styles.tabTitulo, {color: color}]}>SEGUIDORES</Text>
+                                </View>
+                                <Text style={[styles.tabTexto, {color: color}]}>{seguidores}</Text>
+                            </View>
+                            <View style={styles.tab}>
+                                <View style={styles.infoTab}>
+                                    {/* <Icon name="running" size={15} color="#aaa"/> */}
+                                    <Text style={[styles.tabTitulo, {color: color}]}>SEGUINDO</Text>
+                                </View>
+                                <Text style={[styles.tabTexto, {color: color}]}>{seguindo}</Text>
+                            </View>
+                        </View>
+                    </View>
+                
+                </View>
+
 
                 <View style={styles.fotos}>
                     <View style={styles.tabsFotos}>
@@ -408,10 +499,6 @@ const styles = {
         fontWeight: 'bold',
         color: '#000',
         marginTop: 10
-    },
-    localizacao: {
-        color: '#000',
-        fontSize: 12,
     },
     descricao: {
         marginTop: 5,
@@ -527,5 +614,84 @@ const styles = {
     list: {
         flexDirection: 'row',
         flexWrap: 'wrap',
+    },
+
+
+
+
+
+
+
+
+
+
+    //RESTAURANTE
+
+    viewPerfilRestaurante: {
+        paddingTop: 30
+    },
+    capa: {
+        position: 'absolute',
+        height: 250,
+        left: 0,
+        top: 0,
+        right: 0,
+        backgroundColor: '#000'
+    },
+    viewInfoRestaurante: {
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+    viewInfoContato: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    infoContato: {
+        width: 35,
+        height: 35,
+        borderRadius: 35,
+        borderWidth: 1,
+        borderColor: '#fff',
+        backgroundColor: 'rgba(0, 0, 0, .4)',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 10
+    },
+    tituloRestaurante: {
+        fontSize: 18,
+        color: '#fff',
+        fontWeight: 'bold',
+        marginTop: 15
+    },
+    localizacao: {
+        color: '#fff',
+        fontSize: 10,
+        fontWeight: 'bold'
+    },
+    modalInfoRestaurante: {
+        flexDirection: 'column',
+        marginVertical: 10,
+        paddingBottom: 10,
+        width: imageWidth/10 * 9,
+        borderWidth: 1,
+        elevation: 5
+        
+    },
+    barraDescricaoRestaurante: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 30,
+        paddingVertical: 5,
+        borderBottomWidth: 1,
+        elevation: 5,
+    },
+    descricaoRestaurante: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 12,
     }
+
+
 }
