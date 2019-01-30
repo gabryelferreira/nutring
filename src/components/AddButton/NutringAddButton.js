@@ -1,8 +1,20 @@
 import React, {Component} from 'react';
-import {Animated, TouchableHighlight, View} from "react-native";
+import {Animated, TouchableHighlight, View, Modal, StatusBar} from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Camera from '../Camera/Camera';
 const SIZE = 45;
+
 class NutringAddButton extends Component {
+
+    state = {
+        visible: false
+    }
+
+
+    abrirCamera(){
+
+    }
+
 
     render() {
         return (
@@ -14,25 +26,26 @@ class NutringAddButton extends Component {
             //     paddingHorizontal: 10,
             //     borderRadius: 80
             // }}>
-                <View style={{
-                    alignItems: 'center',
-                }}>
-                    <TouchableHighlight
-                        onPress={this.toggleView}
-                        underlayColor="#2882D8"
-                        style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: SIZE,
-                            height: SIZE,
-                        }}
-                    >
+            <View>
+                
+                <Modal
+                visible={this.state.visible}
+                onRequestClose={() => {
+                    this.setState({visible: false})
+                }}
+                
+                >
+                <StatusBar hidden />
+                    <Camera onClose={() => this.setState({visible: false})}/>
+                </Modal>
+                    <View style={{
+                        alignItems: 'center',
+                    }}>
                         <View>
-                            <Icon name="camera" size={22} color="#c7c7c7"/>
+                            <Icon onPress={() => this.setState({visible: true})} style={{paddingHorizontal: 25, paddingVertical: 10}} name="camera" size={22} color="#c7c7c7"/>
                         </View>
-                    </TouchableHighlight>
-                </View>
-            // </View>
+                    </View>
+            </View>
         );
     }
 }

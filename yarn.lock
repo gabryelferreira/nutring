@@ -4633,6 +4633,13 @@ react-native-auto-height-image@^1.0.5:
     prop-types "^15.5.8"
     react-native-android-image-polyfill "^1.0.0"
 
+react-native-camera@^1.9.2:
+  version "1.9.2"
+  resolved "https://registry.yarnpkg.com/react-native-camera/-/react-native-camera-1.9.2.tgz#c5c458dbf05ce7d7e3e9c5f1a53c600569fb78ff"
+  integrity sha512-5hdFgU0F0DozcI4eDPfMqhwPf+TSnBfxi/4+pk6R8MpiP2VDMMn3qDZQ6pIk7VdKepC/KUmcJTvIdpwISRxSFg==
+  dependencies:
+    prop-types "^15.6.2"
+
 react-native-firebase@^5.2.1:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/react-native-firebase/-/react-native-firebase-5.2.1.tgz#2904ccc80880930ea72fa152eae3c7f53a0d5e1c"

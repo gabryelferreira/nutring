@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, StatusBar } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -399,6 +399,7 @@ export default class Perfil extends Network {
         let color = cor_texto ? '#' + cor_texto : '#000';
         return (
             <View style={styles.viewPerfilRestaurante}>
+                <StatusBar backgroundColor={background} />
                 <View style={styles.capa}>
                     <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2}]}></View>
                     <Image source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>

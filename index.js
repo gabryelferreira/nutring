@@ -19,6 +19,7 @@ import Buscar from './src/screens/Tabs/Buscar/Buscar';
 import AddButton from './src/components/AddButton/AddButton';
 import NutringAddButton from './src/components/AddButton/NutringAddButton';
 import Notificacoes from './src/screens/Tabs/Notificacoes/Notificacoes';
+import NovaPostagem from './src/screens/Tabs/NovaPostagem/NovaPostagem';
 import EditarConta from './src/screens/Tabs/Configuracoes/EditarConta/EditarConta';
 import Ajuda from './src/screens/Tabs/Configuracoes/Ajuda/Ajuda';
 import Privacidade from './src/screens/Tabs/Configuracoes/Privacidade/Privacidade';
@@ -70,6 +71,10 @@ const InsideTabs = {
         screen: Privacidade,
         navigationOptions: NavigationOptions
     },
+    NovaPostagem: {
+        screen: NovaPostagem,
+        navigationOptions: NavigationOptions
+    }
 }
 
 function addNewPage(_initialRouteName){
@@ -87,6 +92,7 @@ const _Perfil = addNewPage('Perfil');
 const _Notificacoes = addNewPage('Notificacoes');
 const _BuscarEspecifico = addNewPage('BuscarEspecifico');
 const _Configuracoes = addNewPage('Configuracoes');
+const _NovaPostagem = addNewPage('NovaPostagem');
 
 const Tabs = createBottomTabNavigator({
     TabFeed: {
