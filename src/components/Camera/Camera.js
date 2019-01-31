@@ -231,7 +231,7 @@ export default class Camera extends Network {
                                     <TouchableOpacity disabled={this.state.uploading}
                                     onPress={this.props.onClose}
                                     >
-                                        <Icon name="angle-left" color="#fff" size={32}/>
+                                        <Icon name="angle-down" color="#fff" size={32}/>
                                     </TouchableOpacity>
                                 </View>
                                 <View style={[styles.viewBotao, styles.alignDireita]}>

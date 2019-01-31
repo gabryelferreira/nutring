@@ -20,7 +20,7 @@ const Opcao = ({toggle, icone, texto, tela, seta, onPress, toggleChange, toggleV
     }
 
     return (
-        <TouchableOpacity style={styles.container} onPress={onPress}>
+        <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={toggle ? 1 : 0.2}>
             <View style={styles.flexRow}>
                 {renderIcone()}
                 <Text style={styles.texto}>{texto}</Text>

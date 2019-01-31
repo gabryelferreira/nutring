@@ -81,8 +81,15 @@ function addNewPage(_initialRouteName){
     return createStackNavigator(
         InsideTabs, {
             initialRouteName: _initialRouteName,
-            
-        }
+            transitionConfig : () => ({
+                transitionSpec: {
+                    duration: 0,
+                    timing: Animated.timing,
+                    easing: Easing.step0,
+                },
+            }),
+        },
+        
     )
 }
 
@@ -211,6 +218,10 @@ const AppNavigator = createStackNavigator({
     },
     EnviarNotificacao: {
         screen: EnviarNotificacao,
+        navigationOptions: NavigationOptions
+    },
+    NutringAddButton: {
+        screen: NutringAddButton,
         navigationOptions: NavigationOptions
     }
 }, {

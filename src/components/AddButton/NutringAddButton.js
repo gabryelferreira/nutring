@@ -30,12 +30,13 @@ class NutringAddButton extends Component {
                 
                 <Modal
                 visible={this.state.visible}
+                animationType="slide"
+                presentationStyle="fullScreen"
                 onRequestClose={() => {
                     this.setState({visible: false})
                 }}
                 
                 >
-                <StatusBar hidden />
                     <Camera onClose={() => this.setState({visible: false})}/>
                 </Modal>
                     <View style={{
