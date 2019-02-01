@@ -7,7 +7,7 @@ import SearchButton from '../../../components/SearchBar/SearchBarButton';
 import Card from '../../../components/Card/Card';
 import SemDadosPerfil from '../../../components/SemDadosPerfil/SemDadosPerfil';
 import SemDados from '../../../components/SemDados/SemDados';
-import Notificacao from '../../../components/Notificacao/Notificacao';
+import Item from '../../../components/Item/Item';
 
 
 const dimensions = Dimensions.get('window');
@@ -35,8 +35,18 @@ export default class Notificacoes extends Network {
     // }
     return (
     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
-      <Notificacao promo={true} quantidade={23}/>
-      <Notificacao icone={"comment"} tipo={"FOLLOW"} titulo={"Gabryel Ferreira"} foto={'https://img.stpu.com.br/?img=https://s3.amazonaws.com/pu-mgr/default/a0RG000000o0ohkMAA/594989e9e4b0eb7905e31616.jpg&w=620&h=400'}/>
+      <Item promo={true} 
+            quantidade={23} 
+            tipo={"PROMOCAO"} 
+            titulo={"Promoções"}
+            texto={"Promoções de restaurantes que você segue."} 
+            foto={'https://logodownload.org/wp-content/uploads/2016/09/Outback-logo-10.png'}
+            />
+      <Item icone={"comment"}
+            tipo={"SEGUIU"} 
+            titulo={"Gabryel Ferreira"} 
+            foto={'https://img.stpu.com.br/?img=https://s3.amazonaws.com/pu-mgr/default/a0RG000000o0ohkMAA/594989e9e4b0eb7905e31616.jpg&w=620&h=400'}
+            />
     </ScrollView>
     );
   }

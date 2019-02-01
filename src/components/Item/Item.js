@@ -3,9 +3,22 @@ import { View, Text, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
-const Notificacao = ({ promo, quantidade, icone, tipo, foto, titulo }) => {
+const Item = ({ promo, quantidade, icone, tipo, foto, fotoPost, titulo, texto, navigation, id_usuario, onPress, onPressFoto }) => {
 
-    let texto = "";
+    let marcacao = "";
+    let textoMarcacao = "";
+
+    if (!texto){
+        if (tipo == "SEGUIU"){
+            texto = "começou a te seguir";
+        } else if (tipo == "MENCIONOU"){
+            texto = "mencionou você em um comentário: ";
+        } else if (tipo == "COMENTOU"){
+            texto = "comentou sua receita: ";
+        }
+    }
+
+
 
     renderBolinha = () => {
         if (promo){
@@ -14,7 +27,7 @@ const Notificacao = ({ promo, quantidade, icone, tipo, foto, titulo }) => {
                     <Text style={styles.textoBola}>{quantidade}</Text>
                 </View>
             );
-        } else {
+        } else if (icone){
             return (
                 <View style={[styles.bola, styles.bolaMenor]}>
                     <Icon name={icone} color="#fff" size={7} solid />
@@ -22,43 +35,68 @@ const Notificacao = ({ promo, quantidade, icone, tipo, foto, titulo }) => {
             );
         }
     }
+    
 
     renderTexto = () => {
-        if (promo){
+        if (promo || tipo == "BUSCANDO"){
             return (
                 <View>
-                    <Text style={styles.titulo}>Promoções</Text>
-                    <Text style={styles.descricao}>Promoções dos restaurantes que você segue.</Text>
+                    <Text style={styles.titulo}>{titulo}</Text>
+                    <Text style={styles.descricao}>{texto}</Text>
                 </View>
             );
         } else {
             return (
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={styles.nome}>Gabryel Marinho <Text style={styles.texto}>mencionou você em um comentário.</Text></Text>
+                    <Text style={styles.nome}>{titulo} <Text style={styles.texto}>{texto}</Text></Text>
                 </View>
             );
         }
     }
 
+    renderFinal = () => {
+        if (tipo == "PROMOCAO")
+        {
+            return <View style={styles.bolinhaVerde}></View>
+        } 
+        else if (fotoPost)
+        {
+            return <Image style={{flex: 1, height: 45, width: 45}} source={{uri: fotoPost}}/>
+        } 
+        else if (tipo == "SEGUIU")
+        {
+            return <Icon name="exchange-alt" color='#000' size={18}/>
+        }
+        return null;
+    }
+
+    renderFoto = () => {
+        if (foto){
+            console.log("oi bb")
+            return <Image style={{flex: 1, height: 45, width: 45, borderRadius: 45/2}} source={{uri: foto}}/>
+        }
+        console.log("ja passei")
+        return null;
+    }
 
     return (
-        <TouchableOpacity style={[styles.notificacao, [promo ? {marginBottom: 20} : {}]]}>
-            <TouchableOpacity style={styles.foto}>
-                <Image style={{flex: 1, height: 45, width: 45, borderRadius: 45/2}} source={require('../../assets/imgs/eu.jpg')}/>
+        <TouchableOpacity onPress={onPress} style={[styles.notificacao, [promo ? {marginBottom: 20} : {}]]}>
+            <TouchableOpacity style={styles.foto} onPress={onPressFoto}>
+                {renderFoto()}
                 {renderBolinha()}
             </TouchableOpacity>
             <View style={styles.textos}>
                 {renderTexto()}
             </View>
             <View style={styles.icone}>
-                <View style={styles.bolinhaVerde}></View>
+                {renderFinal()}
             </View>
         </TouchableOpacity>
     );
 
 }
 
-export default Notificacao;
+export default Item;
 
 const styles = {
     notificacao: {
@@ -87,7 +125,7 @@ const styles = {
     },
     descricao: {
         fontSize: 11,
-        color: '#000'
+        color: '#777'
     },
     nome: {
         fontSize: 13.5,

@@ -185,9 +185,9 @@ export default class Camera extends Network {
                         <TouchableHighlight >
                             <Image source={{uri: this.state.fotoTirada}} style={{height: 250, width: imageWidth}}/>
                         </TouchableHighlight>
-                        <TouchableHighlight>
+                        {/* <TouchableHighlight>
                             <Opcao icone={"lock"} texto={"Foto pública"} toggle={true} toggleChange={() => this.setFotoPublica()} toggleValue={this.state.fotoPublica}/>
-                        </TouchableHighlight>
+                        </TouchableHighlight> */}
                         <View style={{paddingVertical: 5, paddingHorizontal: 20}}>
                             <Input label={"Descrição"}
                                 icone={"comment"}

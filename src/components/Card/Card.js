@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 
-const Card = ({onPress, item, imagem}) => {
+const Card = ({onPress, imagem, nome, seguidores}) => {
 
 
     return (
@@ -12,9 +12,9 @@ const Card = ({onPress, item, imagem}) => {
             </View>
             <View style={styles.container}>
                 <View style={styles.info}>
-                    <Text style={styles.nome}>Outback Santos</Text>
+                    <Text style={styles.nome}>{nome}</Text>
                     <View style={styles.infoBaixo}>
-                        <Text style={styles.qtdCurtidas}>776 <Text style={styles.textoCurtidas}>Curtidas</Text></Text>
+                        <Text style={styles.qtdCurtidas}>{seguidores} <Text style={styles.textoCurtidas}>Curtidas</Text></Text>
                     </View>
                 </View>
             </View>

@@ -74,7 +74,7 @@ const InsideTabs = {
     NovaPostagem: {
         screen: NovaPostagem,
         navigationOptions: NavigationOptions
-    }
+    },
 }
 
 function addNewPage(_initialRouteName){
@@ -196,10 +196,6 @@ const AppNavigator = createStackNavigator({
         screen: Comentarios,
         navigationOptions: NavigationOptions
     },
-    BuscarEspecifico: {
-        screen: BuscarEspecifico,
-        navigationOptions: NavigationOptions,
-    },
     AlterarUsuario: {
         screen: AlterarUsuario,
         navigationOptions: NavigationOptions
@@ -222,6 +218,10 @@ const AppNavigator = createStackNavigator({
     },
     NutringAddButton: {
         screen: NutringAddButton,
+        navigationOptions: NavigationOptions
+    },
+    BuscarEspecifico: {
+        screen: BuscarEspecifico,
         navigationOptions: NavigationOptions
     }
 }, {

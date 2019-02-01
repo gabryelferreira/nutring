@@ -399,7 +399,7 @@ export default class Perfil extends Network {
         let color = cor_texto ? '#' + cor_texto : '#000';
         return (
             <View style={styles.viewPerfilRestaurante}>
-                <StatusBar backgroundColor={background} />
+                {/* <StatusBar backgroundColor={background} /> */}
                 <View style={styles.capa}>
                     <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2}]}></View>
                     <Image source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>

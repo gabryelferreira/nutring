@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image, Button, Modal, ScrollView, Dimensions } from 'react-native';
+import { View, TouchableOpacity, Text, Image, Button, Modal, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
 import SearchBar from '../../../components/SearchBar/SearchBar';
@@ -47,10 +47,61 @@ export default class Buscar extends Network {
     this.props.navigation.navigate('BuscarEspecifico');
   }
 
+  state = {
+      loading: true,
+      restaurantes: [],
+      pratosRestaurantes: [],
+      pratos: [],
+      offset: 0,
+      limit: 12,
+      loadingPratos: false
+  }
+
+  constructor(props){
+      super(props);
+  }
+
   componentDidMount() {
     this.props.navigation.setParams({
         abrirModal: this.abrirModal.bind(this)
     })
+    this.getTopRestaurantes();
+  }
+
+  async getTopRestaurantes(){
+      let result = await this.callMethod("getTopRestaurantes");
+      if (result.success){
+        this.setState({
+            restaurantes: result.result
+        }, this.getTopPratosRestaurantes)
+      }
+  }
+
+  async getTopPratosRestaurantes(){
+    let result = await this.callMethod("getTopPratosRestaurantes");
+    if (result.success){
+      this.setState({
+          pratosRestaurantes: result.result
+      }, this.getTopPratosClientes)
+    }
+  }
+
+  async getTopPratosClientes(){
+    let result = await this.callMethod("getTopPratosClientes", { offset: this.state.offset, limit: this.state.limit });
+    if (result.success){
+      this.setState({
+          pratos: result.result,
+          loading: false,
+          loadingPratos: false
+      })
+    }
+  }
+
+  getMaisPratos(){
+      this.setState({
+          offset: this.state.offset + this.state.limit,
+          loadingPratos: true
+      }, this.getTopPratosClientes)
   }
 
   componentWillUnmount() {
@@ -134,61 +185,76 @@ export default class Buscar extends Network {
             );
         });
     }
-
-
-
   }
+  
+    renderTopRestaurantes(){
+        return this.state.restaurantes.map((restaurante) => {
+            return <Card key={restaurante.id_usuario} imagem={restaurante.foto} nome={restaurante.nome} seguidores={restaurante.seguidores} onPress={() => this.props.navigation.navigate("Perfil", { id_usuario_perfil: restaurante.id_usuario })}/>
+        })
+    }
+
+    renderTopRestaurantesView(){
+        if (this.state.restaurantes.length > 0){
+            return (
+                <View>
+                    <View style={[styles.item, styles.paddingHorizontal]}>
+                        <View style={styles.flexRow}>
+                            <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Restaurantes</Text>
+                        </View>
+                    </View>
+                    <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
+                        {this.renderTopRestaurantes()}
+                    </ScrollView>
+                </View>
+            );
+        }
+    }
+
+    renderTopPratosRestaurantes(){
+        return this.state.pratosRestaurantes.map((prato) => {
+            return <Card key={prato.id_usuario} imagem={prato.foto} nome={prato.nome} seguidores={prato.curtidas} onPress={() => this.props.navigation.navigate("Perfil", { id_usuario_perfil: prato.id_usuario })}/>
+        })
+    }
+
+renderTopPratosRestaurantesView(){
+    if (this.state.restaurantes.length > 0){
+        return (
+            <View>
+                <View style={[styles.item, styles.paddingHorizontal]}>
+                    <View style={styles.flexRow}>
+                        <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Pratos</Text>
+                    </View>
+                </View>
+                <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
+                    {this.renderTopPratosRestaurantes()}
+                </ScrollView>
+            </View>
+        );
+    }
+    return null;
+}
 
   render() {
+      if (this.state.loading){
+          return (
+              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                <ActivityIndicator size="large" color="#28b657" />
+              </View>
+
+          );
+      }
     return (
     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
         <Text style={[styles.titulo, styles.paddingHorizontal]}>Em alta</Text>
-        <View style={[styles.item, styles.paddingHorizontal]}>
-            <View style={styles.flexRow}>
-                <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Restaurantes</Text>
-            </View>
-        </View>
-        <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
-            <Card imagem={'https://pbs.twimg.com/media/CIreT36WwAA2ofe.jpg'}/>
-            <Card imagem={'https://pbs.twimg.com/media/CIreT36WwAA2ofe.jpg'}/>
-            <Card imagem={'https://pbs.twimg.com/media/CIreT36WwAA2ofe.jpg'}/>
-            <Card imagem={'https://pbs.twimg.com/media/CIreT36WwAA2ofe.jpg'}/>
-            <Card imagem={'https://pbs.twimg.com/media/CIreT36WwAA2ofe.jpg'}/>
-        </ScrollView>
+        
+        {this.renderTopRestaurantesView()}
 
-        <View style={[styles.item, styles.paddingHorizontal]}>
-            <View style={styles.flexRow}>
-                <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Pratos</Text>
-            </View>
-        </View>
-        <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
-            <Card imagem={"https://www.jasminealimentos.com/wp-content/uploads/2016/02/iStock-511814034.jpg"}/>
-            <Card imagem={"https://www.jasminealimentos.com/wp-content/uploads/2016/02/iStock-511814034.jpg"}/>
-            <Card imagem={"https://www.jasminealimentos.com/wp-content/uploads/2016/02/iStock-511814034.jpg"}/>
-            <Card imagem={"https://www.jasminealimentos.com/wp-content/uploads/2016/02/iStock-511814034.jpg"}/>
-            <Card imagem={"https://www.jasminealimentos.com/wp-content/uploads/2016/02/iStock-511814034.jpg"}/>
-        </ScrollView>
+        
+        {this.renderTopPratosRestaurantesView()}
         
 
         <Text style={[styles.titulo, styles.paddingHorizontal]}>Para você</Text>
         
-        <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingTop: 5, paddingBottom: 10}} showsHorizontalScrollIndicator={false}>
-            <View style={[styles.filtro, styles.filtroSelecionado]}>
-                <Text style={styles.textoFiltro}>Vegetais</Text>
-            </View>
-            <View style={[styles.filtro]}>
-                <Text style={styles.textoFiltro}>Frutas</Text>
-            </View>
-            <View style={[styles.filtro]}>
-                <Text style={styles.textoFiltro}>Grãos</Text>
-            </View>
-            <View style={[styles.filtro]}>
-                <Text style={styles.textoFiltro}>Proteínas</Text>
-            </View>
-            <View style={[styles.filtro]}>
-                <Text style={styles.textoFiltro}>Low-fat</Text>
-            </View>
-        </ScrollView>
         <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
             {this.renderImagens()}
         </View>
@@ -212,7 +278,8 @@ const styles = {
         color: '#000',
         fontWeight: 'bold',
         fontSize: 24,
-        marginTop: 10
+        marginTop: 10,
+        marginBottom: 15
     },
     flexRow: {
         flexDirection: 'row',

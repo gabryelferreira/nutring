@@ -62,6 +62,7 @@ export default class Feed extends Network {
 
     componentDidMount(){
         this.carregarDados();
+        this.salvarToken();
     }
 
     carregarDadosIniciais() {
@@ -74,14 +75,13 @@ export default class Feed extends Network {
     }
 
     async salvarToken(token){
-        this.callMethod("salvarToken", { token });
+        const fcmToken = await firebase.messaging().getToken();
+        if (fcmToken) {
+            this.callMethod("salvarToken", { token });
+        }
     }
 
     async carregarDados() {
-        const fcmToken = await firebase.messaging().getToken();
-        if (fcmToken) {
-            this.salvarToken(fcmToken);
-        }
         if (!this.state.semMaisDados){
             let result = await this.callMethod("getFeed", { offset: this.state.offset, limit: 10 })
             if (result.success){
@@ -152,7 +152,7 @@ export default class Feed extends Network {
     returnLoader(index, campo){
         if (campo == 'dados'){
             if (index == this.state.dados.length-1 && !this.state.semMaisDados)
-                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 0, marginBottom: 85 }}/>
+                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 0, marginBottom: 35 }}/>
         }
         if (campo == 'usuarios')
             if (index == this.state.usuarios.length-1 && !this.state.semMaisUsuarios)
@@ -253,7 +253,7 @@ export default class Feed extends Network {
         return (
             
             <View>
-                {this.returnNovidades()}
+                {/* {this.returnNovidades()} */}
                 {this.renderFeed()}
             </View>
                 

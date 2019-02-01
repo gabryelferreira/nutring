@@ -63,6 +63,7 @@ export default class Network extends Component {
     async getUsuarioLogado(){
         try {
             let value = await AsyncStorage.getItem("userData");
+            console.log("value = ", value)
             value = await JSON.parse(value);
             return value;
         } catch (error) {
