@@ -102,7 +102,10 @@ export default class BuscarEspecifico extends Network {
             return "Seguindo";
         if (is_seguindo_voce)
             return "Te segue";
-        return seguidores + " seguidores";
+        let textoSeguidores = " seguidores";
+        if (seguidores == 1)
+            textoSeguidores = " seguidor";
+        return seguidores + textoSeguidores;
     }
 
     pesquisarUsuario(id_usuario_pesquisado){
