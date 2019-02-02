@@ -148,7 +148,7 @@ export default class Buscar extends Network {
         for (var i = 0; i < imagensCount; i++){
             let index = i*totalImagensPossiveis;
             imagens.push((
-                <View key={i} style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                <View key={i + "pratoCliente"} style={{flexDirection: 'row', flexWrap: 'wrap'}}>
                     <FotoGrandeEsquerda chave={this.state.pratos[index].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index].id_post)} foto={this.state.pratos[index].foto}/>
 
                     <View style={{flexDirection: 'column'}}>
@@ -180,13 +180,13 @@ export default class Buscar extends Network {
                 let index = i;
                 if (i % 3 == 0){
                     imagens.push((
-                        <View key={this.state.pratos[index].id_post}>
+                        <View key={this.state.pratos[index].id_post + "pratoCliente"}>
                             <FotoPequenaEsquerda chave={this.state.pratos[index].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index].id_post)} foto={this.state.pratos[index].foto}/>
                         </View>
                     ));
                 } else {
                     imagens.push((
-                        <View key={this.state.pratos[index].id_post}>
+                        <View key={this.state.pratos[index].id_post + "pratoCliente"}>
                             <FotoPequenaDireita chave={this.state.pratos[index].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index].id_post)} foto={this.state.pratos[index].foto}/>
                         </View>
                     ));
@@ -199,7 +199,7 @@ export default class Buscar extends Network {
   
     renderTopRestaurantes(){
         return this.state.restaurantes.map((restaurante) => {
-            return <Card key={restaurante.id_usuario} imagem={restaurante.foto} nome={restaurante.nome} seguidores={restaurante.seguidores} onPress={() => this.props.navigation.navigate("Perfil", { id_usuario_perfil: restaurante.id_usuario })}/>
+            return <Card key={restaurante.id_usuario + "restaurante"} imagem={restaurante.foto} nome={restaurante.nome} seguidores={restaurante.seguidores} onPress={() => this.props.navigation.navigate("Perfil", { id_usuario_perfil: restaurante.id_usuario })}/>
         })
     }
 
@@ -222,7 +222,7 @@ export default class Buscar extends Network {
 
     renderTopPratosRestaurantes(){
         return this.state.pratosRestaurantes.map((prato) => {
-            return <Card key={prato.id_usuario} imagem={prato.foto} nome={prato.nome} curtidas={prato.curtidas} onPress={() => this.props.navigation.navigate("Postagem", { id_post: prato.id_post })}/>
+            return <Card key={prato.id_post + "pratoRestaurante"} imagem={prato.foto} nome={prato.nome} curtidas={prato.curtidas} onPress={() => this.props.navigation.navigate("Postagem", { id_post: prato.id_post })}/>
         })
     }
 

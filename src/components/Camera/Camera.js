@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, StatusBar, Image, Animated, Dimensions, TouchableHighlight } from 'react-native';
+import { View, TouchableOpacity, Text, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, Platform } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -8,6 +8,8 @@ import Input from '../Input/Input';
 import BotaoPequeno from '../Botoes/BotaoPequeno';
 import Modalzin from '../Modal/Modal';
 import Opcao from '../Opcao/Opcao';
+import RNFetchBlob from 'react-native-fetch-blob';
+import Galeria from '../Galeria/Galeria';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -67,12 +69,93 @@ export default class Camera extends Network {
         },
         loading: false,
         fotoPublica: true,
-        fotoPostada: false
+        fotoPostada: false,
+
+        //ABRIR GALERIA DE FOTOS DO USUÁRIO
+        galeriaAberta: false,
+        fotosGaleria: [],
+        permissaoGaleria: false,
+        ultimaFotoGaleria: "https://cdn0.iconfinder.com/data/icons/Android-R2-png/512/Gallery-Android-R.png"
     };
 
     constructor(props){
         super(props);
         // this.animated = new Animated.Value(0);
+        this.requisitarPermissaoCamera();
+    }
+
+    async getUltimaFotoGaleria(){
+        CameraRoll.getPhotos({
+            first: 1,
+            assetType: 'All'
+        })
+        // .then(r => this.setState({ photos: r.edges }))
+        .then(r => {
+            if (r.edges.length > 0){
+                console.log("ultima foto = ", r.edges[0].node.image.uri)
+                if (r.edges)
+                this.setState({
+                    ultimaFotoGaleria: r.edges[0].node.image.uri
+                })
+            } else {
+                console.log("nao tem fotos")
+            }
+        })
+    }
+
+    async requisitarPermissaoCamera() {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            {
+              title: 'Permissão da câmera',
+              message:
+                'Precisamos da sua permissão para acessar a câmera',
+              buttonNeutral: 'Perguntar depois',
+              buttonNegative: 'Cancelar',
+              buttonPositive: 'OK',
+            },
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('You can use the camera');
+            this.requisitarPermissaoGaleria();
+          } else {
+            console.log('Camera permission denied');
+            this.props.onClose();
+          }
+        } catch (err) {
+          console.warn(err);
+          this.props.onClose();
+        }
+    }
+
+    async requisitarPermissaoGaleria() {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            {
+              title: 'Permissão da galeria',
+              message:
+                'Precisamos da sua permissão para acessar a galeria',
+              buttonNeutral: 'Perguntar depois',
+              buttonNegative: 'Cancelar',
+              buttonPositive: 'OK',
+            },
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('You can use the camera');
+            this.setState({
+                permissaoGaleria: true
+            })
+            this.getUltimaFotoGaleria();
+          } else {
+            console.log('Camera permission denied');
+            this.props.onClose();
+          }
+        } catch (err) {
+          console.warn(err);
+          this.props.onClose();
+        }
     }
 
     async handleDoubleTap() {
@@ -90,12 +173,11 @@ export default class Camera extends Network {
         console.log("tnc");
         this.setState({uploading: true});
         if (this.camera) {
-            const options = { quality: 0.28, base64: true };
+            const options = { quality: 0.28 };
             const data = await this.camera.takePictureAsync(options);
             console.log("data = ", data);
-            let base64 = "data:image/jpeg;base64," + data.base64;
             this.setState({
-                fotoTirada: base64,
+                fotoTirada: data.uri,
                 uploading: false
             });
         } else {
@@ -121,24 +203,30 @@ export default class Camera extends Network {
         this.setState({
             loading: true
         })
-        let conteudo = {data: [this.state.fotoTirada]};
-        conteudo = JSON.stringify(conteudo);
+        
+        
         let visibilidade;
         if (this.state.fotoPublica)
             visibilidade = "PB"
         else
             visibilidade = "PR"
-        let result = await this.callMethod("createPost", { conteudo, tipo_conteudo: "IMG", descricao: this.state.descricao, visibilidade });
-        if (result.success){
+        RNFetchBlob.fs.readFile(this.state.fotoTirada, 'base64')
+        .then(async (data) => {
+            let url = `data:image/jpg;base64,${data}`;
+            let conteudo = {data: [url]};
+            conteudo = JSON.stringify(conteudo);
+            let result = await this.callMethod("createPost", { conteudo, tipo_conteudo: "IMG", descricao: this.state.descricao, visibilidade });
+            if (result.success){
+                this.setState({
+                    fotoPostada: true
+                })
+                this.showModal("Foto postada com sucesso", "Sua foto foi postada e já está disponível para seus seguidores.");
+            } else {
+                this.showModal("Ocorreu um erro", "Parece que você está sem internet. Verifique-a e tente novamente.");
+            }
             this.setState({
-                fotoPostada: true
+                loading: false
             })
-            this.showModal("Foto postada com sucesso", "Sua foto foi postada e já está disponível para seus seguidores.");
-        } else {
-            this.showModal("Ocorreu um erro", "Parece que você está sem internet. Verifique-a e tente novamente.");
-        }
-        this.setState({
-            loading: false
         })
     }
 
@@ -167,6 +255,42 @@ export default class Camera extends Network {
         if (key == "close" || this.state.fotoPostada){
             this.props.onClose();
         }
+    }
+
+    abrirGaleria(){
+        CameraRoll.getPhotos({
+            first: 100
+        })
+        // .then(r => this.setState({ photos: r.edges }))
+        .then(r => {
+            let fotos = [];
+            for (var i = 0; i < r.edges.length; i++){
+                fotos.push(r.edges[i].node.image.uri)
+            }
+            this.setState({
+                galeriaAberta: true,
+                fotosGaleria: fotos
+            })
+        })
+    }
+
+    mapFotosGaleria(){
+        return this.state.fotosGaleria.map((foto) => {
+            
+        })
+    }
+
+    escolherFotoGaleria(fotoTirada){
+        this.setState({
+            fotoTirada
+        })
+    }
+
+    renderGaleria(){
+        return <Galeria fotos={this.state.fotosGaleria} onPress={(fotoTirada) => this.escolherFotoGaleria(fotoTirada)} 
+        onClose={() => this.setState({
+            galeriaAberta: false
+        })}/>
     }
 
     render(){
@@ -211,6 +335,9 @@ export default class Camera extends Network {
                 </View>
             );
         }
+        if (this.state.galeriaAberta){
+            return this.renderGaleria();
+        }
         return (
             <View style={{flex: 1}}>
             
@@ -222,8 +349,8 @@ export default class Camera extends Network {
                     flex: 1
                     }}
                     type={this.state.type}
-                    permissionDialogTitle={'Permissão para usar a camera'}
-                    permissionDialogMessage={'Precisamos da sua permissão para utilizar sua camera'}
+                    permissionDialogTitle={'Permissão para usar a câmera'}
+                    permissionDialogMessage={'Precisamos da sua permissão para utilizar sua câmera'}
                 >
                     <View style={{flex: .5, justifyContent: 'flex-start'}}>
                         <View style={styles.botoesCima}>
@@ -247,8 +374,9 @@ export default class Camera extends Network {
                             <View style={[styles.viewBotao, styles.alignEsquerda]}>
                                 <TouchableOpacity disabled={this.state.uploading}
                                     style={styles.botaoGaleria}
+                                    onPress={() => this.abrirGaleria()}
                                 >
-                                    <Image resizeMethod="resize" source={require('../../assets/imgs/eu.jpg')} style={{flex: 1, height: undefined, width: undefined}}/>
+                                    <Image resizeMethod="resize" source={{uri: this.state.ultimaFotoGaleria}} style={{flex: 1, height: undefined, width: undefined}}/>
                                 </TouchableOpacity>
                             </View>
                             <View style={[styles.viewBotao, styles.alignMeio]}>

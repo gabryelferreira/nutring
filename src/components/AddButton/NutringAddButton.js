@@ -35,7 +35,6 @@ class NutringAddButton extends Component {
                 onRequestClose={() => {
                     this.setState({visible: false})
                 }}
-                
                 >
                     <Camera onClose={() => this.setState({visible: false})}/>
                 </Modal>

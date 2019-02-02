@@ -229,7 +229,11 @@ const styles = {
     },
     viewImagem: {
         marginTop: 5,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        maxHeight: 300,
+        overflow: 'hidden',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     tabs: {
         flexDirection: 'row',

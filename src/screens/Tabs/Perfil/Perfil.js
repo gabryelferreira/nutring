@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, StatusBar } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -9,6 +9,8 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import FotoPerfil from '../../../components/FotoPerfil/FotoPerfil';
 import SemDadosPerfil from '../../../components/SemDadosPerfil/SemDadosPerfil';
+import Galeria from '../../../components/Galeria/Galeria';
+import RNFetchBlob from 'react-native-fetch-blob';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -40,7 +42,6 @@ export default class Perfil extends Network {
         super(props);
         this.state = {
             tabSelecionada: 0,
-            carregando: true,
             refreshing: true,
             carregandoPrimeiraVez: true,
             user: {
@@ -66,7 +67,16 @@ export default class Perfil extends Network {
             seguindo: false,
             parandoDeSeguir: false,
             cor_fundo: '#fff',
-            cor_texto: '#000'
+            cor_texto: '#000',
+
+            //GALERIA E MODAL DA GALERIA
+            fotosGaleria: [],
+            modal: {
+                visible: false,
+                titulo: "Alteração de foto",
+                subTitulo: "Deseja alterar sua foto de perfil?",
+                botoes: this.criarBotoes()
+            }
         }
     }
 
@@ -80,10 +90,11 @@ export default class Perfil extends Network {
     }
 
     async getPerfil(){
-        await this.setState({
-            carregando: true,
-            refreshing: true,
-        })
+        if (!this.state.refreshing){
+            await this.setState({
+                // refreshing: true,
+            })
+        }
         let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', "");
         let result = await this.callMethod("getPerfilV2", { id_usuario_perfil });
         if (result.success){
@@ -155,7 +166,6 @@ export default class Perfil extends Network {
             }
         }
         await this.setState({
-            carregando: false,
             refreshing: false
         })
     }
@@ -313,9 +323,9 @@ export default class Perfil extends Network {
         return (
             <View style={styles.viewPerfil}>
                 <View style={styles.viewInfo}>
-                    <View style={styles.viewFoto}>
+                    <TouchableOpacity style={styles.viewFoto} onPress={() => this.validarAlteracaoFoto()}>
                         <Image resizeMethod="resize" style={{height: 80, width: 80, borderRadius: 80/2}} source={{uri: foto}}/>
-                    </View>
+                    </TouchableOpacity>
                     <Text style={styles.nome}>{nome}</Text>
                     <View style={{flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 30}}>
                         {this.renderDescricao()}
@@ -393,7 +403,9 @@ export default class Perfil extends Network {
             <View style={styles.viewPerfilRestaurante}>
                 {/* <StatusBar backgroundColor={background} /> */}
                 <View style={styles.capa}>
-                    <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2}]}></View>
+                    <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2}]}>
+                    
+                    </View>
                     <Image resizeMethod="resize" source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
                 </View>
 
@@ -402,13 +414,13 @@ export default class Perfil extends Network {
                 
                     <View style={styles.viewInfoContato}>
                         <View style={styles.infoContato}><Icon name="comment" size={18} solid color="#fff"/></View>
-                        <View style={{height: 105, width: 105, borderRadius: 105/2}}>
+                        <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2}} onPress={() => this.validarAlteracaoFoto()}>
                             <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto}}/>
                             <View style={{position: 'absolute', left: 0, right: 0, bottom: -12, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end'}}>
                                 <AutoHeightImage source={require('../../../assets/imgs/folhinha_da_macunha.png')}  width={30}/>
                             
                             </View>
-                        </View>
+                        </TouchableOpacity>
                         <View style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></View>
                     </View>
 
@@ -486,6 +498,120 @@ export default class Perfil extends Network {
         );
     }
 
+    async requisitarPermissaoGaleria() {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+            {
+              title: 'Permissão da galeria',
+              message:
+                'Precisamos da sua permissão para acessar a galeria',
+              buttonNeutral: 'Perguntar depois',
+              buttonNegative: 'Cancelar',
+              buttonPositive: 'OK',
+            },
+          );
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('You can use the camera');
+            this.setState({
+                permissaoGaleria: true
+            })
+            this.abrirGaleria();
+          } else {
+            console.log('Camera permission denied');
+          }
+        } catch (err) {
+          console.warn(err);
+          this.props.onClose();
+        }
+    }
+
+    abrirGaleria(){
+        CameraRoll.getPhotos({
+            first: 100
+        })
+        // .then(r => this.setState({ photos: r.edges }))
+        .then(r => {
+            let fotos = [];
+            for (var i = 0; i < r.edges.length; i++){
+                fotos.push(r.edges[i].node.image.uri)
+            }
+            this.setState({
+                galeriaAberta: true,
+                fotosGaleria: fotos
+            })
+        })
+    }
+
+    criarBotoes(){
+        let botoes = [
+            {chave: "ALTERAR", texto: "Alterar foto", color: '#27ae60', fontWeight: 'bold'},
+            {chave: "TENTAR", texto: "Cancelar"},
+        ]
+        return botoes;
+    }
+
+    setModalState(visible){
+        this.setState({
+            modal: {
+                visible: visible
+            }
+        })
+    }
+
+    getModalClick(key){
+        this.setModalState(false);
+        console.log("clicando no " + key)
+        if (key == "ALTERAR"){
+            this.requisitarPermissaoGaleria();
+        }
+    }
+
+    async alterarFotoPerfil(foto){
+        this.setState({
+            refreshing: true,
+            galeriaAberta: false,
+        })
+        RNFetchBlob.fs.readFile(foto, 'base64')
+        .then(async (data) => {
+            let url = `data:image/jpg;base64,${data}`;
+            let result = await this.callMethod("alterarFotoPerfil", { foto: url });
+            if (result.success){
+                this.getPerfil()
+            } else {
+                this.showModal("Ocorreu um erro", "Parece que você está sem internet. Verifique-a e tente novamente.");
+                this.setState({
+                    refreshing: false
+                })
+            }
+        }).catch((error) => {
+            console.warn(error)
+        })
+    }
+
+    showModal(titulo, subTitulo){
+        this.setState({
+            modal: {
+                visible: true,
+                titulo,
+                subTitulo
+            }
+        })
+    }
+
+    validarAlteracaoFoto(){
+        if (this.state.user.sou_eu){
+            this.setState({
+                modal: {
+                    visible: true,
+                    titulo: "Alteração de foto",
+                    subTitulo: "Deseja alterar sua foto de perfil?",
+                    botoes: this.criarBotoes()
+                }
+            })
+        }
+    }
+
     render(){
         let { nome, foto } = this.state.user;
         if (this.state.carregandoPrimeiraVez){
@@ -495,8 +621,19 @@ export default class Perfil extends Network {
                 </View>
             );
         }
+        if (this.state.galeriaAberta){
+            return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.alterarFotoPerfil(foto)} onClose={() => this.setState({galeriaAberta: false})}/>
+        }
         return (      
             <View style={{flex: 1}}>
+                <Modalzin 
+                    titulo={this.state.modal.titulo} 
+                    subTitulo={this.state.modal.subTitulo} 
+                    visible={this.state.modal.visible} 
+                    onClick={(key) => this.getModalClick(key)}
+                    onClose={() => this.setState({modal: {visible: false}})}
+                    botoes={this.state.modal.botoes}
+                />
                 {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}> */}
                     {this.returnFotos()}
 
