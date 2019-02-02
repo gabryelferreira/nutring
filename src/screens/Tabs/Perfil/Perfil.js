@@ -188,20 +188,6 @@ export default class Perfil extends Network {
         return;
     }
 
-    async deslogar(){
-        try {
-            await AsyncStorage.removeItem("userData");
-            const resetAction = StackActions.reset({
-                index: 0,
-                actions: [NavigationActions.navigate({ routeName: 'Feed' })],
-            });
-            this.props.navigation.dispatch(resetAction);
-            this.props.navigation.navigate('Principal');
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     editarPerfil(){
         this.props.navigation.navigate("EditarPerfil", {
             onGoBack: () => this.getPerfil(),
@@ -322,7 +308,7 @@ export default class Perfil extends Network {
             <View style={styles.viewPerfil}>
                 <View style={styles.viewInfo}>
                     <View style={styles.viewFoto}>
-                        <Image style={{height: 80, width: 80, borderRadius: 80/2}} source={{uri: foto}}/>
+                        <Image resizeMethod="resize" style={{height: 80, width: 80, borderRadius: 80/2}} source={{uri: foto}}/>
                     </View>
                     <Text style={styles.nome}>{nome}</Text>
                     <View style={{flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 30}}>
@@ -337,24 +323,24 @@ export default class Perfil extends Network {
                             </View>
                             <Text style={styles.tabTexto}>{posts}</Text>
                         </View>
-                        <View style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
+                        <TouchableOpacity onPress={() => this.props.navigation.push("Seguidores", { id_usuario_perfil: id_usuario})} style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
                             <View style={styles.infoTab}>
                                 {/* <Icon name="chart-line" size={15} color="#aaa"/> */}
                                 <Text style={styles.tabTitulo}>SEGUIDORES</Text>
                             </View>
                             <Text style={styles.tabTexto}>{seguidores}</Text>
-                        </View>
-                        <View style={styles.tab}>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.props.navigation.push("Seguindo", { id_usuario_perfil: id_usuario})} style={styles.tab}>
                             <View style={styles.infoTab}>
                                 {/* <Icon name="running" size={15} color="#aaa"/> */}
                                 <Text style={styles.tabTitulo}>SEGUINDO</Text>
                             </View>
                             <Text style={styles.tabTexto}>{seguindo}</Text>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
 
-                <View style={styles.viewReceitas}>
+                {/* <View style={styles.viewReceitas}>
                     <View style={styles.viewInfoReceitas}>
                         <Text style={styles.tituloReceitas}>Receitas</Text>
                         <Text style={styles.subTituloReceitas}>Compartilhe suas receitas favoritas</Text>
@@ -367,7 +353,7 @@ export default class Perfil extends Network {
                             <Text style={styles.textoReceita}>Nova receita</Text>
                         </View>
                     </View>
-                </View>
+                </View> */}
 
                 <View style={styles.fotos}>
                     <View style={styles.tabsFotos}>
@@ -402,7 +388,7 @@ export default class Perfil extends Network {
                 {/* <StatusBar backgroundColor={background} /> */}
                 <View style={styles.capa}>
                     <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2}]}></View>
-                    <Image source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
+                    <Image resizeMethod="resize" source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
                 </View>
 
                 {/*começo do perfil*/}
@@ -411,7 +397,7 @@ export default class Perfil extends Network {
                     <View style={styles.viewInfoContato}>
                         <View style={styles.infoContato}><Icon name="comment" size={18} solid color="#fff"/></View>
                         <View style={{height: 105, width: 105, borderRadius: 105/2}}>
-                            <Image style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto}}/>
+                            <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto}}/>
                             <View style={{position: 'absolute', left: 0, right: 0, bottom: -12, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end'}}>
                                 <AutoHeightImage source={require('../../../assets/imgs/folhinha_da_macunha.png')}  width={30}/>
                             
@@ -438,20 +424,20 @@ export default class Perfil extends Network {
                                 </View>
                                 <Text style={[styles.tabTexto, {color: color}]}>{posts}</Text>
                             </View>
-                            <View style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
+                            <TouchableOpacity onPress={() => this.props.navigation.push("Seguidores", { id_usuario_perfil: id_usuario})} style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
                                 <View style={styles.infoTab}>
                                     {/* <Icon name="chart-line" size={15} color="#aaa"/> */}
                                     <Text style={[styles.tabTitulo, {color: color}]}>SEGUIDORES</Text>
                                 </View>
                                 <Text style={[styles.tabTexto, {color: color}]}>{seguidores}</Text>
-                            </View>
-                            <View style={styles.tab}>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => this.props.navigation.push("Seguindo", { id_usuario_perfil: id_usuario})} style={styles.tab}>
                                 <View style={styles.infoTab}>
                                     {/* <Icon name="running" size={15} color="#aaa"/> */}
                                     <Text style={[styles.tabTitulo, {color: color}]}>SEGUINDO</Text>
                                 </View>
                                 <Text style={[styles.tabTexto, {color: color}]}>{seguindo}</Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 
@@ -482,7 +468,7 @@ export default class Perfil extends Network {
             keyExtractor={(item, index) => item.id_post.toString()}
             numColumns={3}
             renderItem={({item, index}) => (
-                <FotoPerfil data={item} index={index}/>
+                <FotoPerfil data={item} index={index} onPress={() => this.props.navigation.push("Postagem", { id_post: item.id_post } )}/>
             )}
             refreshing={this.state.carregandoInicial}
             onRefresh={() => this.getPerfil()}
@@ -628,6 +614,7 @@ const styles = {
         marginTop: 5
     },
     fotos: {
+        marginTop: 10,
         flexDirection: 'column',
     },
     tabsFotos: {

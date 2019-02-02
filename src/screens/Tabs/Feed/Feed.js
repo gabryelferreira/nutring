@@ -17,7 +17,7 @@ const InicioHeader = () => {
     return (
         <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20}}>
             {/* <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start', borderWidth: 1, borderColor: '#eee', height: 30, width: 30, borderRadius: 30/2}}>
-                <Image style={{height: 30, width: 30, borderRadius: 30/2, borderWidth: 1, borderColor: '#eee'}} source={require('../../../assets/imgs/eu.jpg')}/>
+                <Image resizeMethod="resize" style={{height: 30, width: 30, borderRadius: 30/2, borderWidth: 1, borderColor: '#eee'}} source={require('../../../assets/imgs/eu.jpg')}/>
             </View> */}
             <AutoHeightImage style={{alignSelf: 'center'}} source={require('../../../assets/imgs/nutring-color.png')} width={100}/>
             {/* <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end'}}>
@@ -76,8 +76,10 @@ export default class Feed extends Network {
 
     async salvarToken(token){
         const fcmToken = await firebase.messaging().getToken();
+        console.log("fcm token = " + fcmToken)
         if (fcmToken) {
-            this.callMethod("salvarToken", { token });
+            console.log("tem tokennn")
+            await this.callMethod("salvarToken", { token: fcmToken });
         }
     }
 

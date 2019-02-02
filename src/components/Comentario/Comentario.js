@@ -70,7 +70,7 @@ class Comentario extends Network {
             <View style={styles.container}>
                 <View style={styles.viewFoto}>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000'}}>
-                        <Image source={{uri: foto}}  style={{height: 38, width: 38, borderRadius: 38/2, }}/>
+                        <Image resizeMethod="resize" source={{uri: foto}}  style={{height: 38, width: 38, borderRadius: 38/2, }}/>
                     </TouchableOpacity>
                 </View>
 

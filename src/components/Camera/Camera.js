@@ -183,7 +183,7 @@ export default class Camera extends Network {
                     <Header onCloseClick={() => this.setState({fotoTirada: ""})}/>
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                         <TouchableHighlight >
-                            <Image source={{uri: this.state.fotoTirada}} style={{height: 250, width: imageWidth}}/>
+                            <Image resizeMethod="resize" source={{uri: this.state.fotoTirada}} style={{height: 250, width: imageWidth}}/>
                         </TouchableHighlight>
                         {/* <TouchableHighlight>
                             <Opcao icone={"lock"} texto={"Foto pública"} toggle={true} toggleChange={() => this.setFotoPublica()} toggleValue={this.state.fotoPublica}/>
@@ -248,7 +248,7 @@ export default class Camera extends Network {
                                 <TouchableOpacity disabled={this.state.uploading}
                                     style={styles.botaoGaleria}
                                 >
-                                    <Image source={require('../../assets/imgs/eu.jpg')} style={{flex: 1, height: undefined, width: undefined}}/>
+                                    <Image resizeMethod="resize" source={require('../../assets/imgs/eu.jpg')} style={{flex: 1, height: undefined, width: undefined}}/>
                                 </TouchableOpacity>
                             </View>
                             <View style={[styles.viewBotao, styles.alignMeio]}>

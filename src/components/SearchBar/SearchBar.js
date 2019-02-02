@@ -16,9 +16,9 @@ const SearchBar = ({onPress, onChangeText, value, navigation}) => {
                 style={styles.caixaDeTexto}
                 returnKeyType="search"
                 />
-            <TouchableOpacity onPress={onPress}>
+            {/* <TouchableOpacity onPress={onPress}>
                 <Icon name="times-circle" size={18} solid style={{marginHorizontal: 5}} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
     );
 }

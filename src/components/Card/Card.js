@@ -7,7 +7,7 @@ const Card = ({onPress, imagem, nome, seguidores}) => {
     return (
         <TouchableOpacity onPress={onPress} style={styles.card} activeOpacity={0.8}>
             <View style={styles.imagemDeFundo}>
-                <Image source={{uri: imagem}} style={{flex: 1, width: undefined, height: undefined, zIndex: 2}}/>
+                <Image resizeMethod="resize" source={{uri: imagem}} style={{flex: 1, width: undefined, height: undefined, zIndex: 2}}/>
                 <View style={{position: 'absolute', left: 0, bottom: 0, right: 0, top: 0, backgroundColor: 'rgba(0, 0, 0, .3)', zIndex: 3}}></View>
             </View>
             <View style={styles.container}>

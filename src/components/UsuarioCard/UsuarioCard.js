@@ -107,7 +107,7 @@ export default class UsuarioCard extends Network {
         return (
             <View style={[styles.container, {width: larguraImagem/2 - 30, marginHorizontal: 5, marginBottom: 10}]}>
                 <TouchableOpacity style={styles.viewFoto} onPress={() => this.state.navigation.navigate("Perfil", { id_usuario_perfil: id_usuario })}>
-                    <Image style={{flex: 1, width: undefined, height: undefined, borderRadius: undefined}} source={{uri: foto}}/>
+                    <Image resizeMethod="resize" style={{flex: 1, width: undefined, height: undefined, borderRadius: undefined}} source={{uri: foto}}/>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => this.state.navigation.navigate("Perfil", { id_usuario_perfil: id_usuario })}>
                     <Text style={styles.nome}>{nome}</Text>

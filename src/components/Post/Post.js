@@ -51,7 +51,7 @@ class Post extends Network {
                     <View style={styles.viewComentario}>
                         <View style={styles.bolinhaComentario}>
                         </View>
-                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: this.state.data.id_usuario_comentario })} style={styles.nomeComentario}>{this.props.data.nome_usuario_comentario}</Text>  <Text onPress={() => this.props.navigation.navigate('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.top_comment}</Text></Text>
+                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: this.state.data.id_usuario_comentario })} style={styles.nomeComentario}>{this.props.data.nome_usuario_comentario}</Text>  <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.top_comment}</Text></Text>
                     </View>
                 </View>
             )
@@ -61,7 +61,7 @@ class Post extends Network {
     returnNumeroComentarios(){
         if (this.props.data.comentarios > 1){
             return (
-            <Text onPress={() => this.props.navigation.navigate('Comentarios', { id_post: this.state.data.id_post })} style={styles.verMais}>Ver todos os {this.props.data.comentarios} comentários</Text>
+            <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })} style={styles.verMais}>Ver todos os {this.props.data.comentarios} comentários</Text>
             )
         } else return;
     }
@@ -96,34 +96,52 @@ class Post extends Network {
         }
     }
 
+    returnFolhinha(is_restaurante){
+        if (is_restaurante){
+            return (
+                <View style={styles.viewInfoCurtidas}>
+                    <AutoHeightImage source={require('../../assets/imgs/folha_nutring.png')} width={27}/>
+                </View>
+            );
+        }
+        return null;
+    }
+    
+    returnDescricao(descricao){
+        if (descricao){
+            return (
+                <View style={[styles.viewInfoDescricao, styles.wrapper]}>
+                    <Text style={styles.texto}>{descricao}</Text>
+                </View>
+            );
+        }
+        return null;
+    }
+
     render(){
         let larguraImagem = imageWidth;
-        let { id_usuario, id_post, foto, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios } = this.state.data;
+        let { id_usuario, id_post, foto, is_restaurante, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios } = this.state.data;
         let { index } = this.props;
         return (
             <View style={styles.container}>
                 <View style={[styles.viewInfo, styles.wrapper]}>
                     <View style={styles.fotoETexto}>
                         <View style={styles.viewFoto}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2}}>
-                                <Image style={{height: 38, width: 38, borderRadius: 38/2, position: 'absolute', left: 0, top: 0}} source={{uri: foto}}/>
+                            <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2}}>
+                                <Image resizeMethod="resize" style={{height: 38, width: 38, borderRadius: 38/2, position: 'absolute', left: 0, top: 0}} source={{uri: foto}}/>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.viewInfoTexto}>
-                            <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: id_usuario })}>
+                            <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })}>
                                 <Text style={styles.nome}>{nome}</Text>
                             </TouchableOpacity>
                             {this.returnTextoPostedAgo(tempo_postado)}
                         </View>
                     </View>
-                    <View style={styles.viewInfoCurtidas}>
-                        <AutoHeightImage source={require('../../assets/imgs/folha_nutring.png')} width={27}/>
-                    </View>
+                    {this.returnFolhinha(is_restaurante)}
                 </View>
                 <View style={styles.viewInfoEConteudo}>
-                    <View style={[styles.viewInfoDescricao, styles.wrapper]}>
-                        <Text style={styles.texto}>{descricao}</Text>
-                    </View>
+                    {this.returnDescricao(descricao)}
                     <View style={styles.viewImagem}>
                         <AutoHeightImage source={{uri: conteudo}} width={larguraImagem}/>
                     </View>
@@ -132,7 +150,7 @@ class Post extends Network {
                             {this.returnGostei()}
                             {this.returnTextoCurtidas(curtidas)}
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.tab} onPress={() => this.props.navigation.navigate('Comentarios', { id_post: id_post })}>
+                        <TouchableOpacity style={styles.tab} onPress={() => this.props.navigation.push('Comentarios', { id_post: id_post })}>
                             <Icon name="comment" color="#444" size={25}/>
                             {this.returnTextoComentar(comentarios)}
                         </TouchableOpacity>

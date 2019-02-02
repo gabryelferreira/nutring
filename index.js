@@ -28,6 +28,9 @@ import AlterarEmail from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/A
 import AlterarSenha from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarSenha';
 import EnviarNotificacao from './src/screens/Tabs/Configuracoes/EnviarNotificacao/EnviarNotificacao';
 import EditarPerfil from './src/screens/Tabs/Perfil/EditarPerfil/EditarPerfil';
+import Postagem from './src/screens/Tabs/Postagem/Postagem';
+import Seguidores from './src/screens/Tabs/Perfil/Seguidores/Seguidores';
+import Seguindo from './src/screens/Tabs/Perfil/Seguindo/Seguindo';
 
 const NavigationOptions = {
     headerStyle: {
@@ -75,6 +78,18 @@ const InsideTabs = {
         screen: NovaPostagem,
         navigationOptions: NavigationOptions
     },
+    Postagem: {
+        screen: Postagem,
+        navigationOptions: NavigationOptions
+    },
+    Seguidores: {
+        screen: Seguidores,
+        navigationOptions: NavigationOptions
+    },
+    Seguindo: {
+        screen: Seguindo,
+        navigationOptions: NavigationOptions
+    }
 }
 
 function addNewPage(_initialRouteName){

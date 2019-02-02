@@ -8,6 +8,7 @@ import Network from '../../../network';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Comentario from '../../../components/Comentario/Comentario';
+import SemDados from '../../../components/SemDados/SemDados';
 
 
 const dimensions = Dimensions.get('window');
@@ -152,28 +153,38 @@ export default class Comentarios extends Network {
         })
     }
 
+    renderView(){
+        if (!this.state.carregando && !this.state.carregandoInicial && this.state.dados.length == 0){
+            return <SemDados icone={"sad-tear"} titulo={"Nenhum comentário"} texto={"Esse post ainda não tem comentários."}/>
+        }
+        return (
+            <FlatList
+                data={this.state.dados}
+                keyExtractor={(item, index) => item.id_post.toString()}
+                renderItem={({item, index}) => (
+                    
+                    <View>
+                        <Comentario data={item} navigation={this.props.navigation}/>
+                        {this.returnLoader(index)}
+                    </View>
+
+                )}
+                refreshing={this.state.carregandoInicial}
+                onRefresh={() => this.carregarDadosIniciais()}
+                onEndReached={() => this.pegarDados()}
+                onEndReachedThreshold={0.5}
+                ListFooterComponent={() => this.returnFooterComponent()}
+                legacyImplementation={true}
+                enableEmptySections={true}
+            />
+        );
+    }
+
     render(){
+        
         return (      
             <View style={{flex: 1}}>
-                <FlatList
-                    data={this.state.dados}
-                    keyExtractor={(item, index) => item.id_post.toString()}
-                    renderItem={({item, index}) => (
-                        
-                        <View>
-                            <Comentario data={item} navigation={this.props.navigation}/>
-                            {this.returnLoader(index)}
-                        </View>
-
-                    )}
-                    refreshing={this.state.carregandoInicial}
-                    onRefresh={() => this.carregarDadosIniciais()}
-                    onEndReached={() => this.pegarDados()}
-                    onEndReachedThreshold={0.5}
-                    ListFooterComponent={() => this.returnFooterComponent()}
-                    legacyImplementation={true}
-                    enableEmptySections={true}
-                />
+                {this.renderView()}
                 <View style={styles.caixaTexto}>
                         <TextInput
                             placeholder="Escreva um comentário"

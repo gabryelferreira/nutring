@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Image, Dimensions } from 'react-native';
+import { View, Image, Dimensions, TouchableOpacity } from 'react-native';
 import Network from '../../network';
 
 const dimensions = Dimensions.get('window');
@@ -26,18 +26,18 @@ export default class FotoPerfil extends Network {
             return null;
         }
         let index = this.props.index;
-        let { url_conteudo } = this.state.data;
+        let { url_conteudo, id_post } = this.state.data;
         if (index % 3 == 0){
             return (
-                <View style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', marginBottom: 2}}>
-                    <Image source={{uri: url_conteudo}} style={{flex: 1, height: undefined, width: undefined}}/>
-                </View>
+                <TouchableOpacity style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', marginBottom: 2}} onPress={this.props.onPress}>
+                    <Image resizeMethod="resize" source={{uri: url_conteudo}} style={{flex: 1, height: undefined, width: undefined}}/>
+                </TouchableOpacity>
             );
         }
         return (
-            <View style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', paddingLeft: 2, marginBottom: 2}}>
-                <Image source={{uri: url_conteudo}} style={{flex: 1, height: undefined, width: undefined}}/>
-            </View>
+            <TouchableOpacity style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', paddingLeft: 2, marginBottom: 2}} onPress={this.props.onPress}>
+                <Image resizeMethod="resize" source={{uri: url_conteudo}} style={{flex: 1, height: undefined, width: undefined}}/>
+            </TouchableOpacity>
         );
     }
 

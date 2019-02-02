@@ -84,39 +84,37 @@ export default class BuscarEspecifico extends Network {
         }
     }
 
-  // Use arrow function to bind it to the MyScreen class.
-  // (I'm not sure you have to do it like this, try to use it as a normal function first)
+    componentDidMount() {
+        this.props.navigation.setParams({
+            procurar: this.pesquisar.bind(this),
+        })
+        this.getUsuariosPesquisados();
+    }
 
-  // Add the `searchFunction` as a navigation param:
-  componentDidMount() {
-    this.props.navigation.setParams({
-        procurar: this.pesquisar.bind(this),
-    })
-    this.getUsuariosPesquisados();
-  }
+    componentWillUnmount() {
+        this.props.navigation.setParams({
+            procurar: null,
+        })
+    }
 
-  // Since we pass a class function as a param
-  // I believe it would be a good practice to remove it 
-  // from the navigation params when the Component unmounts.
-  componentWillUnmount() {
-    this.props.navigation.setParams({
-        procurar: null,
-    })
-  }
+    renderTextoSeguindo(is_seguindo, is_seguindo_voce, seguidores){
+        if (is_seguindo)
+            return "Seguindo";
+        if (is_seguindo_voce)
+            return "Te segue";
+        return seguidores + " seguidores";
+    }
 
-  renderTextoSeguindo(is_seguindo, is_seguindo_voce, seguidores){
-    if (is_seguindo)
-        return "Seguindo";
-    if (is_seguindo_voce)
-        return "Te segue";
-    return seguidores + " seguidores";
-  }
+    pesquisarUsuario(id_usuario_pesquisado){
+        this.callMethod("pesquisarUsuario", { id_usuario_pesquisado });
+        this.props.navigation.navigate("Perfil", { id_usuario_perfil: id_usuario_pesquisado });
+    }
 
   renderUsuarios(){
     return this.state.usuarios.map((usuario) => {
         return <Item key={usuario.id_usuario} 
-                     onPress={() => this.props.navigation.navigate("Perfil", { id_usuario_perfil: usuario.id_usuario })} 
-                     onPressFoto={() => this.props.navigation.navigate("Perfil", { id_usuario_perfil: usuario.id_usuario })} 
+                     onPress={() => this.pesquisarUsuario(usuario.id_usuario)} 
+                     onPressFoto={() => this.pesquisarUsuario(usuario.id_usuario)} 
                      titulo={usuario.nome} texto={this.renderTextoSeguindo(usuario.is_seguindo, usuario.is_seguindo_voce, usuario.seguidores)} 
                      tipo="BUSCANDO" 
                      foto={usuario.foto}
@@ -125,16 +123,22 @@ export default class BuscarEspecifico extends Network {
   }
 
 
-  renderDados(){
-      if (this.state.loading){
-          return (
-            <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'column', marginTop: 20}}>
-                <ActivityIndicator color="#28b657" size="large" />
-            </View>
-          );
-      }
-      return this.renderUsuarios();
-  }
+    renderDados(){
+        if (this.state.loading){
+            return (
+                <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'column', marginTop: 20}}>
+                    <ActivityIndicator color="#28b657" size="large" />
+                </View>
+            );
+        } else if (this.state.usuarios.length == 0){
+                return (
+                    <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', marginTop: 15}}>
+                        <Text style={{fontSize: 14, color: '#777', fontWeight: 'bold'}}>Não foram encontrados resultados</Text>
+                    </View>
+            );
+        }
+        return this.renderUsuarios();
+    }
 
   render() {
     return (

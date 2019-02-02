@@ -5,6 +5,10 @@ import Network from '../../../network';
 import SearchBar from '../../../components/SearchBar/SearchBar';
 import SearchButton from '../../../components/SearchBar/SearchBarButton';
 import Card from '../../../components/Card/Card';
+import FotoGrandeEsquerda from './FotosLayout/FotoGrandeEsquerda';
+import FotoGrandeDireita from './FotosLayout/FotoGrandeDireita';
+import FotoPequenaEsquerda from './FotosLayout/FotoPequenaEsquerda';
+import FotoPequenaDireita from './FotosLayout/FotoPequenaDireita';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -54,7 +58,8 @@ export default class Buscar extends Network {
       pratos: [],
       offset: 0,
       limit: 12,
-      loadingPratos: false
+      loadingPratos: false,
+      semMaisPratos: false
   }
 
   constructor(props){
@@ -89,19 +94,34 @@ export default class Buscar extends Network {
   async getTopPratosClientes(){
     let result = await this.callMethod("getTopPratosClientes", { offset: this.state.offset, limit: this.state.limit });
     if (result.success){
+        if (result.result.length < this.state.limit){
+            this.setState({
+                semMaisPratos: true
+            })
+        }
+        let pratos = this.state.pratos;
+        for (var i = 0; i < result.result.length; i++){
+            pratos.push(result.result[i]);
+        }
       this.setState({
-          pratos: result.result,
+          pratos,
           loading: false,
           loadingPratos: false
       })
+      setTimeout(() => {
+          this.carregando = false;
+      }, 200);
     }
   }
 
   getMaisPratos(){
-      this.setState({
-          offset: this.state.offset + this.state.limit,
-          loadingPratos: true
-      }, this.getTopPratosClientes)
+      if (!this.carregando && !this.state.semMaisPratos){
+          this.carregando = true;
+          this.setState({
+              offset: this.state.offset + this.state.limit,
+              loadingPratos: true
+          }, this.getTopPratosClientes)
+      }
   }
 
   componentWillUnmount() {
@@ -116,76 +136,66 @@ export default class Buscar extends Network {
       })
   }
 
-  renderImagens(){
-    if (this.imagens.length == 12){
-        return (
-            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                <View key={this.imagens[0]} style={{width: imageWidth/1.5, height: imageWidth/1.5, paddingBottom: 2}}>
-                    <Image source={{uri: this.imagens[0]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-
-                <View style={{flexDirection: 'column'}}>
-                    <View key={this.imagens[1]} style={{width: imageWidth/3, height: imageWidth/3, paddingLeft: 2, paddingBottom: 2}}>
-                        <Image source={{uri: this.imagens[1]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                    </View>
-                    <View key={this.imagens[2]} style={{width: imageWidth/3, height: imageWidth/3, paddingLeft: 2, paddingBottom: 2}}>
-                        <Image source={{uri: this.imagens[2]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                    </View>
-                </View>
-
-                <View key={this.imagens[3]} style={{width: imageWidth/3, height: imageWidth/3, paddingBottom: 2}}>
-                    <Image source={{uri: this.imagens[3]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-                <View key={this.imagens[4]} style={{width: imageWidth/3, height: imageWidth/3, paddingLeft: 2, paddingBottom: 2}}>
-                    <Image source={{uri: this.imagens[4]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-                <View key={this.imagens[5]} style={{width: imageWidth/3, height: imageWidth/3, paddingLeft: 2, paddingBottom: 2}}>
-                    <Image source={{uri: this.imagens[5]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-
-                <View style={{flexDirection: 'column'}}>
-                    <View key={this.imagens[6]} style={{width: imageWidth/3, height: imageWidth/3, paddingBottom: 2}}>
-                        <Image source={{uri: this.imagens[6]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                    </View>
-                    <View key={this.imagens[7]} style={{width: imageWidth/3, height: imageWidth/3, paddingBottom: 2}}>
-                        <Image source={{uri: this.imagens[7]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                    </View>
-                </View>
-
-                <View key={this.imagens[8]} style={{width: imageWidth/1.5, height: imageWidth/1.5, paddingLeft: 2, paddingBottom: 2}}>
-                    <Image source={{uri: this.imagens[8]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-
-                <View key={this.imagens[9]} style={{width: imageWidth/3, height: imageWidth/3, paddingBottom: 2}}>
-                    <Image source={{uri: this.imagens[9]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-                <View key={this.imagens[10]} style={{width: imageWidth/3, height: imageWidth/3, paddingLeft: 2, paddingBottom: 2}}>
-                    <Image source={{uri: this.imagens[10]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-                <View key={this.imagens[11]} style={{width: imageWidth/3, height: imageWidth/3, paddingLeft: 2, paddingBottom: 2}}>
-                    <Image source={{uri: this.imagens[11]}} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-
-            </View>
-        );
-
-    } else {
-        return this.imagens.map((imagem, index) => {
-            if (index == 0){
-                return (
-                    <View key={imagem} style={{width: imageWidth/3, height: imageWidth/3, marginBottom: 2}}>
-                        <Image source={{uri: imagem}} style={{flex: 1, width: undefined, height: undefined}}/>
-                    </View>
-                );
-            }
-            return (
-                <View key={imagem} style={{width: imageWidth/3, height: imageWidth/3, paddingLeft: 2, marginBottom: 2}}>
-                    <Image source={{uri: imagem}} style={{flex: 1, width: undefined, height: undefined}}/>
-                </View>
-            );
-        });
-    }
+  irParaPerfil(id_post){
+      this.props.navigation.navigate("Postagem", { id_post });
   }
+
+    renderImagens(){
+        console.log("renderizando imagens")
+        let totalImagensPossiveis = this.state.limit;
+        let imagensCount = Math.floor(this.state.pratos.length/totalImagensPossiveis);
+        let imagens = [];
+        for (var i = 0; i < imagensCount; i++){
+            let index = i*totalImagensPossiveis;
+            imagens.push((
+                <View key={i} style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                    <FotoGrandeEsquerda chave={this.state.pratos[index].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index].id_post)} foto={this.state.pratos[index].foto}/>
+
+                    <View style={{flexDirection: 'column'}}>
+                        <FotoPequenaDireita chave={this.state.pratos[index+1].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+1].id_post)} foto={this.state.pratos[index+1].foto}/>
+                        <FotoPequenaDireita chave={this.state.pratos[index+2].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+2].id_post)} foto={this.state.pratos[index+2].foto}/>
+                    </View>
+
+                    <FotoPequenaEsquerda chave={this.state.pratos[index+3].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+3].id_post)} foto={this.state.pratos[index+3].foto}/>
+                    <FotoPequenaDireita chave={this.state.pratos[index+4].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+4].id_post)} foto={this.state.pratos[index+4].foto}/>
+                    <FotoPequenaDireita chave={this.state.pratos[index+5].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+5].id_post)} foto={this.state.pratos[index+5].foto}/>
+
+                    <View style={{flexDirection: 'column'}}>
+                        <FotoPequenaEsquerda chave={this.state.pratos[index+6].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+6].id_post)} foto={this.state.pratos[index+6].foto}/>
+                        <FotoPequenaEsquerda chave={this.state.pratos[index+7].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+7].id_post)} foto={this.state.pratos[index+7].foto}/>
+                    </View>
+
+
+
+                    <FotoGrandeDireita chave={this.state.pratos[index+8].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+8].id_post)} foto={this.state.pratos[index+8].foto}/>
+
+                    <FotoPequenaEsquerda chave={this.state.pratos[index+9].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+9].id_post)} foto={this.state.pratos[index+9].foto}/>
+                    <FotoPequenaDireita chave={this.state.pratos[index+10].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+10].id_post)} foto={this.state.pratos[index+10].foto}/>
+                    <FotoPequenaDireita chave={this.state.pratos[index+11].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index+11].id_post)} foto={this.state.pratos[index+11].foto}/>
+                </View>
+            ));
+        }
+        if (this.state.pratos.length/totalImagensPossiveis != imagensCount){
+            for (var i = Math.floor(this.state.pratos.length/totalImagensPossiveis)*totalImagensPossiveis; i < this.state.pratos.length; i++){
+                let index = i;
+                if (i % 3 == 0){
+                    imagens.push((
+                        <View key={this.state.pratos[index].id_post}>
+                            <FotoPequenaEsquerda chave={this.state.pratos[index].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index].id_post)} foto={this.state.pratos[index].foto}/>
+                        </View>
+                    ));
+                } else {
+                    imagens.push((
+                        <View key={this.state.pratos[index].id_post}>
+                            <FotoPequenaDireita chave={this.state.pratos[index].id_post} onPress={() => this.irParaPerfil(this.state.pratos[index].id_post)} foto={this.state.pratos[index].foto}/>
+                        </View>
+                    ));
+                }
+                
+            }
+        }
+        return imagens;
+    }
   
     renderTopRestaurantes(){
         return this.state.restaurantes.map((restaurante) => {
@@ -212,55 +222,80 @@ export default class Buscar extends Network {
 
     renderTopPratosRestaurantes(){
         return this.state.pratosRestaurantes.map((prato) => {
-            return <Card key={prato.id_usuario} imagem={prato.foto} nome={prato.nome} seguidores={prato.curtidas} onPress={() => this.props.navigation.navigate("Perfil", { id_usuario_perfil: prato.id_usuario })}/>
+            return <Card key={prato.id_usuario} imagem={prato.foto} nome={prato.nome} seguidores={prato.curtidas} onPress={() => this.props.navigation.navigate("Postagem", { id_post: prato.id_post })}/>
         })
     }
 
-renderTopPratosRestaurantesView(){
-    if (this.state.restaurantes.length > 0){
-        return (
-            <View>
-                <View style={[styles.item, styles.paddingHorizontal]}>
-                    <View style={styles.flexRow}>
-                        <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Pratos</Text>
+    renderTopPratosRestaurantesView(){
+        if (this.state.restaurantes.length > 0){
+            return (
+                <View>
+                    <View style={[styles.item, styles.paddingHorizontal]}>
+                        <View style={styles.flexRow}>
+                            <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Pratos</Text>
+                        </View>
                     </View>
+                    <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
+                        {this.renderTopPratosRestaurantes()}
+                    </ScrollView>
                 </View>
-                <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
-                    {this.renderTopPratosRestaurantes()}
-                </ScrollView>
+            );
+        }
+        return null;
+    }
+
+    isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+        const paddingToBottom = 20;
+        return layoutMeasurement.height + contentOffset.y >=
+            contentSize.height - paddingToBottom;
+    };
+
+    returnLoader(){
+        if (!this.state.semMaisPratos){
+            return (
+                <View style={{marginVertical: 10, alignItems: 'center', justifyContent: 'center'}}>
+                    <ActivityIndicator size="large" color="#28b657" />
+                </View>
+            );
+        }
+        return null;
+    }
+
+    carregando = false;
+
+    render() {
+        if (this.state.loading){
+            return (
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator size="large" color="#28b657" />
+                </View>
+
+            );
+        }
+        return (
+        <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} onScroll={({nativeEvent}) => {
+            if (this.isCloseToBottom(nativeEvent)) {
+                this.getMaisPratos();
+            }
+        }}
+        scrollEventThrottle={400}>
+            <Text style={[styles.titulo, styles.paddingHorizontal]}>Em alta</Text>
+            
+            {this.renderTopRestaurantesView()}
+
+            
+            {this.renderTopPratosRestaurantesView()}
+            
+
+            <Text style={[styles.titulo, styles.paddingHorizontal]}>Para você</Text>
+            
+            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                {this.renderImagens()}
             </View>
+            {this.returnLoader()}
+        </ScrollView>
         );
     }
-    return null;
-}
-
-  render() {
-      if (this.state.loading){
-          return (
-              <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                <ActivityIndicator size="large" color="#28b657" />
-              </View>
-
-          );
-      }
-    return (
-    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
-        <Text style={[styles.titulo, styles.paddingHorizontal]}>Em alta</Text>
-        
-        {this.renderTopRestaurantesView()}
-
-        
-        {this.renderTopPratosRestaurantesView()}
-        
-
-        <Text style={[styles.titulo, styles.paddingHorizontal]}>Para você</Text>
-        
-        <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-            {this.renderImagens()}
-        </View>
-    </ScrollView>
-    );
-  }
 
 }
 

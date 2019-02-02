@@ -34,6 +34,7 @@ const Item = ({ promo, quantidade, icone, tipo, foto, fotoPost, titulo, texto, n
                 </View>
             );
         }
+        return null;
     }
     
 
@@ -61,7 +62,7 @@ const Item = ({ promo, quantidade, icone, tipo, foto, fotoPost, titulo, texto, n
         } 
         else if (fotoPost)
         {
-            return <Image style={{flex: 1, height: 45, width: 45}} source={{uri: fotoPost}}/>
+            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45}} source={{uri: fotoPost}}/>
         } 
         else if (tipo == "SEGUIU")
         {
@@ -73,7 +74,7 @@ const Item = ({ promo, quantidade, icone, tipo, foto, fotoPost, titulo, texto, n
     renderFoto = () => {
         if (foto){
             console.log("oi bb")
-            return <Image style={{flex: 1, height: 45, width: 45, borderRadius: 45/2}} source={{uri: foto}}/>
+            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, borderRadius: 45/2}} source={{uri: foto}}/>
         }
         console.log("ja passei")
         return null;

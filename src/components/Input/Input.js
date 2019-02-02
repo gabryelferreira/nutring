@@ -30,7 +30,7 @@ const Input = (props) => {
             {returnLabel()}
             <View style={styles.viewInput}>
                 <TextInput
-                    style={[props.small ? [props.multiline ? [styles.input, styles.inputPequeno] : [styles.input, styles.inputPequeno, styles.inputSuperPequeno]] : [styles.input, styles.inputGrande]]}
+                    style={[props.small ? [props.multiline ? [styles.input, styles.inputPequeno] : [styles.input, styles.inputPequeno, styles.inputSuperPequeno]] : [styles.input, styles.inputGrande], props.disabled ? {backgroundColor: '#eee'} : {}]}
                     onChangeText={props.onChangeText}
                     value={props.value ? props.value : ''}
                     returnKeyType={props.returnKeyType}
@@ -46,6 +46,8 @@ const Input = (props) => {
                     numberOfLines={props.numberOfLines}
                     autoCorrect={false}
                     autoComplete={false}
+                    editable={!props.disabled}
+                    selectTextOnFocus={!props.disabled}
                     />
                     {renderHashtag()}
             </View>

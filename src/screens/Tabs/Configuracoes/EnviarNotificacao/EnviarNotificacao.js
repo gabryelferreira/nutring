@@ -27,11 +27,21 @@ export default class EnviarNotificacao extends Network {
             },
             loading: false,
             titulo: "",
-            mensagem: ""
+            mensagem: "",
         }
     }
 
     componentDidMount(){
+        this.getNomeUsuarioById();
+    }
+
+    async getNomeUsuarioById(){
+        let result = await this.callMethod("getNomeUsuarioById");
+        if (result.success){
+            this.setState({
+                titulo: result.result,
+            })
+        }
     }
 
     getModalClick(){
@@ -99,6 +109,7 @@ export default class EnviarNotificacao extends Network {
                             small={true}
                             maxLength={255}
                             returnKeyType={"none"}
+                            disabled={true}
                         />
                         <Input label={"Descrição"}
                                 icone={"comment"}
