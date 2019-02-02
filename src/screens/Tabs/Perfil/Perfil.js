@@ -92,7 +92,7 @@ export default class Perfil extends Network {
     async getPerfil(){
         if (!this.state.refreshing){
             await this.setState({
-                // refreshing: true,
+                refreshing: true,
             })
         }
         let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', "");
@@ -403,8 +403,25 @@ export default class Perfil extends Network {
             <View style={styles.viewPerfilRestaurante}>
                 {/* <StatusBar backgroundColor={background} /> */}
                 <View style={styles.capa}>
-                    <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2}]}>
-                    
+                    <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2, alignItems: 'flex-end'}]}>
+                        <TouchableOpacity onPress={() => {
+                                                    this.tipoFoto = "capaPerfil"
+                                                    this.requisitarPermissaoGaleria()
+                                                }}
+                            style={{
+                                paddingHorizontal: 20, 
+                                paddingVertical: 3, 
+                                justifyContent: 'center', 
+                                alignItems: 'center', 
+                                borderWidth: 1, 
+                                borderColor: '#eee',
+                                backgroundColor: 'rgba(0, 0, 0, .3)',
+                                marginRight: 10,
+                                marginTop: 10,
+                                borderRadius: 20
+                            }}>
+                            <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar capa</Text>
+                        </TouchableOpacity>
                     </View>
                     <Image resizeMethod="resize" source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
                 </View>
@@ -567,6 +584,8 @@ export default class Perfil extends Network {
         }
     }
 
+    tipoFoto;
+
     async alterarFotoPerfil(foto){
         this.setState({
             refreshing: true,
@@ -575,9 +594,14 @@ export default class Perfil extends Network {
         RNFetchBlob.fs.readFile(foto, 'base64')
         .then(async (data) => {
             let url = `data:image/jpg;base64,${data}`;
-            let result = await this.callMethod("alterarFotoPerfil", { foto: url });
+            let result;
+            if (this.tipoFoto == "capaPerfil"){
+                result = await this.callMethod("alterarCapaPerfil", { foto: url });
+            } else {
+                result = await this.callMethod("alterarFotoPerfil", { foto: url });
+            }
             if (result.success){
-                this.getPerfil()
+                this.getPerfil();
             } else {
                 this.showModal("Ocorreu um erro", "Parece que você está sem internet. Verifique-a e tente novamente.");
                 this.setState({
