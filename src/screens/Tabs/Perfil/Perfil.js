@@ -17,15 +17,15 @@ const imageWidth = dimensions.width;
 export default class Perfil extends Network {
 
     static navigationOptions = ({navigation}) => ({
-        title: navigation.getParam('nome', 'Perfil'),
+        title: navigation.getParam('nome', ''),
         headerRight: (
             <TouchableOpacity onPress={() => {
                 navigation.navigate("Configuracoes");
             }} style={{paddingRight: 10, flexDirection: 'row'}}>
-                <Icon name="cog" size={22} color={navigation.getParam('cor_texto', '#fff')} style={[navigation.getParam('id_usuario_perfil', "") ? {height: 0} : {}]}/>
+                <Icon name="cog" size={22} color={navigation.getParam('cor_texto', '#000')} style={[!navigation.getParam('sou_eu', "") ? {height: 0} : {}]}/>
             </TouchableOpacity>
         ),
-        headerTintColor: navigation.getParam('cor_texto', '#fff'),
+        headerTintColor: navigation.getParam('cor_texto', '#000'),
         headerStyle: {
             backgroundColor: navigation.getParam('cor_fundo', '#fff'),
             borderBottom: 1,
@@ -41,7 +41,8 @@ export default class Perfil extends Network {
         this.state = {
             tabSelecionada: 0,
             carregando: true,
-            carregandoInicial: true,
+            refreshing: true,
+            carregandoPrimeiraVez: true,
             user: {
                 descricao: null,
                 dt_nasc: "",
@@ -56,7 +57,7 @@ export default class Perfil extends Network {
                 seguidores: "",
                 seguindo: "",
                 sexo: "",
-                sou_eu: "",
+                sou_eu: false,
                 cnpj: ""
             },
             offset: 0,
@@ -73,20 +74,22 @@ export default class Perfil extends Network {
         console.log("to no didmount bb")
         this.getPerfil();
         this.props.navigation.setParams({
-            cor_fundo: '#fff'
+            cor_fundo: '#fff',
+            sou_eu: this.state.sou_eu
         })
     }
 
     async getPerfil(){
         await this.setState({
             carregando: true,
-            carregandoInicial: true,
+            refreshing: true,
         })
         let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', "");
         let result = await this.callMethod("getPerfilV2", { id_usuario_perfil });
         if (result.success){
             this.props.navigation.setParams({
-                nome: result.result.nome
+                nome: result.result.nome,
+                sou_eu: result.result.sou_eu
             })
             if (result.result.cor_fundo)
                 this.props.navigation.setParams({
@@ -102,9 +105,12 @@ export default class Perfil extends Network {
                 })
             this.setState({
                 user: result.result,
-                carregandoInicial: false
+                refreshing: false
             }, this.carregarFotosIniciais)
         }
+        this.setState({
+            carregandoPrimeiraVez: false
+        })
     }
 
     async carregarFotosIniciais() {
@@ -128,7 +134,7 @@ export default class Perfil extends Network {
                     })
                 } else {
                     let dados = [];
-                    if (!this.state.carregandoInicial){
+                    if (!this.state.refreshing){
                         dados = this.state.dados;
                     }
                     for (var i = 0; i < result.result.length; i++){
@@ -150,7 +156,7 @@ export default class Perfil extends Network {
         }
         await this.setState({
             carregando: false,
-            carregandoInicial: false
+            refreshing: false
         })
     }
 
@@ -173,9 +179,9 @@ export default class Perfil extends Network {
     }
 
     returnFooterComponent(){
-        if (!this.state.semMaisDados && !this.state.carregandoInicial){
+        if (!this.state.semMaisDados && !this.state.refreshing){
             return <ActivityIndicator color="#27ae60" size="large" style={{ marginVertical: 20 }}/>
-        } else if (!this.state.carregandoInicial && this.state.semMaisDados && this.state.dados.length == 0){
+        } else if (!this.state.refreshing && this.state.semMaisDados && this.state.dados.length == 0){
             return (
                 <SemDadosPerfil icone={"utensils"} titulo={"Ainda não há pratos"} texto={this.getTextoSemFotos()} seta={this.state.user.sou_eu}/>
             );
@@ -183,7 +189,7 @@ export default class Perfil extends Network {
     }
 
     returnLoaderInicial(){
-        if (this.state.carregandoInicial)
+        if (this.state.refreshing)
             return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 30 }}/>
         return;
     }
@@ -470,7 +476,7 @@ export default class Perfil extends Network {
             renderItem={({item, index}) => (
                 <FotoPerfil data={item} index={index} onPress={() => this.props.navigation.push("Postagem", { id_post: item.id_post } )}/>
             )}
-            refreshing={this.state.carregandoInicial}
+            refreshing={this.state.refreshing}
             onRefresh={() => this.getPerfil()}
             onEndReached={() => this.pegarDados()}
             onEndReachedThreshold={0.5}
@@ -482,6 +488,13 @@ export default class Perfil extends Network {
 
     render(){
         let { nome, foto } = this.state.user;
+        if (this.state.carregandoPrimeiraVez){
+            return (
+                <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                    <ActivityIndicator size="large" color="#28b657" />
+                </View>
+            );
+        }
         return (      
             <View style={{flex: 1}}>
                 {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}> */}

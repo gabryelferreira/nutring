@@ -222,7 +222,7 @@ export default class Buscar extends Network {
 
     renderTopPratosRestaurantes(){
         return this.state.pratosRestaurantes.map((prato) => {
-            return <Card key={prato.id_usuario} imagem={prato.foto} nome={prato.nome} seguidores={prato.curtidas} onPress={() => this.props.navigation.navigate("Postagem", { id_post: prato.id_post })}/>
+            return <Card key={prato.id_usuario} imagem={prato.foto} nome={prato.nome} curtidas={prato.curtidas} onPress={() => this.props.navigation.navigate("Postagem", { id_post: prato.id_post })}/>
         })
     }
 

@@ -8,7 +8,7 @@ import Network from '../../network';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Input from '../../components/Input/Input';
 import Label from '../../components/Label/Label';
-import { validarCNPJ } from '../../validacoes';
+import { validarCNPJ, validarData } from '../../validacoes';
 import { removerCaracteresEspeciais, removerCaracter, formatarCNPJ, formatarData, formatarCep } from '../../help-functions';
 
 const dimensions = Dimensions.get('window');
@@ -109,39 +109,11 @@ export default class Cadastro extends Network {
         } else {
             await this.setState({backup_dt_nasc: this.state.dt_nasc})
         }
-      }
+    }
 
     returnDataFormatada(data){
         let _data = data.substring(6, 10) + "-" + data.substring(3, 5) + "-" + data.substring(0, 2);
         return _data;
-    }
-
-    validateDtNasc(){
-        var date = null;
-        var fullDate = this.state.dt_nasc;
-        var length = fullDate.length;
-        var count = 0;
-        for (var i = 0; i < fullDate.length; i++){
-            if (fullDate[i] == "/")
-                count++;
-        }
-        if (count == 2 && length == 10){
-            var replace = true;
-            while (replace == true){
-                if (fullDate.indexOf("/") != -1){
-                    fullDate = fullDate.replace("/", "");
-                } else {
-                    replace = false;
-                }
-            }
-            var day = fullDate.substring(0, 2);
-            var month = fullDate.substring(2, 4);
-            var year = fullDate.substring(4, 8);
-            date = new Date(year + "-" + month  + "-" + (parseInt(day) + 1).toString());
-            console.log("date = " + date)
-        }
-        this.setState({dt_nasc_formatada: date})
-        return date != null && date != undefined && date != "Invalid Date"
     }
 
     async validarDados(){
@@ -150,7 +122,7 @@ export default class Cadastro extends Network {
             campoErro: ""
         })
         let campos = ["nome", "email", "usuario", "senha"];
-        if (!this.validateDtNasc()){
+        if (!validarData(this.state.dt_nasc)){
             await this.setState({
                 campoErro: "A data de nascimento está incorreta."
             })

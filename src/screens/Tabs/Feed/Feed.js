@@ -8,6 +8,7 @@ import UsuarioCard from '../../../components/UsuarioCard/UsuarioCard';
 import { ScrollView } from 'react-native-gesture-handler';
 import Novidades from '../../../components/Novidades/Novidades';
 import firebase from 'react-native-firebase';
+import SemDados from '../../../components/SemDados/SemDados';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -44,7 +45,8 @@ export default class Feed extends Network {
 
     state = {
         carregando: false,
-        carregandoInicial: false,
+        refreshing: true,
+        carregandoPrimeiraVez: true,
         usuarios: [],
         dados: [],
         offset: 0,
@@ -52,7 +54,8 @@ export default class Feed extends Network {
         semMaisUsuarios: false,
         modalComentarios: {
             visible: false
-        }
+        },
+        semInternet: false
     }
 
 
@@ -69,7 +72,7 @@ export default class Feed extends Network {
         this.setState({
             offset: 0,
             semMaisDados: false,
-            carregandoInicial: true,
+            refreshing: true,
             usuarios: []
         }, this.carregarDados)
     }
@@ -87,23 +90,26 @@ export default class Feed extends Network {
         if (!this.state.semMaisDados){
             let result = await this.callMethod("getFeed", { offset: this.state.offset, limit: 10 })
             if (result.success){
+                this.setState({
+                    semInternet: false
+                })
                 if (result.result.length == 0 && this.state.offset == 0){
                     await this.setState({
                         semMaisDados: true,
                         offset: 0,
-                        carregandoInicial: false,
+                        refreshing: false,
                         dados: []
                     })
                     this.carregarUsuarios();
                 } else if (result.result.length == 0 && this.state.dados.length != 0){
                     await this.setState({
                         semMaisDados: true,
-                        carregandoInicial: false
+                        refreshing: false,
                     })
                         
                 } else {
                     let dados = [];
-                    if (!this.state.carregandoInicial){
+                    if (!this.state.refreshing){
                         dados = this.state.dados;
                     }
                     for (var i = 0; i < result.result.length; i++){
@@ -113,14 +119,19 @@ export default class Feed extends Network {
                     if (result.result.length < 10){
                         await this.setState({
                             semMaisDados: true,
-                            carregandoInicial: false
+                            refreshing: false
                         })
                     }
                     await this.setState({
                         dados: dados,
-                        carregandoInicial: false
+                        refreshing: false,
+                        carregandoPrimeiraVez: false
                     });
                 }
+            } else {
+                this.setState({
+                    semInternet: true
+                })
             }
         }
         
@@ -140,7 +151,13 @@ export default class Feed extends Network {
         let result = await this.callMethod("getTopUsers");
         if (result.success){
             await this.setState({
-                usuarios: result.result
+                usuarios: result.result,
+                carregandoPrimeiraVez: false,
+                semInternet: false
+            })
+        } else {
+            this.setState({
+                semInternet: true
             })
         }
     }
@@ -233,7 +250,7 @@ export default class Feed extends Network {
                     </View>
 
                 )}
-                refreshing={this.state.carregandoInicial}
+                refreshing={this.state.refreshing}
                 onRefresh={async () => await this.carregarDadosIniciais()}
                 onEndReached={async () => await this.pegarDados()}
                 onEndReachedThreshold={0.5}
@@ -244,6 +261,16 @@ export default class Feed extends Network {
     }
 
     render(){
+        if (this.state.semInternet){
+            return <SemDados icone={"sad-tear"} titulo={"Sem internet"} texto={"Parece que você está sem internet."}/>
+        }
+        if (this.state.carregandoPrimeiraVez){
+            return (
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator size="large" color="#28b657"/>
+                </View>
+            );
+        }
         if (this.state.semMaisDados && this.state.dados.length == 0){
             return (
                 <View style={{flex: 1, flexDirection: 'column'}}>

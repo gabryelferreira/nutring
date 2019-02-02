@@ -1,8 +1,22 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 
-const Card = ({onPress, imagem, nome, seguidores}) => {
+const Card = ({onPress, imagem, nome, seguidores, curtidas}) => {
 
+    renderSeguidoresCurtidas = () => {
+        if (seguidores){
+            let textoSeguindo = "Seguidores";
+            if (seguidores == 1)
+                textoSeguindo = "Seguidor";
+            return <Text style={styles.qtdCurtidas}>{seguidores} <Text style={styles.textoCurtidas}>{textoSeguindo}</Text></Text>
+        } else if (curtidas){
+            let textoCurtida = "Curtidas";
+            if (curtidas == 1)
+                textoCurtida = "Curtida";
+            return <Text style={styles.qtdCurtidas}>{curtidas} <Text style={styles.textoCurtidas}>{textoCurtida}</Text></Text>
+        }
+        return null
+    }
 
     return (
         <TouchableOpacity onPress={onPress} style={styles.card} activeOpacity={0.8}>
@@ -14,7 +28,7 @@ const Card = ({onPress, imagem, nome, seguidores}) => {
                 <View style={styles.info}>
                     <Text style={styles.nome}>{nome}</Text>
                     <View style={styles.infoBaixo}>
-                        <Text style={styles.qtdCurtidas}>{seguidores} <Text style={styles.textoCurtidas}>Curtidas</Text></Text>
+                        {renderSeguidoresCurtidas()}
                     </View>
                 </View>
             </View>
