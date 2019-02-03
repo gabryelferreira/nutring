@@ -53,6 +53,13 @@ export default class Item extends Network {
         return null;
     }
     
+    returnDescricao = (descricao) => {
+        if (descricao){
+            return  <Text style={styles.texto}>{this.props.descricao}</Text>;
+        }
+        return null;
+    }
+    
 
     renderTexto = () => {
         if (this.props.promo || this.props.tipo == "BUSCANDO"){
@@ -65,7 +72,7 @@ export default class Item extends Network {
         } else {
             return (
                 <View style={{flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center'}}>
-                    <Text style={styles.nome}>{this.props.titulo} <Text style={styles.texto}>{this.props.descricao}</Text></Text>
+                    <Text style={styles.nome}>{this.props.titulo} {this.returnDescricao(this.props.descricao)}</Text>
                     {this.returnTextoPostedAgo(this.props.tempoAtras)}
                 </View>
             );
@@ -75,16 +82,17 @@ export default class Item extends Network {
     returnTextoPostedAgo = (tempoAtras) => {
         if (tempoAtras == "agora"){
             return <Text style={styles.tempo}>{tempoAtras}</Text>;
-        } else {
+        } else if (tempoAtras) {
             return <Text style={styles.tempo}>{tempoAtras} atrás</Text>;
         }
+        return null;
     }
 
     renderFinal = () => {
-        if (this.props.tipo == "PROMOCAO")
+        if (this.props.promo)
         {
             return <View style={styles.bolinhaVerde}></View>
-        } 
+        }
         else if (this.props.fotoPost)
         {
             return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45}} source={{uri: this.props.fotoPost}}/>
@@ -106,7 +114,7 @@ export default class Item extends Network {
 
     render(){
         return (
-            <TouchableOpacity style={[styles.notificacao, [this.props.promo ? {marginBottom: 20} : {}]]}>
+            <TouchableOpacity onPress={this.props.onPress} style={[styles.notificacao, [this.props.promo ? {marginBottom: 20} : {}]]}>
                 <TouchableOpacity style={styles.foto} onPress={this.props.onPressFoto}>
                     {this.renderFoto()}
                     {this.renderBolinha()}

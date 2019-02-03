@@ -27,7 +27,11 @@ export default class Notificacoes extends Network {
     dados: [],
     offset: 0,
     limit: 20,
-    semMaisDados: false
+    semMaisDados: false,
+    promocao: {
+      quantidade: 0,
+      foto_restaurante: ""
+    }
   }
 
   constructor(props){
@@ -35,7 +39,17 @@ export default class Notificacoes extends Network {
   }
 
   componentDidMount(){
-    this.getNotificacoes();
+    this.getQuantidadePromocoes();
+    // this.getNotificacoes();
+  }
+
+  async getQuantidadePromocoes(){
+    let result = await this.callMethod("getQuantidadePromocoes");
+    if (result.success){
+      this.setState({
+        promocao: result.result
+      }, this.getNotificacoes)
+    }
   }
 
   async getNotificacoes(){
@@ -72,13 +86,29 @@ export default class Notificacoes extends Network {
       offset: 0,
       refreshing: true,
       semMaisDados: false
-    }, this.getNotificacoes)
+    }, this.getQuantidadePromocoes)
   }
   
   carregarMaisNotificacoes(){
     this.setState({
       offset: this.state.offset + this.state.limit
     }, this.getNotificacoes)
+  }
+
+  abrirPromocoes(){
+    this.props.navigation.navigate("Promocoes");
+  }
+
+  returnHeaderComponent(){
+      return <Item key={this.state.promocao.quantidade.toString()} 
+                     onPress={() => this.abrirPromocoes()} 
+                     onPressFoto={() => this.abrirPromocoes()} 
+                     titulo={"Promoções"}
+                     quantidade={this.state.promocao.quantidade}
+                     descricao={this.state.promocao.quantidade > 0 ? "Veja as promoções dos seus restaurantes favoritos." : "Você não possui promoções disponíveis."} 
+                     promo={true}
+                     foto={this.state.promocao.foto_restaurante}
+                     />
   }
 
   returnFooterComponent(){
@@ -106,26 +136,6 @@ export default class Notificacoes extends Network {
   }
 
   render() {
-    // if (!this.state.loading && this.state.dados.length == 0){
-    //   return <SemDados icone={"sad-tear"} titulo={"Sem notificações"} texto={"Você ainda não recebeu notificações."}/>
-    // }
-    // return (
-    // <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
-    //   <Item promo={true} 
-    //         quantidade={23} 
-    //         tipo={"PROMOCAO"} 
-    //         titulo={"Promoções"}
-    //         texto={"Promoções de restaurantes que você segue."} 
-    //         foto={'https://logodownload.org/wp-content/uploads/2016/09/Outback-logo-10.png'}
-    //         />
-    //   <Item icone={"comment"}
-    //         tipo={"SEGUIU"} 
-    //         titulo={"Gabryel Ferreira"} 
-    //         foto={'https://img.stpu.com.br/?img=https://s3.amazonaws.com/pu-mgr/default/a0RG000000o0ohkMAA/594989e9e4b0eb7905e31616.jpg&w=620&h=400'}
-    //         />
-    // </ScrollView>
-    // );
-
 
     if (this.state.carregandoPrimeiraVez){
       return (
@@ -145,7 +155,6 @@ export default class Notificacoes extends Network {
         keyExtractor={(item, index) => item.id_acao.toString()}
         renderItem={({item, index}) => (
               <Item acao={item.cd_acao}
-                tipo="PROMO"
                 item={item}
                 titulo={item.nome}
                 descricao={item.descricao}
@@ -162,7 +171,7 @@ export default class Notificacoes extends Network {
         onRefresh={() => this.refreshNotificacoes()}
         onEndReached={() => this.carregarMaisNotificacoes()}
         onEndReachedThreshold={0.5}
-        // ListHeaderComponent={() => this.returnHeaderComponent()}
+        ListHeaderComponent={() => this.returnHeaderComponent()}
         ListFooterComponent={() => this.returnFooterComponent()}
         />
     );

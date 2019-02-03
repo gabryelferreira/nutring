@@ -31,6 +31,8 @@ import EditarPerfil from './src/screens/Tabs/Perfil/EditarPerfil/EditarPerfil';
 import Postagem from './src/screens/Tabs/Postagem/Postagem';
 import Seguidores from './src/screens/Tabs/Perfil/Seguidores/Seguidores';
 import Seguindo from './src/screens/Tabs/Perfil/Seguindo/Seguindo';
+import Promocoes from './src/screens/Tabs/Notificacoes/Promocoes/Promocoes';
+import Promocao from './src/screens/Tabs/Notificacoes/Promocoes/Promocao/Promocao';
 
 const NavigationOptions = {
     headerStyle: {
@@ -88,6 +90,14 @@ const InsideTabs = {
     },
     Seguindo: {
         screen: Seguindo,
+        navigationOptions: NavigationOptions
+    },
+    Promocoes: {
+        screen: Promocoes,
+        navigationOptions: NavigationOptions
+    },
+    Promocao: {
+        screen: Promocao,
         navigationOptions: NavigationOptions
     }
 }

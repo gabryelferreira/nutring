@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
 
-const BotaoPequeno = ({texto, onPress, loading, disabled}) => {
+const BotaoMedio = ({texto, onPress, loading, disabled}) => {
 
     botao = () => {
         if (loading){
@@ -27,14 +27,14 @@ const BotaoPequeno = ({texto, onPress, loading, disabled}) => {
     return botao();
 }
 
-export default BotaoPequeno;
+export default BotaoMedio;
 
 const styles = {
     botao: {
-        paddingVertical: 6,
-        paddingHorizontal: 12,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         backgroundColor: '#28b657',
-        borderRadius: 20,
+        borderRadius: 22,
         elevation: 2,
         flexDirection: 'column',
         alignItems: 'center',

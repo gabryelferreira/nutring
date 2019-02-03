@@ -14,23 +14,30 @@ const Galeria = ({fotos, onPress, onClose}) => {
     }
 
     returnFotos = () => {
-        return fotos.map((foto, index) => {
-            console.log("index = ", index)
-            if (index % 3 == 0){
-                console.log("eh fera")
+        if (fotos.length > 0){
+            return fotos.map((foto, index) => {
+                console.log("index = ", index)
+                if (index % 3 == 0){
+                    console.log("eh fera")
+                    return (
+                        <TouchableOpacity key={foto} style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', marginBottom: 2}} onPress={() => handleOnPress(foto)}>
+                            <Image resizeMethod="resize" source={{uri: foto}} style={{flex: 1, height: undefined, width: undefined}}/>
+                        </TouchableOpacity>
+                    );
+                }
+                console.log("passei, n eh fera")
                 return (
-                    <TouchableOpacity key={foto} style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', marginBottom: 2}} onPress={() => handleOnPress(foto)}>
+                    <TouchableOpacity key={foto} style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', paddingLeft: 2, marginBottom: 2}} onPress={() => handleOnPress(foto)}>
                         <Image resizeMethod="resize" source={{uri: foto}} style={{flex: 1, height: undefined, width: undefined}}/>
                     </TouchableOpacity>
                 );
-            }
-            console.log("passei, n eh fera")
-            return (
-                <TouchableOpacity key={foto} style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', paddingLeft: 2, marginBottom: 2}} onPress={() => handleOnPress(foto)}>
-                    <Image resizeMethod="resize" source={{uri: foto}} style={{flex: 1, height: undefined, width: undefined}}/>
-                </TouchableOpacity>
-            );
-        })
+            })
+        }
+        return (
+            <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', marginTop: 15}}>
+                <Text style={{fontSize: 14, color: '#777', fontWeight: 'bold'}}>Sua galeria está vazia.</Text>
+            </View>
+        );
     }
 
     return (

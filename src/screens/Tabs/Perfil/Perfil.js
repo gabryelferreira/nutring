@@ -548,7 +548,6 @@ export default class Perfil extends Network {
           }
         } catch (err) {
           console.warn(err);
-          this.props.onClose();
         }
     }
 

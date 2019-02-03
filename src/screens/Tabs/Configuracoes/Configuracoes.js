@@ -124,7 +124,7 @@ export default class Configuracoes extends Network {
                     <Opcao icone={"question-circle"} texto={"Ajuda"} seta={true} onPress={() => this.props.navigation.navigate("Ajuda")}/>
                     <Opcao icone={"key"} texto={"Privacidade"} seta={true} onPress={() => this.props.navigation.navigate("Privacidade")}/>
                     <Separador/>
-                    <Opcao icone={"external-link-alt"} texto={"Nutring Calorias"}/>
+                    {/* <Opcao icone={"external-link-alt"} texto={"Nutring Calorias"}/> */}
                     <Opcao icone={"sign-out-alt"} texto={"Sair"} onPress={() => this.abrirConfirmacaoSair()}/>
                         
 
