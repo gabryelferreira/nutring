@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image, Button, Modal, ScrollView, Dimensions } from 'react-native';
+import { View, TouchableOpacity, Text, Image, Button, Modal, FlatList, Dimensions, ActivityIndicator } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
 import SearchBar from '../../../components/SearchBar/SearchBar';
@@ -16,38 +16,138 @@ const imageWidth = dimensions.width;
 
 export default class Notificacoes extends Network {
 
-    static navigationOptions = ({navigation}) => ({
-        title: 'Notificações',
-    });
+  static navigationOptions = () => ({
+      title: 'Notificações',
+  });
 
-    state = {
-      loading: false,
-      dados: [],
-    }
+  state = {
+    loading: false,
+    carregandoPrimeiraVez: true,
+    refreshing: false,
+    dados: [],
+    offset: 0,
+    limit: 20,
+    semMaisDados: false
+  }
 
-    constructor(props){
-      super(props);
+  constructor(props){
+    super(props);
+  }
+
+  componentDidMount(){
+    this.getNotificacoes();
+  }
+
+  async getNotificacoes(){
+    if (!this.state.semMaisDados){
+      let result = await this.callMethod("getNotificacoes", { offset: this.state.offset, limit: this.state.limit });
+      if (result.success){
+        if (this.state.refreshing){
+          await this.setState({
+              dados: []
+          })
+      }
+        if (result.result.length < this.state.limit){
+          this.setState({
+            semMaisDados: true
+          })
+        }
+        let dados = this.state.dados;
+        for (var i = 0; i < result.result.length; i++){
+          dados.push(result.result[i]);
+        }
+        this.setState({
+          dados
+        })
+      }
+      this.setState({
+        carregandoPrimeiraVez: false,
+        refreshing: false
+      })
     }
+  }
+
+  refreshNotificacoes(){
+    this.setState({
+      offset: 0,
+      refreshing: true,
+      semMaisDados: false
+    }, this.getNotificacoes)
+  }
+  
+  carregarMaisNotificacoes(){
+    this.setState({
+      offset: this.state.offset + this.state.limit
+    }, this.getNotificacoes)
+  }
+
+  returnFooterComponent(){
+    if (!this.state.semMaisDados && !this.state.refreshing){
+        return <ActivityIndicator color="#27ae60" size="large" style={{ marginVertical: 20 }}/>
+    } return null;
+  }
+
+  teste(id_acao){
+    console.log("acao  = ", id_acao)
+  }
 
   render() {
     // if (!this.state.loading && this.state.dados.length == 0){
     //   return <SemDados icone={"sad-tear"} titulo={"Sem notificações"} texto={"Você ainda não recebeu notificações."}/>
     // }
+    // return (
+    // <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
+    //   <Item promo={true} 
+    //         quantidade={23} 
+    //         tipo={"PROMOCAO"} 
+    //         titulo={"Promoções"}
+    //         texto={"Promoções de restaurantes que você segue."} 
+    //         foto={'https://logodownload.org/wp-content/uploads/2016/09/Outback-logo-10.png'}
+    //         />
+    //   <Item icone={"comment"}
+    //         tipo={"SEGUIU"} 
+    //         titulo={"Gabryel Ferreira"} 
+    //         foto={'https://img.stpu.com.br/?img=https://s3.amazonaws.com/pu-mgr/default/a0RG000000o0ohkMAA/594989e9e4b0eb7905e31616.jpg&w=620&h=400'}
+    //         />
+    // </ScrollView>
+    // );
+
+
+    if (this.state.carregandoPrimeiraVez){
+      return (
+          <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <ActivityIndicator size="large" color="#28b657" />
+          </View>
+      );
+    }
+
+    if (this.state.dados.length == 0 && !this.state.refreshing){
+      return <SemDados icone={"sad-tear"} titulo={"Sem notificações"} texto={"Você não possui notificações."}/>
+    }
+
     return (
-    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
-      <Item promo={true} 
-            quantidade={23} 
-            tipo={"PROMOCAO"} 
-            titulo={"Promoções"}
-            texto={"Promoções de restaurantes que você segue."} 
-            foto={'https://logodownload.org/wp-content/uploads/2016/09/Outback-logo-10.png'}
-            />
-      <Item icone={"comment"}
-            tipo={"SEGUIU"} 
-            titulo={"Gabryel Ferreira"} 
-            foto={'https://img.stpu.com.br/?img=https://s3.amazonaws.com/pu-mgr/default/a0RG000000o0ohkMAA/594989e9e4b0eb7905e31616.jpg&w=620&h=400'}
-            />
-    </ScrollView>
+      <FlatList
+        data={this.state.dados}
+        keyExtractor={(item, index) => item.id_acao.toString()}
+        renderItem={({item, index}) => (
+              <Item acao={item.cd_acao}
+                tipo="PROMO"
+                item={item}
+                titulo={item.nome}
+                descricao={item.descricao}
+                foto={item.foto}
+                fotoPost={item.foto_post}
+                tempoAtras={item.tempo_atras}
+                navigation={this.props.navigation}
+                />
+        )}
+        refreshing={this.state.refreshing}
+        onRefresh={() => this.refreshNotificacoes()}
+        onEndReached={() => this.carregarMaisNotificacoes()}
+        onEndReachedThreshold={0.5}
+        // ListHeaderComponent={() => this.returnHeaderComponent()}
+        ListFooterComponent={() => this.returnFooterComponent()}
+        />
     );
   }
 

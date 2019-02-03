@@ -118,7 +118,7 @@ export default class BuscarEspecifico extends Network {
         return <Item key={usuario.id_usuario} 
                      onPress={() => this.pesquisarUsuario(usuario.id_usuario)} 
                      onPressFoto={() => this.pesquisarUsuario(usuario.id_usuario)} 
-                     titulo={usuario.nome} texto={this.renderTextoSeguindo(usuario.is_seguindo, usuario.is_seguindo_voce, usuario.seguidores)} 
+                     titulo={usuario.nome} descricao={this.renderTextoSeguindo(usuario.is_seguindo, usuario.is_seguindo_voce, usuario.seguidores)} 
                      tipo="BUSCANDO" 
                      foto={usuario.foto}
                      />

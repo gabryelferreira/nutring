@@ -87,8 +87,8 @@ class Comentario extends Network {
         }
         if (is_restaurante){
             return (
-                <View style={styles.viewInfoDots}>
-                    <AutoHeightImage source={require('../../assets/imgs/folha_nutring.png')} width={15}/>
+                <View style={[styles.viewInfoDots, {marginTop: 3}]}>
+                    <AutoHeightImage source={require('../../assets/imgs/folha_nutring.png')} width={16}/>
                 </View>
             );
         }
@@ -155,7 +155,7 @@ class Comentario extends Network {
                     botoes={this.state.modal.botoes}
                     />
                 <View style={styles.viewFoto}>
-                    <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000'}}>
+                    <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000'}}>
                         <Image resizeMethod="resize" source={{uri: foto}}  style={{height: 38, width: 38, borderRadius: 38/2, }}/>
                     </TouchableOpacity>
                 </View>
@@ -256,6 +256,6 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        paddingRight: 10
+        paddingRight: 10,
     },
 }

@@ -1,36 +1,52 @@
 import React, { Component } from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import Network from '../../network';
 
 
-const Item = ({ promo, quantidade, icone, tipo, foto, fotoPost, titulo, texto, navigation, id_usuario, onPress, onPressFoto }) => {
+export default class Item extends Network {
 
-    let marcacao = "";
-    let textoMarcacao = "";
+    constructor(props){
+        super(props);
+        this.state = {
+            icone: ""
+        }
+    }
+    
+    componentDidMount(){
+        this.setIcone();
+    }
 
-    if (!texto){
-        if (tipo == "SEGUIU"){
-            texto = "começou a te seguir";
-        } else if (tipo == "MENCIONOU"){
-            texto = "mencionou você em um comentário: ";
-        } else if (tipo == "COMENTOU"){
-            texto = "comentou sua receita: ";
+    setIcone(){
+        let icone;
+        if (this.props.acao == "CURTIU_POST" || this.props.acao == "CURTIU_COMENTARIO"){
+            this.setState({
+                icone: "thumbs-up"
+            })
+        } else if (this.props.acao == "SEGUIU"){
+            this.setState({
+                icone: "user-friends"
+            })
+        } else if (this.props.acao == "COMENTOU_POST" || this.props.acao == "COMENTOU_RECEITA"){
+            this.setState({
+                icone: "comment"
+            })
         }
     }
 
 
 
     renderBolinha = () => {
-        if (promo){
+        if (this.props.promo){
             return (
                 <View style={[styles.bola, styles.bolaMaior]}>
-                    <Text style={styles.textoBola}>{quantidade}</Text>
+                    <Text style={styles.textoBola}>{this.props.quantidade}</Text>
                 </View>
             );
-        } else if (icone){
+        } else if (this.state.icone){
             return (
                 <View style={[styles.bola, styles.bolaMenor]}>
-                    <Icon name={icone} color="#fff" size={7} solid />
+                    <Icon name={this.state.icone} color="#fff" size={7} solid />
                 </View>
             );
         }
@@ -39,65 +55,89 @@ const Item = ({ promo, quantidade, icone, tipo, foto, fotoPost, titulo, texto, n
     
 
     renderTexto = () => {
-        if (promo || tipo == "BUSCANDO"){
+        if (this.props.promo || this.props.tipo == "BUSCANDO"){
             return (
                 <View>
-                    <Text style={styles.titulo}>{titulo}</Text>
-                    <Text style={styles.descricao}>{texto}</Text>
+                    <Text style={styles.titulo}>{this.props.titulo}</Text>
+                    <Text style={styles.descricao}>{this.props.descricao}</Text>
                 </View>
             );
         } else {
             return (
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <Text style={styles.nome}>{titulo} <Text style={styles.texto}>{texto}</Text></Text>
+                <View style={{flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'center'}}>
+                    <Text style={styles.nome}>{this.props.titulo} <Text style={styles.texto}>{this.props.descricao}</Text></Text>
+                    {this.returnTextoPostedAgo(this.props.tempoAtras)}
                 </View>
             );
         }
     }
 
+    returnTextoPostedAgo = (tempoAtras) => {
+        if (tempoAtras == "agora"){
+            return <Text style={styles.tempo}>{tempoAtras}</Text>;
+        } else {
+            return <Text style={styles.tempo}>{tempoAtras} atrás</Text>;
+        }
+    }
+
     renderFinal = () => {
-        if (tipo == "PROMOCAO")
+        if (this.props.tipo == "PROMOCAO")
         {
             return <View style={styles.bolinhaVerde}></View>
         } 
-        else if (fotoPost)
+        else if (this.props.fotoPost)
         {
-            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45}} source={{uri: fotoPost}}/>
+            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45}} source={{uri: this.props.fotoPost}}/>
         } 
-        else if (tipo == "SEGUIU")
+        else if (this.props.tipo == "SEGUIU")
         {
             return <Icon name="exchange-alt" color='#000' size={18}/>
         }
         return null;
     }
 
-    renderFoto = () => {
-        if (foto){
-            console.log("oi bb")
-            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, borderRadius: 45/2}} source={{uri: foto}}/>
+    handleOnPress = () => {
+        console.log("cd acao = ", this.props.item.cd_acao)
+        if (this.props.item.cd_acao == "COMENTOU_POST" || this.props.item.cd_acao == "CURTIU_POST" || this.props.item.cd_acao == "CURTIU_COMENTARIO"){
+            console.log("id_post = " + this.props.item.id_post)
+            this.props.navigation.push("Postagem", { id_post: this.props.item.id_post });
+        } else if (this.props.item.cd_acao == "SEGUIU"){
+            console.log("SEGUIUUUU")
+            this.props.navigation.push("Perfil", { id_usuario_perfil: this.props.item.id_usuario });
         }
-        console.log("ja passei")
+    }
+
+    handleOnPressFoto = () => {
+        this.props.navigation.push("Perfil", { id_usuario_perfil: this.props.item.id_usuario });
+    }
+
+    renderFoto = () => {
+        if (this.props.foto){
+            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, borderRadius: 45/2}} source={{uri: this.props.foto}}/>
+        }
         return null;
     }
 
-    return (
-        <TouchableOpacity onPress={onPress} style={[styles.notificacao, [promo ? {marginBottom: 20} : {}]]}>
-            <TouchableOpacity style={styles.foto} onPress={onPressFoto}>
-                {renderFoto()}
-                {renderBolinha()}
+
+    render(){
+        return (
+            <TouchableOpacity style={[styles.notificacao, [this.props.promo ? {marginBottom: 20} : {}]]}>
+                <TouchableOpacity style={styles.foto} onPress={() => this.handleOnPressFoto()}>
+                    {this.renderFoto()}
+                    {this.renderBolinha()}
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.textos} onPress={() => this.handleOnPress()}>
+                    {this.renderTexto()}
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.icone} onPress={() => this.handleOnPress()}>
+                    {this.renderFinal()}
+                </TouchableOpacity>
             </TouchableOpacity>
-            <View style={styles.textos}>
-                {renderTexto()}
-            </View>
-            <View style={styles.icone}>
-                {renderFinal()}
-            </View>
-        </TouchableOpacity>
-    );
+        );
+    }
 
 }
 
-export default Item;
 
 const styles = {
     notificacao: {
@@ -116,7 +156,8 @@ const styles = {
         flexDirection: 'column',
         justifyContent: 'center',
         flex: 1,
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        flexWrap: 'wrap'
     },
     titulo: {
         fontSize: 16,
@@ -126,7 +167,7 @@ const styles = {
     },
     descricao: {
         fontSize: 11,
-        color: '#777'
+        color: '#000'
     },
     nome: {
         fontSize: 13.5,
@@ -136,7 +177,7 @@ const styles = {
     },
     texto: {
         fontSize: 13,
-        color: '#777',
+        color: '#000',
         fontWeight: 'normal'
     },
     icone: {
@@ -177,5 +218,9 @@ const styles = {
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 11
-    }
+    },
+    tempo: {
+        fontSize: 11,
+        color: '#777',
+    },
 }

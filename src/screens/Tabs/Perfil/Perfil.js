@@ -395,6 +395,32 @@ export default class Perfil extends Network {
         return <Text style={[styles.descricaoRestaurante, {color: color}]}>Conheça o {this.state.user.nome}!</Text>;
     }
 
+    renderBotaoAlterarCapa(sou_eu){
+        if (sou_eu){
+            return (
+                <TouchableOpacity onPress={() => {
+                    this.tipoFoto = "capaPerfil"
+                    this.requisitarPermissaoGaleria()
+                }}
+                    style={{
+                    paddingHorizontal: 10, 
+                    paddingVertical: 3, 
+                    justifyContent: 'center', 
+                    alignItems: 'center', 
+                    borderWidth: 1, 
+                    borderColor: '#eee',
+                    backgroundColor: 'rgba(0, 0, 0, .3)',
+                    marginRight: 10,
+                    marginTop: 10,
+                    borderRadius: 20
+                }}>
+                    <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar capa</Text>
+                </TouchableOpacity>
+            );
+        }
+        return null;
+    }
+
     renderInfoPerfilRestaurante(){
         let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa } = this.state.user;
         let background = cor_fundo ? '#' + cor_fundo : '#fff';
@@ -404,24 +430,7 @@ export default class Perfil extends Network {
                 {/* <StatusBar backgroundColor={background} /> */}
                 <View style={styles.capa}>
                     <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2, alignItems: 'flex-end'}]}>
-                        <TouchableOpacity onPress={() => {
-                                                    this.tipoFoto = "capaPerfil"
-                                                    this.requisitarPermissaoGaleria()
-                                                }}
-                            style={{
-                                paddingHorizontal: 10, 
-                                paddingVertical: 3, 
-                                justifyContent: 'center', 
-                                alignItems: 'center', 
-                                borderWidth: 1, 
-                                borderColor: '#eee',
-                                backgroundColor: 'rgba(0, 0, 0, .3)',
-                                marginRight: 10,
-                                marginTop: 10,
-                                borderRadius: 20
-                            }}>
-                            <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar capa</Text>
-                        </TouchableOpacity>
+                        {this.renderBotaoAlterarCapa(sou_eu)}
                     </View>
                     <Image resizeMethod="resize" source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
                 </View>
