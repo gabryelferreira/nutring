@@ -28,8 +28,8 @@ export default class Comentarios extends Network {
     }
 
     state = {
-        carregando: false,
         carregandoInicial: true,
+        refreshing: false,
         dados: [],
         offset: 0,
         semMaisDados: false,
@@ -50,7 +50,7 @@ export default class Comentarios extends Network {
         this.setState({
             offset: 0,
             semMaisDados: false,
-            carregandoInicial: true
+            refreshing: true
         }, this.carregarDados)
     }
 
@@ -59,41 +59,37 @@ export default class Comentarios extends Network {
         if (!this.state.semMaisDados){
             let result = await this.callMethod("getCommentsByIdPost", { id_post: this.state.id_post, limit: 10, offset: this.state.offset });
             if (result.success){
+                
+                if (this.state.refreshing){
+                    await this.setState({
+                        dados: []
+                    })
+                }
                 if (result.result.length == 0){
                     this.setState({
                         semMaisDados: true,
-                        carregandoInicial: false
                     })
                 } else {
                     if (result.result.length < 10){
                         await this.setState({
                             semMaisDados: true,
-                            carregandoInicial: false
                         })
                     }
-                    let dados = [];
-                    if (!this.state.carregandoInicial){
-                        dados = this.state.dados;
-                    }
+                    let dados = this.state.dados;
                     for (var i = 0; i < result.result.length; i++){
                         dados.push(result.result[i]);
                     }
                     this.setState({
                         dados: dados,
-                        carregandoInicial: false
-                    }, function() {
-                        console.log("TODOS OS DADOS = ", this.state.dados)
                     });
                 }
             } else {
-                this.setState({
-                    carregandoInicial: false
-                })
             }
-        } else {
-            console.log("bbbbbbbbbbbb")
+            this.setState({
+                carregandoInicial: false,
+                refreshing: false
+            })
         }
-        console.log("aaaaaaaaaaaaaa")
     }
 
     pegarDados(){
@@ -109,7 +105,7 @@ export default class Comentarios extends Network {
     }
 
     returnLoader(index){
-        if (index == this.state.dados.length-1 && !this.state.semMaisDados)
+        if (index == this.state.dados.length-1 && !this.state.semMaisDados && !this.state.refreshing)
             return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 15 }}/>
         return;
     }
@@ -154,7 +150,7 @@ export default class Comentarios extends Network {
     }
 
     renderView(){
-        if (!this.state.carregando && !this.state.carregandoInicial && this.state.dados.length == 0){
+        if (this.state.dados.length == 0 && !this.state.refreshing){
             return <SemDados icone={"sad-tear"} titulo={"Nenhum comentário"} texto={"Esse post ainda não tem comentários."}/>
         }
         return (
@@ -164,12 +160,12 @@ export default class Comentarios extends Network {
                 renderItem={({item, index}) => (
                     
                     <View>
-                        <Comentario data={item} navigation={this.props.navigation}/>
+                        <Comentario data={item} navigation={this.props.navigation} onDelete={() => this.carregarDadosIniciais()}/>
                         {this.returnLoader(index)}
                     </View>
 
                 )}
-                refreshing={this.state.carregandoInicial}
+                refreshing={this.state.refreshing}
                 onRefresh={() => this.carregarDadosIniciais()}
                 onEndReached={() => this.pegarDados()}
                 onEndReachedThreshold={0.5}
@@ -181,7 +177,13 @@ export default class Comentarios extends Network {
     }
 
     render(){
-        
+        if (this.state.carregandoInicial){
+            return (
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <ActivityIndicator size="large" color="#28b657" />
+                </View>
+            );
+        }
         return (      
             <View style={{flex: 1}}>
                 {this.renderView()}

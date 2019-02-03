@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../network';
@@ -20,7 +20,8 @@ class Post extends Network {
                 titulo: "",
                 subTitulo: "",
                 botoes: []
-            }
+            },
+            excluindo: false
         }
         // console.log("state = ", this.state.data)
     }
@@ -104,6 +105,13 @@ class Post extends Network {
     }
 
     returnFolhinha(meu_post, is_restaurante){
+        if (this.state.excluindo){
+            return (
+                <View style={styles.viewInfoDots}>
+                    <ActivityIndicator size="small" color="#777" />
+                </View>
+            );
+        }
         if (meu_post){
             return (
                 <TouchableOpacity style={styles.viewInfoDots} onPress={() => this.abrirModalExclusao()}>
@@ -135,7 +143,7 @@ class Post extends Network {
     criarBotoesExclusao(){
         let botoes = [
             {chave: "EXCLUIR", texto: "Excluir postagem", color: '#DC143C', fontWeight: 'bold'},
-            {chave: "TENTAR", texto: "Cancelar"},
+            {chave: "CANCELAR", texto: "Cancelar"},
         ]
         return botoes;
     }
@@ -157,6 +165,9 @@ class Post extends Network {
     }
 
     async excluirPost(){
+        this.setState({
+            excluindo: true
+        })
         let result = await this.callMethod("excluirPost", { id_post: this.state.data.id_post });
         if (result.success){
             this.props.onDelete(this.state.data.id_post);

@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Dimensions, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../network';
+import Modalzin from '../Modal/Modal';
 
 
 const dimensions = Dimensions.get('window');
@@ -15,7 +16,14 @@ class Comentario extends Network {
         super(props);
         this.state = {
             data: this.props.data,
-            navigation: this.props.navigation
+            navigation: this.props.navigation,
+            modal: {
+                visible: false,
+                titulo: "",
+                subTitulo: "",
+                botoes: []
+            },
+            excluindo: false
         }
     }
 
@@ -62,12 +70,90 @@ class Comentario extends Network {
         }
     }
 
+    returnDots(meu_post, is_restaurante){
+        if (this.state.excluindo){
+            return (
+                <View style={styles.viewInfoDots}>
+                    <ActivityIndicator size="small" color="#777" />
+                </View>
+            );
+        }
+        if (meu_post){
+            return (
+                <TouchableOpacity style={styles.viewInfoDots} onPress={() => this.abrirModalExclusao()}>
+                    <Icon name="ellipsis-v" color="#000" size={14} />
+                </TouchableOpacity>
+            );
+        }
+        if (is_restaurante){
+            return (
+                <View style={styles.viewInfoDots}>
+                    <AutoHeightImage source={require('../../assets/imgs/folha_nutring.png')} width={15}/>
+                </View>
+            );
+        }
+        return null;
+    }
+
+    abrirModalExclusao(){
+        this.setState({
+            modal: {
+                visible: true,
+                titulo: "Postagem",
+                subTitulo: "Deseja excluir seu comentário?",
+                botoes: this.criarBotoesExclusao()
+            }
+        })
+    }
+
+    criarBotoesExclusao(){
+        let botoes = [
+            {chave: "EXCLUIR", texto: "Excluir postagem", color: '#DC143C', fontWeight: 'bold'},
+            {chave: "CANCELAR", texto: "Cancelar"},
+        ]
+        return botoes;
+    }
+
+    setModalState(visible){
+        this.setState({
+            modal: {
+                visible: visible
+            }
+        })
+    }
+
+    getModalClick(key){
+        this.setModalState(false);
+        console.log("clicando no " + key)
+        if (key == "EXCLUIR"){
+            this.excluirComentario();
+        }
+    }
+
+    async excluirComentario(){
+        this.setState({
+            excluindo: true
+        })
+        let result = await this.callMethod("excluirComentario", { id_comentario: this.state.data.id_comentario });
+        if (result.success){
+            this.props.onDelete(this.state.data.id_comentario);
+        }
+    }
+
     render(){
         let larguraImagem = imageWidth;
-        let { id_comentario, id_post, comentario, curtidas, foto, nome, tempo_postado, id_usuario } = this.state.data;
+        let { id_comentario, id_post, comentario, curtidas, foto, nome, tempo_postado, id_usuario, sou_eu, is_restaurante } = this.state.data;
         // let { navigation } = this.state.navigation;
         return (
             <View style={styles.container}>
+                <Modalzin 
+                    titulo={this.state.modal.titulo} 
+                    subTitulo={this.state.modal.subTitulo} 
+                    visible={this.state.modal.visible} 
+                    onClick={(key) => this.getModalClick(key)}
+                    onClose={() => this.setState({modal: {visible: false}})}
+                    botoes={this.state.modal.botoes}
+                    />
                 <View style={styles.viewFoto}>
                     <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000'}}>
                         <Image resizeMethod="resize" source={{uri: foto}}  style={{height: 38, width: 38, borderRadius: 38/2, }}/>
@@ -76,9 +162,12 @@ class Comentario extends Network {
 
                 <View style={styles.viewInfo}>
                     <View style={styles.viewInfoTexto}>
-                        <Text style={styles.nome}>{nome}</Text>
-                        <View style={{height: 4, width: 4, borderRadius: 4/2, backgroundColor: '#777', marginTop: 8}}></View>
-                        {this.returnTextoPostedAgo(tempo_postado)}
+                        <View style={{flex: .8, flexDirection: 'row'}}>
+                            <Text style={styles.nome}>{nome}</Text>
+                            <View style={{height: 4, width: 4, borderRadius: 4/2, backgroundColor: '#777', marginTop: 8}}></View>
+                            {this.returnTextoPostedAgo(tempo_postado)}
+                        </View>
+                        {this.returnDots(sou_eu, is_restaurante)}
                     </View>
                     <Text style={styles.comentario}>{comentario}</Text>
                     <View style={styles.tabs}>
@@ -155,5 +244,18 @@ const styles = {
         alignItems: 'center',
         paddingTop: 5,
         paddingRight: 8,
+    },
+    viewInfoCurtidas: {
+        flex: .3,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        // paddingTop: 3
+    },
+    viewInfoDots: {
+        flex: .3,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        paddingRight: 10
     },
 }
