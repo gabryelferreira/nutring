@@ -55,7 +55,7 @@ export default class Feed extends Network {
         modalComentarios: {
             visible: false
         },
-        semInternet: false
+        semInternet: false,
     }
 
 
@@ -90,6 +90,11 @@ export default class Feed extends Network {
         if (!this.state.semMaisDados){
             let result = await this.callMethod("getFeed", { offset: this.state.offset, limit: 10 })
             if (result.success){
+                if (this.state.refreshing){
+                    await this.setState({
+                        dados: []
+                    })
+                }
                 this.setState({
                     semInternet: false
                 })
@@ -245,7 +250,7 @@ export default class Feed extends Network {
                     
                     <View>
                         
-                        <Post data={item} index={index} navigation={this.props.navigation}/>
+                        <Post data={item} index={index} navigation={this.props.navigation} onDelete={(id_post) => this.carregarDadosIniciais()}/>
                         {this.returnLoader(index, 'dados')}
                     </View>
 

@@ -193,7 +193,7 @@ export default class Perfil extends Network {
             return <ActivityIndicator color="#27ae60" size="large" style={{ marginVertical: 20 }}/>
         } else if (!this.state.refreshing && this.state.semMaisDados && this.state.dados.length == 0){
             return (
-                <SemDadosPerfil icone={"utensils"} titulo={"Ainda não há pratos"} texto={this.getTextoSemFotos()} seta={this.state.user.sou_eu}/>
+                <SemDadosPerfil icone={"utensils"} titulo={"Ainda não há pratos"} texto={this.getTextoSemFotos()} seta={false}/>
             );
         } return null;
     }
@@ -409,7 +409,7 @@ export default class Perfil extends Network {
                                                     this.requisitarPermissaoGaleria()
                                                 }}
                             style={{
-                                paddingHorizontal: 20, 
+                                paddingHorizontal: 10, 
                                 paddingVertical: 3, 
                                 justifyContent: 'center', 
                                 alignItems: 'center', 
@@ -503,7 +503,7 @@ export default class Perfil extends Network {
             keyExtractor={(item, index) => item.id_post.toString()}
             numColumns={3}
             renderItem={({item, index}) => (
-                <FotoPerfil data={item} index={index} onPress={() => this.props.navigation.push("Postagem", { id_post: item.id_post } )}/>
+                <FotoPerfil data={item} index={index} onPress={() => this.props.navigation.push("Postagem", { id_post: item.id_post, onGoBack: () => this.getPerfil(), } )}/>
             )}
             refreshing={this.state.refreshing}
             onRefresh={() => this.getPerfil()}
@@ -562,7 +562,7 @@ export default class Perfil extends Network {
 
     criarBotoes(){
         let botoes = [
-            {chave: "ALTERAR", texto: "Alterar foto", color: '#27ae60', fontWeight: 'bold'},
+            {chave: "ALTERAR", texto: "Abrir galeria", color: '#27ae60', fontWeight: 'bold'},
             {chave: "TENTAR", texto: "Cancelar"},
         ]
         return botoes;

@@ -3,6 +3,7 @@ import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../network';
+import Modalzin from '../Modal/Modal';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -13,7 +14,13 @@ class Post extends Network {
     constructor(props){
         super(props);
         this.state = {
-            data: this.props.data
+            data: this.props.data,
+            modal: {
+                visible: false,
+                titulo: "",
+                subTitulo: "",
+                botoes: []
+            }
         }
         // console.log("state = ", this.state.data)
     }
@@ -96,7 +103,14 @@ class Post extends Network {
         }
     }
 
-    returnFolhinha(is_restaurante){
+    returnFolhinha(meu_post, is_restaurante){
+        if (meu_post){
+            return (
+                <TouchableOpacity style={styles.viewInfoDots} onPress={() => this.abrirModalExclusao()}>
+                    <Icon name="ellipsis-v" color="#000" size={18} />
+                </TouchableOpacity>
+            );
+        }
         if (is_restaurante){
             return (
                 <View style={styles.viewInfoCurtidas}>
@@ -105,6 +119,48 @@ class Post extends Network {
             );
         }
         return null;
+    }
+
+    abrirModalExclusao(){
+        this.setState({
+            modal: {
+                visible: true,
+                titulo: "Postagem",
+                subTitulo: "Deseja excluir sua postagem?",
+                botoes: this.criarBotoesExclusao()
+            }
+        })
+    }
+
+    criarBotoesExclusao(){
+        let botoes = [
+            {chave: "EXCLUIR", texto: "Excluir postagem", color: '#DC143C', fontWeight: 'bold'},
+            {chave: "TENTAR", texto: "Cancelar"},
+        ]
+        return botoes;
+    }
+
+    setModalState(visible){
+        this.setState({
+            modal: {
+                visible: visible
+            }
+        })
+    }
+
+    getModalClick(key){
+        this.setModalState(false);
+        console.log("clicando no " + key)
+        if (key == "EXCLUIR"){
+            this.excluirPost();
+        }
+    }
+
+    async excluirPost(){
+        let result = await this.callMethod("excluirPost", { id_post: this.state.data.id_post });
+        if (result.success){
+            this.props.onDelete(this.state.data.id_post);
+        }
     }
     
     returnDescricao(descricao){
@@ -120,10 +176,18 @@ class Post extends Network {
 
     render(){
         let larguraImagem = imageWidth;
-        let { id_usuario, id_post, foto, is_restaurante, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios } = this.state.data;
+        let { id_usuario, id_post, foto, is_restaurante, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios, meu_post } = this.state.data;
         let { index } = this.props;
         return (
             <View style={styles.container}>
+            <Modalzin 
+                titulo={this.state.modal.titulo} 
+                subTitulo={this.state.modal.subTitulo} 
+                visible={this.state.modal.visible} 
+                onClick={(key) => this.getModalClick(key)}
+                onClose={() => this.setState({modal: {visible: false}})}
+                botoes={this.state.modal.botoes}
+                />
                 <View style={[styles.viewInfo, styles.wrapper]}>
                     <View style={styles.fotoETexto}>
                         <View style={styles.viewFoto}>
@@ -138,7 +202,7 @@ class Post extends Network {
                             {this.returnTextoPostedAgo(tempo_postado)}
                         </View>
                     </View>
-                    {this.returnFolhinha(is_restaurante)}
+                    {this.returnFolhinha(meu_post, is_restaurante)}
                 </View>
                 <View style={styles.viewInfoEConteudo}>
                     {this.returnDescricao(descricao)}
@@ -209,6 +273,13 @@ const styles = {
         flexDirection: 'row',
         justifyContent: 'flex-end',
         // paddingTop: 3
+    },
+    viewInfoDots: {
+        flex: .3,
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        paddingRight: 10
     },
     curtidas: {
         fontSize: 17,

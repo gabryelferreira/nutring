@@ -34,6 +34,11 @@ export default class Postagem extends Network {
         }
     }
 
+    voltarParaPerfil(){
+        this.props.navigation.state.params.onGoBack();
+        this.props.navigation.goBack();
+    }
+
     render(){
         if (this.state.loading){
             return (
@@ -45,7 +50,7 @@ export default class Postagem extends Network {
         return (
             <View style={{flex: 1}}>
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                    <Post data={this.state.post} navigation={this.props.navigation}/>
+                    <Post data={this.state.post} navigation={this.props.navigation} onDelete={() => this.voltarParaPerfil()}/>
                 </ScrollView>
             </View>
         );
