@@ -107,7 +107,7 @@ export default class Notificacoes extends Network {
                      quantidade={this.state.promocao.quantidade}
                      descricao={this.state.promocao.quantidade > 0 ? "Veja as promoções dos seus restaurantes favoritos." : "Você não possui promoções disponíveis."} 
                      promo={true}
-                     foto={this.state.promocao.foto_restaurante}
+                     foto={this.state.promocao.foto_restaurante ? this.state.promocao.foto_restaurante : 'http://imagensemoldes.com.br/wp-content/uploads/2018/06/Emoji-Triste-PNG-300x300.png'}
                      />
   }
 

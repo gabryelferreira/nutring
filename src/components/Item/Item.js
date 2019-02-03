@@ -38,11 +38,14 @@ export default class Item extends Network {
 
     renderBolinha = () => {
         if (this.props.promo){
-            return (
-                <View style={[styles.bola, styles.bolaMaior]}>
-                    <Text style={styles.textoBola}>{this.props.quantidade}</Text>
-                </View>
-            );
+            if (this.props.quantidade){
+                return (
+                    <View style={[styles.bola, styles.bolaMaior]}>
+                        <Text style={styles.textoBola}>{this.props.quantidade}</Text>
+                    </View>
+                );
+            }
+            return null;
         } else if (this.state.icone){
             return (
                 <View style={[styles.bola, styles.bolaMenor]}>
