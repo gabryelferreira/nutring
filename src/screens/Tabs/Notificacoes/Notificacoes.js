@@ -87,8 +87,22 @@ export default class Notificacoes extends Network {
     } return null;
   }
 
-  teste(id_acao){
-    console.log("acao  = ", id_acao)
+  handleOnPress = (cd_acao, id_usuario, id_post) => {
+    if (cd_acao == "COMENTOU_POST" || cd_acao == "CURTIU_POST" || cd_acao == "CURTIU_COMENTARIO"){
+        this.props.navigation.push("Postagem", { id_post: id_post });
+    } else if (cd_acao == "SEGUIU"){
+        this.props.navigation.push("Perfil", { id_usuario_perfil: id_usuario });
+    }
+  }
+
+  handleOnPressFoto = (id_usuario_perfil) => {
+      this.props.navigation.push("Perfil", { id_usuario_perfil });
+  }
+
+  handleOnPressFinal = (id_post, foto_post) => {
+    if (foto_post){
+      this.props.navigation.push("Postagem", { id_post });
+    }
   }
 
   render() {
@@ -139,6 +153,9 @@ export default class Notificacoes extends Network {
                 fotoPost={item.foto_post}
                 tempoAtras={item.tempo_atras}
                 navigation={this.props.navigation}
+                onPress={() => this.handleOnPress(item.cd_acao, item.id_usuario, item.id_post)}
+                onPressFoto={() => this.handleOnPressFoto(item.id_usuario)}
+                onPressFinal={() => this.handleOnPressFinal(item.id_post, item.foto_post)}
                 />
         )}
         refreshing={this.state.refreshing}
@@ -150,6 +167,7 @@ export default class Notificacoes extends Network {
         />
     );
   }
+
 
 }
 

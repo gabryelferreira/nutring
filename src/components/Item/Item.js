@@ -96,21 +96,6 @@ export default class Item extends Network {
         return null;
     }
 
-    handleOnPress = () => {
-        console.log("cd acao = ", this.props.item.cd_acao)
-        if (this.props.item.cd_acao == "COMENTOU_POST" || this.props.item.cd_acao == "CURTIU_POST" || this.props.item.cd_acao == "CURTIU_COMENTARIO"){
-            console.log("id_post = " + this.props.item.id_post)
-            this.props.navigation.push("Postagem", { id_post: this.props.item.id_post });
-        } else if (this.props.item.cd_acao == "SEGUIU"){
-            console.log("SEGUIUUUU")
-            this.props.navigation.push("Perfil", { id_usuario_perfil: this.props.item.id_usuario });
-        }
-    }
-
-    handleOnPressFoto = () => {
-        this.props.navigation.push("Perfil", { id_usuario_perfil: this.props.item.id_usuario });
-    }
-
     renderFoto = () => {
         if (this.props.foto){
             return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, borderRadius: 45/2}} source={{uri: this.props.foto}}/>
@@ -122,14 +107,14 @@ export default class Item extends Network {
     render(){
         return (
             <TouchableOpacity style={[styles.notificacao, [this.props.promo ? {marginBottom: 20} : {}]]}>
-                <TouchableOpacity style={styles.foto} onPress={() => this.handleOnPressFoto()}>
+                <TouchableOpacity style={styles.foto} onPress={this.props.onPressFoto}>
                     {this.renderFoto()}
                     {this.renderBolinha()}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.textos} onPress={() => this.handleOnPress()}>
+                <TouchableOpacity style={styles.textos} onPress={this.props.onPress}>
                     {this.renderTexto()}
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.icone} onPress={() => this.handleOnPress()}>
+                <TouchableOpacity style={styles.icone} onPress={this.props.onPressFinal}>
                     {this.renderFinal()}
                 </TouchableOpacity>
             </TouchableOpacity>
