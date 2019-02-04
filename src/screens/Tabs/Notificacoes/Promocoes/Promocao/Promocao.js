@@ -126,6 +126,20 @@ export default class Promocao extends Network {
         }
     }
 
+    returnPromocaoRelampago(){
+        if (this.state.promocao.is_promocao_relampago){
+            return (
+                <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', alignItems: 'center'}}>
+                    <Icon name="bolt" color="#eccc68" size={16}/>
+                    <View style={styles.botaoTimer}>
+                        <Text style={styles.textoBotaoTimer}>HOJE</Text>
+                    </View>
+                </View>
+            );
+        }
+        return null;
+    }
+
     render(){
         if (this.state.carregandoPrimeiraVez){
             return (
@@ -159,12 +173,7 @@ export default class Promocao extends Network {
                                 </TouchableOpacity>
                                 {this.returnTextoEmbaixoTitulo()}
                             </View>
-                            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', alignItems: 'center'}}>
-                                <Icon name="bolt" color="#eccc68" size={16}/>
-                                <View style={styles.botaoTimer}>
-                                    <Text style={styles.textoBotaoTimer}>HOJE</Text>
-                                </View>
-                            </View>
+                            {this.returnPromocaoRelampago()}
                         </View>
                         <View style={styles.viewDescricao}>
                             <Text style={styles.descricao}>{this.state.promocao.mensagem}</Text>
