@@ -60,8 +60,8 @@ export default class Login extends Component {
         return (
             <View style={{flex: 1}}>
                 <View style={styles.view}>
-                    <AutoHeightImage source={require('../../assets/imgs/nutring-color.png')} width={260}/>
-                    <Text style={{marginTop: 10}}>Você mais saudável</Text>
+                    <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>
+                    {/* <Text style={{marginTop: 10}}>Você mais saudável</Text> */}
                     <View style={styles.botoes}>
                         <TouchableOpacity onPress={() => this.props.navigation.navigate('Cadastro')} style={[styles.botao, styles.botaoVerde]}>
                             <Text style={[styles.textoBranco, styles.textoBotao]}>Criar conta</Text>

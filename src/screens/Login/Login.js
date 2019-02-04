@@ -149,8 +149,8 @@ export default class Login extends Network {
 
                     <View style={styles.viewLogin}>
                         <View style={{alignItems: 'center', justifyContent: 'flex-end', flex: .5}}>
-                            <AutoHeightImage source={require('../../assets/imgs/nutring-color.png')} width={260}/>
-                            <Text style={{marginTop: 10}}>Você mais saudável</Text>
+                            <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>
+                            {/* <Text style={{marginTop: 10}}>Você mais saudável</Text> */}
                         </View>
                     {/* <View style={styles.botoesOpcao}>
                         <TouchableOpacity style={[styles.botaoOpcao, styles.botaoVerde]}>

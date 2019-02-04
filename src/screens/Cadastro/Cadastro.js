@@ -681,8 +681,7 @@ export default class Cadastro extends Network {
 
                     <View style={styles.viewCadastro}>
                         <View style={{alignItems: 'center'}}>
-                            <AutoHeightImage source={require('../../assets/imgs/nutring-color.png')} width={260}/>
-                            <Text style={{marginTop: 10}}>Você mais saudável</Text>
+                            <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>
                         </View>
                         <TouchableOpacity style={[this.state.opcao == "PESSOA" ? styles.botoesOpcao : [styles.botoesOpcao, styles.botoesOpcaoVerde]]}>
                             <TouchableOpacity style={[this.state.opcao == "PESSOA" ? [styles.botaoOpcao, styles.botaoVerde] : [styles.botaoOpcao, styles.botaoBranco]]} onPress={() => this.mudarOpcao("PESSOA")}>
