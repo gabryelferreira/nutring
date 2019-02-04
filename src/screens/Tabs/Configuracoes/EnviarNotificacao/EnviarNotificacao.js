@@ -17,7 +17,7 @@ const imageWidth = dimensions.width;
 export default class EnviarNotificacao extends Network {
 
     static navigationOptions = {
-        title: 'Enviar notificação',
+        title: 'Cadastrar promoção',
     };
 
     segundoInput;
@@ -41,7 +41,8 @@ export default class EnviarNotificacao extends Network {
             foto: "",
             permissaoGaleria: false,
             fotosGaleria: [],
-            galeriaAberta: false
+            galeriaAberta: false,
+            descricao: ""
         }
     }
 
@@ -81,7 +82,7 @@ export default class EnviarNotificacao extends Network {
         RNFetchBlob.fs.readFile(this.state.foto, 'base64')
         .then(async (data) => {
             let url = `data:image/jpg;base64,${data}`;
-            let result = await this.callMethod("enviarNotificacao", { titulo: this.state.titulo, mensagem: this.state.mensagem, is_promocao_relampago: this.state.promocaoRelampago, foto: url });
+            let result = await this.callMethod("cadastrarPromocao", { titulo: this.state.titulo, mensagem: this.state.mensagem, is_promocao_relampago: this.state.promocaoRelampago, foto: url });
             if (result.success){
                 if (result.result == "NOTIFICACAO_ENVIADA"){
                     this.setState({

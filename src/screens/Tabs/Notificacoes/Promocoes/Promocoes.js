@@ -104,8 +104,8 @@ export default class Promocoes extends Network {
         } return null;
     }
 
-    handleOnPress = (id_notificacao) => {
-        this.props.navigation.push("Promocao", { id_notificacao });
+    handleOnPress = (id_promocao) => {
+        this.props.navigation.push("Promocao", { id_promocao });
     }
 
     handleOnPressFoto = (id_usuario_perfil) => {
@@ -130,19 +130,19 @@ export default class Promocoes extends Network {
     return (
       <FlatList
         data={this.state.dados}
-        keyExtractor={(item, index) => item.id_notificacao.toString()}
+        keyExtractor={(item, index) => item.id_promocao.toString()}
         renderItem={({item, index}) => (
               <Promocao
                 titulo={item.titulo}
-                descricao={item.mensagem}
+                descricao={item.descricao}
                 foto={item.foto_restaurante}
                 // tempoAtras={item.tempo_atras}
                 relampago={item.is_promocao_relampago}
                 confirmados={item.confirmados}
                 confirmacao={item.estou_confirmado}
-                onPress={() => this.handleOnPress(item.id_notificacao)}
+                onPress={() => this.handleOnPress(item.id_promocao)}
                 onPressFoto={() => this.handleOnPressFoto(item.id_usuario)}
-                onPressFinal={() => this.handleOnPress(item.id_notificacao)}
+                onPressFinal={() => this.handleOnPress(item.id_promocao)}
                 />
         )}
         refreshing={this.state.refreshing}
