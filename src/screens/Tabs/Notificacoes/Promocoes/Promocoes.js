@@ -133,7 +133,7 @@ export default class Promocoes extends Network {
         keyExtractor={(item, index) => item.id_promocao.toString()}
         renderItem={({item, index}) => (
               <Promocao
-                titulo={item.titulo}
+                titulo={item.nome}
                 descricao={item.descricao}
                 foto={item.foto_restaurante}
                 // tempoAtras={item.tempo_atras}

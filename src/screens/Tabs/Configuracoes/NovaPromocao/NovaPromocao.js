@@ -14,7 +14,7 @@ const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
 
-export default class EnviarNotificacao extends Network {
+export default class NovaPromocao extends Network {
 
     static navigationOptions = {
         title: 'Cadastrar promoção',
@@ -25,7 +25,7 @@ export default class EnviarNotificacao extends Network {
     constructor(props){
         super(props);
         this.state = {
-            notificacaoEnviada: false,
+            promocaoFinalizada: false,
             modal: {
                 visible: false,
                 titulo: "",
@@ -34,7 +34,9 @@ export default class EnviarNotificacao extends Network {
             },
             loading: false,
             titulo: "",
-            mensagem: "",
+            descricao: "",
+            tituloNotificacao: "",
+            descricaoNotificacao: "",
             promocaoRelampago: false,
             seguidores: 0,
             disabled: true,
@@ -42,7 +44,8 @@ export default class EnviarNotificacao extends Network {
             permissaoGaleria: false,
             fotosGaleria: [],
             galeriaAberta: false,
-            descricao: ""
+            descricao: "",
+            enviarNotificacao: false,
         }
     }
 
@@ -54,7 +57,7 @@ export default class EnviarNotificacao extends Network {
         let result = await this.callMethod("getNomeUsuarioESeguidores");
         if (result.success){
             this.setState({
-                titulo: result.result.nome,
+                tituloNotificacao: result.result.nome,
                 seguidores: result.result.seguidores,
                 disabled: false
             })
@@ -67,39 +70,64 @@ export default class EnviarNotificacao extends Network {
                 visible: false
             }
         })
-        if (this.state.notificacaoEnviada){
+        if (this.state.promocaoFinalizada){
             this.props.navigation.goBack();
         }
         if (key == "ENVIAR"){
-            this.enviarNotificacao();
+            this.salvarPromocao();
         }
     }
 
-    async enviarNotificacao(){
+    async salvarPromocao(){
         this.setState({
             loading: true
         })
         RNFetchBlob.fs.readFile(this.state.foto, 'base64')
         .then(async (data) => {
             let url = `data:image/jpg;base64,${data}`;
-            let result = await this.callMethod("cadastrarPromocao", { titulo: this.state.titulo, mensagem: this.state.mensagem, is_promocao_relampago: this.state.promocaoRelampago, foto: url });
+            let result = await this.callMethod("salvarPromocao", { titulo: this.state.titulo, descricao: this.state.descricao, is_promocao_relampago: this.state.promocaoRelampago, foto: url });
             if (result.success){
-                if (result.result == "NOTIFICACAO_ENVIADA"){
-                    this.setState({
-                        notificacaoEnviada: true
-                    })
-                    this.showModal("Notificação enviada", "Sua notificação foi enviada com sucesso para seus seguidores.");
-                } else if (result.result == "NOTIFICACAO_ENVIADA"){
-                    this.showModal("Notificação falhou", "A notificação não foi enviada. Tente novamente mais tarde.");
+                if (result.result == "DEU_BOM"){
+                    if (!this.state.enviarNotificacao){
+                        this.setState({
+                            promocaoFinalizada: true,
+                            loading: false
+                        })
+                        this.showModal("Promoção cadastrada", "Sua promoção foi cadastrada com sucesso e já está disponível para seus seguidores.");
+                    } else {
+                        this.enviarNotificacao();
+                    }
+                } else {
+                    this.showModal("Dados inválidos", result.result);
                 }
                 
             } else {
                 this.showModal("Ocorreu um erro", "Verifique sua internet e tente novamente.");
+                this.setState({
+                    loading: false
+                })
             }
+        })
+    }
+
+    async enviarNotificacao(){
+        let result = await this.callMethod("enviarNotificacao", { mensagem: this.state.descricaoNotificacao });
+        if (result.success){
+            if (result.result == "NOTIFICACAO_ENVIADA"){
+                this.showModal("Promoção cadastrada", "Sua promoção foi cadastrada com sucesso e seus usuários já foram notificados sobre ela.");
+            } else if (result.result == "NOTIFICACAO_FALHOU"){
+                this.showModal("Sua notificação falhou", "Não foi possível enviar sua notificação para seus seguidores. Entre em contato com o suporte para mais informações.");
+            }
+            this.setState({
+                promocaoFinalizada: true,
+                loading: false
+            })
+        } else {
+            this.showModal("Ocorreu um erro", "Sua notificação falhou ao ser enviada. Entre em contato com o suporte para mais informações.");
             this.setState({
                 loading: false
             })
-        })
+        }
     }
 
     showModal(titulo, subTitulo, botoes){
@@ -116,16 +144,23 @@ export default class EnviarNotificacao extends Network {
     confirmarEnvio(){
         if (!this.state.foto){
             this.showModal("Foto obrigatória", "Para publicar uma promoção, é necessário colocar uma foto na publicação.");
-        } else if (!this.state.mensagem){
-            this.showModal("Descrição obrigatória", "Para enviar uma notificação e publicar a promoção, é necessário colocar uma descrição.");
-        } else {
-            this.showModal("Confirmação de envio", "Deseja enviar essa notificação para seus " + this.state.seguidores + " seguidores?", this.criarBotoesExclusao());
+        } else if (!this.state.titulo){
+            this.showModal("Título obrigatório", "Para publicar uma promoção, é necessário colocar um título.");
+        } else if (!this.state.descricao){
+            this.showModal("Descrição obrigatória", "Para publicar uma promoção, é necessário colocar uma descrição.");
+        } else if (this.state.enviarNotificacao && !this.state.descricaoNotificacao){
+            this.showModal("Descrição da notificação obrigatória", "Para enviar uma notificação, é necessário colocar uma descrição.");
+        } else if (this.state.enviarNotificacao){
+            this.showModal("Confirmação de envio", "Deseja cadastrar a promoção e notificar seus " + this.state.seguidores + " seguidores?", this.criarBotoesExclusao());
+        }
+        else {
+            this.salvarPromocao();
         }
     }
 
     criarBotoesExclusao(){
         let botoes = [
-            {chave: "ENVIAR", texto: "Enviar notificação", color: '#28b657', fontWeight: 'bold'},
+            {chave: "ENVIAR", texto: "Confirmar", color: '#28b657', fontWeight: 'bold'},
             {chave: "CANCELAR", texto: "Cancelar"},
         ]
         return botoes;
@@ -183,6 +218,38 @@ export default class EnviarNotificacao extends Network {
         }
     }
 
+    renderEnviarNotificacao(){
+        if (this.state.enviarNotificacao){
+            return (
+                <View>
+
+                    <Input label={"Título da notificação"}
+                        icone={"comment"}
+                        onChangeText={(tituloNotificacao) => this.setState({tituloNotificacao})}
+                        value={this.state.tituloNotificacao}
+                        autoCapitalize={"sentences"}
+                        small={true}
+                        maxLength={30}
+                        returnKeyType={"none"}
+                        disabled={true}
+                        />
+                    <Input label={"Descrição da notificação"}
+                        icone={"comment"}
+                        onChangeText={(descricaoNotificacao) => this.setState({descricaoNotificacao})}
+                        value={this.state.descricaoNotificacao}
+                        onSubmitEditing={() => this.confirmarEnvio()}
+                        autoCapitalize={"sentences"}
+                        small={true}
+                        multiline={true}
+                        numberOfLines={4}
+                        maxLength={100}
+                        returnKeyType={"send"}
+                    />
+                </View>
+            )
+        }
+    }
+
     render(){
         if (this.state.galeriaAberta){
             return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.setState({foto, galeriaAberta: false})} onClose={() => this.setState({galeriaAberta: false})}/>
@@ -220,32 +287,34 @@ export default class EnviarNotificacao extends Network {
                                 </TouchableOpacity>
                         </View>
                     </View>
-                        <Opcao icone={"bolt"} texto={"Promoção Relâmpago"} toggle={true} toggleChange={() => this.setState({promocaoRelampago: !this.state.promocaoRelampago})} toggleValue={this.state.promocaoRelampago}/>
+                    <Opcao icone={"bolt"} texto={"Promoção Relâmpago"} toggle={true} toggleChange={() => this.setState({promocaoRelampago: !this.state.promocaoRelampago})} toggleValue={this.state.promocaoRelampago}/>
                     <View style={styles.container}>
                         <Input label={"Título"}
-                                    icone={"comment"}
+                                icone={"comment"}
                                 onChangeText={(titulo) => this.setState({titulo})}
                                 value={this.state.titulo}
                                 onSubmitEditing={() => this.segundoInput.focus()}
                                 autoCapitalize={"sentences"}
                                 small={true}
                                 maxLength={255}
-                                returnKeyType={"none"}
-                                disabled={true}
+                                returnKeyType={"next"}
                             />
                         <Input label={"Descrição"}
                                 icone={"comment"}
                                 inputRef={(input) => this.segundoInput = input}
-                            onChangeText={(mensagem) => this.setState({mensagem})}
-                            value={this.state.mensagem}
-                            onSubmitEditing={() => this.confirmarEnvio()}
+                            onChangeText={(descricao) => this.setState({descricao})}
+                            value={this.state.descricao}
                             autoCapitalize={"sentences"}
                             small={true}
                             multiline={true}
                             numberOfLines={4}
                             maxLength={255}
-                            returnKeyType={"send"}
+                            returnKeyType={"none"}
                         />
+                    </View>
+                    <Opcao icone={"rocketchat"} texto={"Enviar notificação?"} toggle={true} toggleChange={() => this.setState({enviarNotificacao: !this.state.enviarNotificacao})} toggleValue={this.state.enviarNotificacao}/>
+                    <View style={styles.container}>
+                        {this.renderEnviarNotificacao()}
                         <View style={{marginVertical: 5, flex: .7}}>
                             <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
                             {/* <Text style={{fontSize: 11, color: '#000'}}>Pode ficar tranquilo ;)</Text> */}

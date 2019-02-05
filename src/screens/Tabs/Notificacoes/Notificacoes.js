@@ -117,11 +117,13 @@ export default class Notificacoes extends Network {
     } return null;
   }
 
-  handleOnPress = (cd_acao, id_usuario, id_post) => {
+  handleOnPress = (cd_acao, id_usuario, id_post, id_promocao) => {
     if (cd_acao == "COMENTOU_POST" || cd_acao == "CURTIU_POST" || cd_acao == "CURTIU_COMENTARIO"){
         this.props.navigation.push("Postagem", { id_post: id_post });
     } else if (cd_acao == "SEGUIU"){
         this.props.navigation.push("Perfil", { id_usuario_perfil: id_usuario });
+    } else if (cd_acao == "CONFIRMOU_PRESENCA"){
+      this.props.navigation.push("Promocao", { id_promocao });
     }
   }
 
@@ -129,9 +131,11 @@ export default class Notificacoes extends Network {
       this.props.navigation.push("Perfil", { id_usuario_perfil });
   }
 
-  handleOnPressFinal = (id_post, foto_post) => {
+  handleOnPressFinal = (id_post, foto_post, id_promocao) => {
     if (foto_post){
       this.props.navigation.push("Postagem", { id_post });
+    } else if (id_promocao){
+      this.props.navigation.push("Promocao", { id_promocao });
     }
   }
 
@@ -159,12 +163,12 @@ export default class Notificacoes extends Network {
                 titulo={item.nome}
                 descricao={item.descricao}
                 foto={item.foto}
-                fotoPost={item.foto_post}
+                fotoPost={item.foto_promocao ? item.foto_promocao : item.foto_post}
                 tempoAtras={item.tempo_atras}
                 navigation={this.props.navigation}
-                onPress={() => this.handleOnPress(item.cd_acao, item.id_usuario, item.id_post)}
+                onPress={() => this.handleOnPress(item.cd_acao, item.id_usuario, item.id_post, item.id_promocao)}
                 onPressFoto={() => this.handleOnPressFoto(item.id_usuario)}
-                onPressFinal={() => this.handleOnPressFinal(item.id_post, item.foto_post)}
+                onPressFinal={() => this.handleOnPressFinal(item.id_post, item.foto_post, item.id_promocao)}
                 />
         )}
         refreshing={this.state.refreshing}

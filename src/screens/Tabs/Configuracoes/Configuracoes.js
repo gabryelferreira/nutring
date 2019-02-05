@@ -93,9 +93,9 @@ export default class Configuracoes extends Network {
         this.logoutUser();
     }
 
-    renderEnviarNotificacoes(){
+    renderNovaPromocao(){
         if (this.state.isRestaurante){
-            return <Opcao icone={"share-square"} texto={"Enviar notificação"} seta={true} onPress={() => this.props.navigation.navigate("EnviarNotificacao")}/>;
+            return <Opcao icone={"share-square"} texto={"Cadastrar promoção"} seta={true} onPress={() => this.props.navigation.navigate("NovaPromocao")}/>;
         }
         return null;
     }
@@ -119,7 +119,7 @@ export default class Configuracoes extends Network {
                     botoes={this.state.modal.botoes}
                 />
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
-                    {this.renderEnviarNotificacoes()}
+                    {this.renderNovaPromocao()}
                     <Opcao icone={"user-circle"} texto={"Editar conta"} seta={true} onPress={() => this.props.navigation.navigate("EditarConta")}/>
                     <Opcao icone={"question-circle"} texto={"Ajuda"} seta={true} onPress={() => this.props.navigation.navigate("Ajuda")}/>
                     <Opcao icone={"key"} texto={"Privacidade"} seta={true} onPress={() => this.props.navigation.navigate("Privacidade")}/>

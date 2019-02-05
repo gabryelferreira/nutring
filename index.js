@@ -26,7 +26,7 @@ import Privacidade from './src/screens/Tabs/Configuracoes/Privacidade/Privacidad
 import AlterarUsuario from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarUsuario';
 import AlterarEmail from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarEmail';
 import AlterarSenha from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarSenha';
-import EnviarNotificacao from './src/screens/Tabs/Configuracoes/EnviarNotificacao/EnviarNotificacao';
+import NovaPromocao from './src/screens/Tabs/Configuracoes/NovaPromocao/NovaPromocao';
 import EditarPerfil from './src/screens/Tabs/Perfil/EditarPerfil/EditarPerfil';
 import Postagem from './src/screens/Tabs/Postagem/Postagem';
 import Seguidores from './src/screens/Tabs/Perfil/Seguidores/Seguidores';
@@ -237,8 +237,8 @@ const AppNavigator = createStackNavigator({
         screen: EditarPerfil,
         navigationOptions: NavigationOptions
     },
-    EnviarNotificacao: {
-        screen: EnviarNotificacao,
+    NovaPromocao: {
+        screen: NovaPromocao,
         navigationOptions: NavigationOptions
     },
     NutringAddButton: {

@@ -41,11 +41,11 @@ export default class Promocao extends Network {
     }
 
     componentDidMount(){
-        this.getPromocao(this.props.navigation.getParam("id_notificacao", "0"));
+        this.getPromocao(this.props.navigation.getParam("id_promocao", "0"));
     }
 
-    async getPromocao(id_notificacao){
-        let result = await this.callMethod("getPromocao", { id_notificacao });
+    async getPromocao(id_promocao){
+        let result = await this.callMethod("getPromocao", { id_promocao });
         if (result.success){
             this.setState({
                 promocao: result.result
@@ -69,7 +69,7 @@ export default class Promocao extends Network {
 
     async confirmarPresenca(){
         this.setState({ loading: true });
-        let result = await this.callMethod("confirmarPresenca", { id_notificacao: this.props.navigation.getParam("id_notificacao", "0") });
+        let result = await this.callMethod("confirmarPresenca", { id_promocao: this.props.navigation.getParam("id_promocao", "0") });
         if (result.success){
             let promocao = this.state.promocao;
             promocao.estou_confirmado = true;
@@ -100,6 +100,9 @@ export default class Promocao extends Network {
     }
 
     returnTextoEmbaixoTitulo(){
+        if (this.state.promocao.eh_minha_promocao){
+            return <Text style={styles.descricaoHeader}>Você publicou essa promoção.</Text>
+        }
         if (this.state.promocao.estou_confirmado){
             return <Text style={[styles.descricaoHeader, {color: '#28b657'}]}>Você garantiu seu cupom!</Text>;
         }
@@ -117,7 +120,7 @@ export default class Promocao extends Network {
     }
 
     returnBotaoConfirmar(){
-        if (!this.state.promocao.estou_confirmado){
+        if (!this.state.promocao.estou_confirmado && !this.state.promocao.eh_minha_promocao){
             return (
                 <View style={{marginVertical: 10, alignItems: 'center', justifyContent: 'center'}}>
                     <BotaoMedio texto={"Pegar Cupom"} onPress={() => this.confirmarPresenca()} loading={this.state.loading}/>
@@ -176,7 +179,8 @@ export default class Promocao extends Network {
                             {this.returnPromocaoRelampago()}
                         </View>
                         <View style={styles.viewDescricao}>
-                            <Text style={styles.descricao}>{this.state.promocao.mensagem}</Text>
+                            <Text style={styles.titulo}>{this.state.promocao.titulo}</Text>
+                            <Text style={styles.descricao}>{this.state.promocao.descricao}</Text>
                         </View>
                         {/* <View style={{marginVertical: 5, flex: .7}}>
                             <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
@@ -239,6 +243,12 @@ const styles = {
     viewDescricao: {
         paddingVertical: 10,
         paddingHorizontal: 15,
+    },
+    titulo: {
+        fontSize: 18,
+        color: '#000',
+        fontWeight: 'bold',
+        marginBottom: 5,
     },
     descricao: {
         fontSize: 16,
