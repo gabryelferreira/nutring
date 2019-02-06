@@ -99,7 +99,7 @@ class Comentario extends Network {
         this.setState({
             modal: {
                 visible: true,
-                titulo: "Postagem",
+                titulo: "Comentário",
                 subTitulo: "Deseja excluir seu comentário?",
                 botoes: this.criarBotoesExclusao()
             }
@@ -108,7 +108,7 @@ class Comentario extends Network {
 
     criarBotoesExclusao(){
         let botoes = [
-            {chave: "EXCLUIR", texto: "Excluir postagem", color: '#DC143C', fontWeight: 'bold'},
+            {chave: "EXCLUIR", texto: "Excluir comentário", color: '#DC143C', fontWeight: 'bold'},
             {chave: "CANCELAR", texto: "Cancelar"},
         ]
         return botoes;

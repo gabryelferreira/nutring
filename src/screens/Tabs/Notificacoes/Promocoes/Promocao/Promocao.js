@@ -101,7 +101,11 @@ export default class Promocao extends Network {
 
     returnTextoEmbaixoTitulo(){
         if (this.state.promocao.eh_minha_promocao){
-            return <Text style={styles.descricaoHeader}>Você publicou essa promoção.</Text>
+            if (this.state.promocao.confirmados == 1){
+                return <Text style={styles.descricaoHeader}>{this.state.promocao.confirmados} usuário confirmou presença</Text>
+            } else {
+                return <Text style={styles.descricaoHeader}>{this.state.promocao.confirmados} usuários confirmaram presença</Text>
+            }
         }
         if (this.state.promocao.estou_confirmado){
             return <Text style={[styles.descricaoHeader, {color: '#28b657'}]}>Você garantiu seu cupom!</Text>;
