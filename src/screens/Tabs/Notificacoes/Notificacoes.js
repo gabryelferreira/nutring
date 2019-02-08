@@ -149,10 +149,6 @@ export default class Notificacoes extends Network {
       );
     }
 
-    if (this.state.dados.length == 0 && !this.state.refreshing){
-      return <SemDados icone={"sad-tear"} titulo={"Sem notificações"} texto={"Você não possui notificações."}/>
-    }
-
     return (
       <FlatList
         data={this.state.dados}

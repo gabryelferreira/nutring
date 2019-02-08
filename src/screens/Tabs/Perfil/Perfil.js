@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -422,7 +422,7 @@ export default class Perfil extends Network {
     }
 
     renderInfoPerfilRestaurante(){
-        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa, telefone } = this.state.user;
         let background = cor_fundo ? '#' + cor_fundo : '#fff';
         let color = cor_texto ? '#' + cor_texto : '#000';
         return (
@@ -439,15 +439,15 @@ export default class Perfil extends Network {
                 <View style={styles.viewInfoRestaurante}>
                 
                     <View style={styles.viewInfoContato}>
-                        <View style={styles.infoContato}><Icon name="comment" size={18} solid color="#fff"/></View>
-                        <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2}} onPress={() => this.validarAlteracaoFoto()}>
+                        <View style={styles.infoContato}><Icon name="info" size={18} solid color="#fff"/></View>
+                        <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2}} onPress={() => {this.tipoFoto = "fotoPerfil"; this.validarAlteracaoFoto()}}>
                             <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto}}/>
                             <View style={{position: 'absolute', left: 0, right: 0, bottom: -12, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end'}}>
                                 <AutoHeightImage source={require('../../../assets/imgs/folhinha_da_macunha.png')}  width={30}/>
                             
                             </View>
                         </TouchableOpacity>
-                        <View style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></View>
+                        <TouchableOpacity onPress={() => Linking.openURL(`tel:99746-4600`)} style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></TouchableOpacity>
                     </View>
 
                     <Text style={styles.tituloRestaurante}>{nome}</Text>

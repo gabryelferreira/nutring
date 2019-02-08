@@ -29,7 +29,8 @@ export default class EditarPerfil extends Network {
             user: {},
             loading: false,
             cor_fundo: "",
-            cor_texto: ""
+            cor_texto: "",
+            nome: ""
         }
     }
 
@@ -41,6 +42,7 @@ export default class EditarPerfil extends Network {
 
     setDados(){
         this.setState({
+            nome: this.state.user.nome,
             descricao: this.state.user.descricao,
             cor_fundo: this.state.user.cor_fundo,
             cor_texto: this.state.user.cor_texto
@@ -56,7 +58,7 @@ export default class EditarPerfil extends Network {
     }
 
     async editarPerfilCliente(){
-        let result = await this.callMethod("editarPerfil", { descricao: this.state.descricao, tipo_edicao: 'CLIENTE' });
+        let result = await this.callMethod("editarPerfil", { nome: this.state.nome, descricao: this.state.descricao, tipo_edicao: 'CLIENTE' });
         if (result.success){
             this.props.navigation.state.params.onGoBack();
             this.props.navigation.goBack();
@@ -69,7 +71,7 @@ export default class EditarPerfil extends Network {
     }
 
     async editarPerfilRestaurante(){
-        let result = await this.callMethod("editarPerfil", { descricao: this.state.descricao, cor_fundo: this.state.cor_fundo, cor_texto: this.state.cor_texto, tipo_edicao: 'RESTAURANTE' });
+        let result = await this.callMethod("editarPerfil", { nome: this.state.nome, descricao: this.state.descricao, cor_fundo: this.state.cor_fundo, cor_texto: this.state.cor_texto, tipo_edicao: 'RESTAURANTE' });
         if (result.success){
             if (result.result == "PERFIL_ALTERADO"){
                 this.props.navigation.state.params.onGoBack();
@@ -113,7 +115,6 @@ export default class EditarPerfil extends Network {
                 <View>
                     <Input label={"Cor de fundo"}
                         icone={"palette"}
-                        inputRef={(input) => this.segundoInput = input}
                         onChangeText={(cor_fundo) => this.setState({cor_fundo})}
                         value={this.state.cor_fundo}
                         onSubmitEditing={() => this.terceiroInput.focus()}
@@ -160,8 +161,20 @@ export default class EditarPerfil extends Network {
                 />
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                     <View style={styles.container}>
+                        <Input label={"Nome"}
+                            icone={"user"}
+                            onChangeText={(nome) => this.setState({nome})}
+                            value={this.state.nome}
+                            autoCapitalize={"words"}
+                            onSubmitEditing={() => this.segundoInput.focus()}
+                            small={true}
+                            blurOnSubmit={false}
+                            maxLength={60}
+                            returnKeyType={'next'}
+                        />
                         <Input label={"Descrição"}
                             icone={"comment"}
+                            inputRef={(input) => this.segundoInput = input}
                             onChangeText={(descricao) => this.setState({descricao})}
                             value={this.state.descricao}
                             autoCapitalize={"sentences"}

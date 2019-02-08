@@ -223,9 +223,8 @@ export default class Feed extends Network {
             return (
                 <ScrollView contentContainerStyle={{flexGrow: 1}}>
                     <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 30, paddingHorizontal: 50}}>
-                        <Text style={{fontSize: 60, fontWeight: 'bold', color: '#000', textAlign: 'center'}}>Ei!</Text>
-                        <Text style={{fontSize: 17, color: '#000', textAlign: 'center'}}>O seu Feed está vazio :(</Text>
-                        <Text style={{fontSize: 17, color: '#000', textAlign: 'center'}}>Aqui vão algumas sugestões de quem seguir!</Text>
+                        <Text style={{fontSize: 50, fontWeight: 'bold', color: '#000', textAlign: 'center'}}>Ei!</Text>
+                        <Text style={{fontSize: 15, color: '#000', textAlign: 'center'}}>Aqui vão algumas sugestões de quem seguir!</Text>
                     </View>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 20}}>
                         {this.renderUsuarios()}
