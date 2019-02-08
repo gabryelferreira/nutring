@@ -216,7 +216,7 @@ export default class Perfil extends Network {
         await this.setState({
             seguindo: true
         })
-        let result = await this.callMethod("follow", { id_seguido });
+        let result = await this.callMethod("followUnfollow", { id_seguido });
         if (result.success){
             let user = this.state.user;
             user.is_seguindo = true;
@@ -235,7 +235,7 @@ export default class Perfil extends Network {
         await this.setState({
             parandoDeSeguir: true
         })
-        let result = await this.callMethod("unfollow", { id_seguido });
+        let result = await this.callMethod("followUnfollow", { id_seguido });
         if (result.success){
             let user = this.state.user;
             user.is_seguindo = false;
@@ -447,7 +447,7 @@ export default class Perfil extends Network {
                             
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => Linking.openURL(`tel:99746-4600`)} style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></TouchableOpacity>
+                        <TouchableOpacity onPress={() => Linking.openURL(`tel:${telefone}`)} style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></TouchableOpacity>
                     </View>
 
                     <Text style={styles.tituloRestaurante}>{nome}</Text>
