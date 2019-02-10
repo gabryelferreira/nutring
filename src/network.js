@@ -3,8 +3,8 @@ import urlencode from './url';
 import { AsyncStorage } from 'react-native';
 export default class Network extends Component {
 
-    // url = "http://nutring.com.br/api/";
-    url = "http://10.0.2.2/nutring-api/";
+    url = "http://nutring.com.br/api/";
+    // url = "http://10.0.2.2/nutring-api/";
 
     constructor(props){
         super(props);
@@ -96,37 +96,6 @@ export default class Network extends Component {
             let result = await fetch("http://viacep.com.br/ws/" + cep + "/json/ ", options);
             result = await result.json();
             console.log("VIACEP RESULT", result)
-            return result;
-        } catch(error){
-            console.error(error);
-            return {success: false, error: error}
-        }
-    }
-
-
-    //PAGSEGURO
-    async callPagSeguro(args = undefined){
-        let options = {};
-        await this.setAuthorization();
-        options.headers = this.headers;
-
-        options.method = 'post';
-        let data = [];
-
-        for (let i in args) {
-        data[i] = args[i];
-        }
-        options.body = urlencode(data);
-
-        console.log("function = " + _function)
-        console.log("body = ", options.body);
-        try {
-            let result = await fetch("https://ws.pagseguro.uol.com.br/v2/checkout/", options);
-            result = await result.json();
-            console.log("RESULT", result)
-            let error = await this.treatError(result);
-            if (error)
-                await this.logoutUser();
             return result;
         } catch(error){
             console.error(error);
