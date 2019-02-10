@@ -95,7 +95,12 @@ export default class Configuracoes extends Network {
 
     renderNovaPromocao(){
         if (this.state.isRestaurante){
-            return <Opcao icone={"share-square"} texto={"Cadastrar promoção"} seta={true} onPress={() => this.props.navigation.navigate("NovaPromocao")}/>;
+            return (
+                <View>
+                    <Opcao icone={"cart-plus"} texto={"Cadastrar promoção"} seta={true} onPress={() => this.props.navigation.navigate("NovaPromocao")}/>
+                    <Opcao icone={"hand-holding-usd"} texto={"Meu plano"} seta={true} onPress={() => this.props.navigation.navigate("MeuPlano")}/>
+                </View>
+            );
         }
         return null;
     }

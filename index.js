@@ -33,6 +33,8 @@ import Seguidores from './src/screens/Tabs/Perfil/Seguidores/Seguidores';
 import Seguindo from './src/screens/Tabs/Perfil/Seguindo/Seguindo';
 import Promocoes from './src/screens/Tabs/Notificacoes/Promocoes/Promocoes';
 import Promocao from './src/screens/Tabs/Notificacoes/Promocoes/Promocao/Promocao';
+import MeuPlano from './src/screens/Tabs/Configuracoes/MeuPlano/MeuPlano';
+import Plano from './src/screens/Tabs/Configuracoes/MeuPlano/Plano/Plano';
 
 const NavigationOptions = {
     headerStyle: {
@@ -239,6 +241,14 @@ const AppNavigator = createStackNavigator({
     },
     NovaPromocao: {
         screen: NovaPromocao,
+        navigationOptions: NavigationOptions
+    },
+    MeuPlano: {
+        screen: MeuPlano,
+        navigationOptions: NavigationOptions
+    },
+    Plano: {
+        screen: Plano,
         navigationOptions: NavigationOptions
     },
     NutringAddButton: {
