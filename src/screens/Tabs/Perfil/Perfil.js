@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -76,7 +76,8 @@ export default class Perfil extends Network {
                 titulo: "Alteração de foto",
                 subTitulo: "Deseja alterar sua foto de perfil?",
                 botoes: this.criarBotoes()
-            }
+            },
+            infoRestauranteVisible: false
         }
     }
 
@@ -422,7 +423,7 @@ export default class Perfil extends Network {
     }
 
     renderInfoPerfilRestaurante(){
-        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa, telefone } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa, telefone, ddd } = this.state.user;
         let background = cor_fundo ? '#' + cor_fundo : '#fff';
         let color = cor_texto ? '#' + cor_texto : '#000';
         return (
@@ -439,7 +440,7 @@ export default class Perfil extends Network {
                 <View style={styles.viewInfoRestaurante}>
                 
                     <View style={styles.viewInfoContato}>
-                        <View style={styles.infoContato}><Icon name="info" size={18} solid color="#fff"/></View>
+                        <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: true})} style={styles.infoContato}><Icon name="info" size={18} solid color="#fff"/></TouchableOpacity>
                         <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2}} onPress={() => {this.tipoFoto = "fotoPerfil"; this.validarAlteracaoFoto()}}>
                             <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto}}/>
                             <View style={{position: 'absolute', left: 0, right: 0, bottom: -12, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end'}}>
@@ -447,7 +448,7 @@ export default class Perfil extends Network {
                             
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => Linking.openURL(`tel:${telefone}`)} style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></TouchableOpacity>
+                        <TouchableOpacity onPress={() => Linking.openURL(`tel:${ddd}${telefone}`)} style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></TouchableOpacity>
                     </View>
 
                     <Text style={styles.tituloRestaurante}>{nome}</Text>
@@ -666,6 +667,54 @@ export default class Perfil extends Network {
                     onClose={() => this.setState({modal: {visible: false}})}
                     botoes={this.state.modal.botoes}
                 />
+
+                <Modal
+                    
+                  animationType="slide"
+                    transparent={true}
+                    visible={this.state.infoRestauranteVisible}
+                    onRequestClose={() => {
+                        this.setState({infoRestauranteVisible: false})
+                    }}
+                    >
+                    <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})} style={{flex: 1}}>
+                    
+                    </TouchableOpacity>
+                    <View style={styles.informacoesRestaurante}>
+                        <View style={[styles.row, styles.paddingInfoRestaurante, styles.headerInfoRestaurante]}>
+                            <View style={[styles.column, {flex: 1}]}>
+                                <View style={[styles.row, styles.alignCenter]}>
+                                    <Text style={styles.tituloHeaderRestaurante}>{this.state.user.nome}</Text>
+                                    <View style={styles.bolaVerde}></View>
+                                    <Text style={styles.textoAberto}>Aberto</Text>
+                                </View>
+                                <View style={[styles.row, styles.alignCenter, {marginTop: 10}]}>
+                                    <Icon name="clock" size={15} color="#222" solid/>
+                                    <Text style={styles.horarioRestaurante}>Fecha as 23h</Text>
+                                </View>
+                                <View style={[styles.row, styles.alignCenter, {marginTop: 5}]}>
+                                    <Icon name="map-marker-alt" size={15} color="#777" solid/>
+                                    <Text style={styles.enderecoRestaurante}>{this.state.user.logradouro} {this.state.user.numero}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.viewFotoRestauranteInfo}>
+                                <Image source={{uri: this.state.user.foto}} style={styles.imagemRestauranteInfo}/>
+                            </View>
+                            <View style={styles.botaoFecharInfoRestaurante}>
+                                <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})}>
+                                    <Icon name="times" color="#222" size={24}/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={[styles.column, styles.paddingInfoRestaurante, styles.viewSobreRestaurante]}>
+                            <Text style={styles.tituloSobreRestaurante}>Sobre</Text>
+                            <Text style={styles.sobreRestaurante}>O conceito que está por trás da marca franqueada {this.state.user.nome}, abrange a ideia de uma culinária
+                             diferenciada por diversos fatores, um dos principais é a sua agilidade. Assim, um dos diferenciais do {this.state.user.nome} é, sem dúvida, o 
+                             amor que colocamos em cada prato no nosso estabelecimento.</Text>
+                        </View>
+                    </View>
+                </Modal>
+                
                 {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}> */}
                     {this.returnFotos()}
 
@@ -680,6 +729,28 @@ export default class Perfil extends Network {
 }
 
 const styles = {
+
+    row: {
+        flexDirection: 'row'
+    },
+    column: {
+        flexDirection: 'column'
+    },
+    bolaVerde: {
+        height: 8,
+        width: 8,
+        borderRadius: 8/2,
+        backgroundColor: '#28b657',
+        marginHorizontal: 10
+    },
+    paddingInfoRestaurante: {
+        paddingHorizontal: 25,
+        paddingVertical: 15
+    },
+    alignCenter: {
+        alignItems: 'center'
+    },
+
     viewPerfil: {
         marginTop: 20
     },
@@ -893,7 +964,78 @@ const styles = {
         color: '#fff',
         fontWeight: 'bold',
         fontSize: 12,
+    },
+
+
+
+
+
+
+    //INFO BAIXO RESTAURANTE
+    informacoesRestaurante: {
+        position: 'absolute',
+        left: 0, right: 0, bottom: 0, backgroundColor: '#fff',
+        zIndex: 9999,
+        borderTopLeftRadius: 35, borderTopRightRadius: 35,
+        elevation: 30
+    },
+    headerInfoRestaurante: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee'
+    },
+    tituloHeaderRestaurante: {
+        fontWeight: 'bold',
+        fontSize: 24,
+        color: '#000'
+    },
+    textoAberto: {
+        color: '#28b657',
+        fontWeight: 'bold',
+        fontSize: 18
+    },
+    horarioRestaurante: {
+        fontSize: 14,
+        marginLeft: 10,
+        color: '#222'
+    },
+    enderecoRestaurante: {
+        fontSize: 14,
+        marginLeft: 10,
+        color: '#777'
+    },
+    viewFotoRestauranteInfo: {
+        width: 100,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-end'
+    },
+    imagemRestauranteInfo: {
+        height: 60,
+        width: 60,
+        borderRadius: 4
+    },
+    botaoFecharInfoRestaurante: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'flex-start',
+        paddingLeft: 25
+    },
+    viewSobreRestaurante: {
+        paddingBottom: 50,
+        paddingTop: 10
+    },
+    tituloSobreRestaurante: {
+        fontSize: 22,
+        color: '#222',
+        fontWeight: 'bold',
+        marginBottom: 5,
+    },
+    sobreRestaurante: {
+        color: '#777',
+        fontSize: 13,
+        lineHeight: 20
     }
+
 
 
 }
