@@ -8,6 +8,9 @@ import { createStackNavigator, createAppContainer, createBottomTabNavigator } fr
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { name as appName } from './app.json';
 import Cadastro from './src/screens/Cadastro/Cadastro';
+import EsqueciSenha from './src/screens/EsqueciSenha/EsqueciSenha';
+import InserirCodigoRecuperacao from './src/screens/EsqueciSenha/InserirCodigoRecuperacao';
+import RecuperarSenha from './src/screens/EsqueciSenha/RecuperarSenha';
 import BuscarEspecifico from './src/screens/BuscarEspecifico/BuscarEspecifico';
 
 import Feed from './src/screens/Tabs/Feed/Feed';
@@ -209,6 +212,18 @@ const AppNavigator = createStackNavigator({
     },
     Cadastro: {
         screen: Cadastro,
+        navigationOptions: NavigationOptions
+    },
+    EsqueciSenha: {
+        screen: EsqueciSenha,
+        navigationOptions: NavigationOptions
+    },
+    InserirCodigoRecuperacao: {
+        screen: InserirCodigoRecuperacao,
+        navigationOptions: NavigationOptions
+    },
+    RecuperarSenha: {
+        screen: RecuperarSenha,
         navigationOptions: NavigationOptions
     },
     Tabs: {

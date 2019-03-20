@@ -349,6 +349,7 @@ export default class Camera extends Network {
                     flex: 1
                     }}
                     type={this.state.type}
+                    flashMode={this.state.flash}
                     permissionDialogTitle={'Permissão para usar a câmera'}
                     permissionDialogMessage={'Precisamos da sua permissão para utilizar sua câmera'}
                 >
@@ -363,8 +364,9 @@ export default class Camera extends Network {
                                 </View>
                                 <View style={[styles.viewBotao, styles.alignDireita]}>
                                     <TouchableOpacity disabled={this.state.uploading}
+                                    onPress={() => this.setState({flash: this.state.flash == "off" ? "on" : "off"})}
                                     >
-                                        <Icon name="bolt" color="#fff" size={25}/>
+                                        <Icon name="bolt" color="#fff" regular size={25}/>
                                     </TouchableOpacity>
                                 </View>
                             </View>

@@ -99,6 +99,11 @@ export default class Login extends Network {
         this.props.navigation.navigate('Principal');
     }
 
+    abrirEsqueciSenha(){
+        console.log("to aqui")
+        this.props.navigation.navigate('EsqueciSenha');
+    }
+
     setModalState(visible){
         this.setState({
             modal: {
@@ -186,8 +191,11 @@ export default class Login extends Network {
                             <TouchableOpacity onPress={() => this.login()} style={styles.botao}>
                                 {this.renderTextoBotao()}
                             </TouchableOpacity>
-                            <View style={{marginTop: 20, alignItems: 'center'}}>
-                                <Text style={styles.textoProblema}>Problemas no acesso? <Text style={styles.textoProblemaLink}>Clique aqui.</Text></Text>
+                            <View style={{marginTop: 20, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
+                                <Text style={styles.textoProblema}>Problemas no acesso? </Text>
+                                <TouchableOpacity onPress={() => this.abrirEsqueciSenha()}>
+                                    <Text style={styles.textoProblemaLink}>Clique aqui.</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
                     </View>

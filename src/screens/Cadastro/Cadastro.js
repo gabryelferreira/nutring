@@ -47,7 +47,8 @@ export default class Cadastro extends Network {
         estado: "",
         pais: "",
         numero: "",
-        complemento: ""
+        complemento: "",
+        solicitacaoEnviada: false
     }
 
 
@@ -73,8 +74,11 @@ export default class Cadastro extends Network {
         })
     }
 
-    getModalClick(key){
+    getModalClick(key = ""){
         this.setModalState(false);
+        if (this.state.solicitacaoEnviada){
+            this.props.navigation.goBack(null);
+        }
     }
 
     renderBotaoLogin(){
@@ -144,7 +148,7 @@ export default class Cadastro extends Network {
         this.setState({
             campoErro: ""
         })
-        let campos = ["nome", "email", "usuario", "senha", "cnpj", "ddi", "ddd", "telefone", "cep", "logradouro", "bairro", "cidade", "estado", "pais", "numero"];
+        let campos = ["nome", "email", "cnpj", "ddi", "ddd", "telefone", "cep", "logradouro", "bairro", "cidade", "estado", "pais", "numero"];
         if (!validarCNPJ(this.state.cnpj)){
             await this.setState({
                 campoErro: "CNPJ inválido."
@@ -221,8 +225,6 @@ export default class Cadastro extends Network {
                     nome: this.state.nome,
                     cnpj: removerCaracteresEspeciais(this.state.backup_cnpj, ["-", ".", "/"]),
                     email: this.state.email,
-                    senha: this.state.senha,
-                    usuario: this.state.usuario,
                     ddi: this.state.ddi,
                     ddd: this.state.ddd,
                     telefone: this.state.telefone,
@@ -237,20 +239,27 @@ export default class Cadastro extends Network {
                 };
             }
             user = JSON.stringify(user);
-            let result = await this.callMethod("registerV2", { user, tipoDeCadastro: this.state.opcao })
+            let result = await this.callMethod("register", { user, tipoDeCadastro: this.state.opcao })
             if (result.success){
                 if (result.result == "EMAIL_EXISTS"){
                     this.showModal("Email já cadastrado", "Esse email já está cadastro em nosso sistema.");
                 } else if (result.result == "USER_EXISTS"){
                     this.showModal("Usuário já cadastrado", "Esse nome de usuário já está cadastro em nosso sistema.");
                 } else {
-                    await this.salvarDadosUsuario(result.result);
-                    const resetAction = StackActions.reset({
-                        index: 0,
-                        actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
-                    });
-                    
-                    this.props.navigation.dispatch(resetAction);
+                    if (this.state.opcao == "PESSOA"){
+                        await this.salvarDadosUsuario(result.result);
+                        const resetAction = StackActions.reset({
+                            index: 0,
+                            actions: [NavigationActions.navigate({ routeName: 'Tabs' })],
+                        });
+                        
+                        this.props.navigation.dispatch(resetAction);
+                    } else {
+                        this.setState({
+                            solicitacaoEnviada: true
+                        })
+                        this.showModal("Solicitação enviada", "Sua solicitação foi enviada com sucesso! Aguarde que entraremos em contato.");
+                    }
                 }
             } else {
                 this.showModal("Ocorreu um erro!", "Verifique sua internet e tente novamente em alguns instantes.");
@@ -300,10 +309,6 @@ export default class Cadastro extends Network {
         })
     }
 
-    getModalClick(key){
-        this.setModalState(false);
-    }
-
     renderCadastroRestaurante(){
         return (      
             <View style={styles.container}>
@@ -351,36 +356,6 @@ export default class Cadastro extends Network {
                 blurOnSubmit={false}
                 autoCapitalize = 'none'
                 returnKeyType={"next"}
-                maxLength={100}
-                />
-                <Input
-                label={"Usuário *"}
-                icone={"user-circle"}
-                inputRef={(input) => this.quartoInput = input}
-                placeholder="Usuário" 
-                placeholderTextColor="rgb(153, 153, 153)" 
-                style={styles.input}
-                value={this.state.usuario}
-                onChangeText={(usuario) => this.setState({usuario})}
-                onSubmitEditing={() => this.quintoInput.focus()}
-                blurOnSubmit={false}
-                autoCapitalize = 'none'
-                returnKeyType={"next"}
-                maxLength={30}
-                />
-                <Input
-                label={"Senha *"}
-                icone={"lock"}
-                inputRef={(input) => this.quintoInput = input}
-                placeholder="Senha" 
-                placeholderTextColor="rgb(153, 153, 153)" 
-                style={styles.input}
-                value={this.state.senha}
-                onChangeText={(senha) => this.setState({senha})}
-                onSubmitEditing={() => this.sextoInput.focus()}
-                blurOnSubmit={false}
-                secureTextEntry={true}
-                autoCapitalize = 'none'
                 maxLength={100}
                 />
                 <Input
@@ -673,7 +648,7 @@ export default class Cadastro extends Network {
                     subTitulo={this.state.modal.subTitle} 
                     visible={this.state.modal.visible} 
                     onClick={(key) => this.getModalClick(key)}
-                    onClose={() => this.setState({modal: {visible: false}})}
+                    onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
                 <ScrollView keyboardShouldPersistTaps={"handled"}>

@@ -320,12 +320,18 @@ export default class Perfil extends Network {
     }
 
     renderInfoPerfil(){
-        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa } = this.state.user;
         return (
             <View style={styles.viewPerfil}>
+                <View style={styles.capaUsuario}>
+                    <View style={[styles.capaUsuario, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2, alignItems: 'flex-end'}]}>
+                        {this.renderBotaoAlterarCapa(sou_eu)}
+                    </View>
+                    <Image resizeMethod="resize" source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
+                </View>
                 <View style={styles.viewInfo}>
                     <TouchableOpacity style={styles.viewFoto} onPress={() => this.validarAlteracaoFoto()}>
-                        <Image resizeMethod="resize" style={{height: 80, width: 80, borderRadius: 80/2}} source={{uri: foto}}/>
+                        <Image resizeMethod="resize" style={styles.foto} source={{uri: foto}}/>
                     </TouchableOpacity>
                     <Text style={styles.nome}>{nome}</Text>
                     <View style={{flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 30}}>
@@ -694,7 +700,7 @@ export default class Perfil extends Network {
                                 </View>
                                 <View style={[styles.row, styles.alignCenter, {marginTop: 5}]}>
                                     <Icon name="map-marker-alt" size={15} color="#777" solid/>
-                                    <Text style={styles.enderecoRestaurante}>{this.state.user.logradouro} {this.state.user.numero}</Text>
+                                    <Text style={styles.enderecoRestaurante}>{this.state.user.logradouro}{this.state.user.numero ? ',' : ''} {this.state.user.numero}</Text>
                                 </View>
                             </View>
                             <View style={styles.viewFotoRestauranteInfo}>
@@ -752,18 +758,24 @@ const styles = {
     },
 
     viewPerfil: {
-        marginTop: 20
+        paddingTop: 20
     },
     viewInfo: {
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: 55
     },
     viewFoto: {
-        height: 80,
-        width: 80,
-        borderRadius: 80/2,
+        height: 85,
+        width: 85,
+        borderRadius: 85/2,
         elevation: 30,
         backgroundColor: '#000'
+    },
+    foto: {
+        height: 85,
+        width: 85,
+        borderRadius: 85/2
     },
     nome: {
         fontSize: 16,
@@ -906,6 +918,14 @@ const styles = {
     capa: {
         position: 'absolute',
         height: 250,
+        left: 0,
+        top: 0,
+        right: 0,
+        backgroundColor: '#000'
+    },
+    capaUsuario: {
+        position: 'absolute',
+        height: 120,
         left: 0,
         top: 0,
         right: 0,
