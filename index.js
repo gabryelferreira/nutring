@@ -16,6 +16,7 @@ import BuscarEspecifico from './src/screens/BuscarEspecifico/BuscarEspecifico';
 import Feed from './src/screens/Tabs/Feed/Feed';
 import Perfil from './src/screens/Tabs/Perfil/Perfil';
 import Comentarios from './src/screens/Tabs/Comentarios/Comentarios';
+import Curtidas from './src/screens/Tabs/Curtidas/Curtidas';
 import Configuracoes from './src/screens/Tabs/Configuracoes/Configuracoes';
 import Buscar from './src/screens/Tabs/Buscar/Buscar';
 
@@ -91,6 +92,10 @@ const InsideTabs = {
     },
     Seguidores: {
         screen: Seguidores,
+        navigationOptions: NavigationOptions
+    },
+    Curtidas: {
+        screen: Curtidas,
         navigationOptions: NavigationOptions
     },
     Seguindo: {

@@ -13,6 +13,7 @@ export default class Network extends Component {
     headers = {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8"};
 
     async callMethod(_function, args = undefined){
+        console.log("function = " + _function)
         let options = {};
         await this.setAuthorization();
         options.headers = this.headers;

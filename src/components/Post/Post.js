@@ -104,10 +104,19 @@ class Post extends Network {
         }
     }
 
-    returnFolhinha(meu_post, is_restaurante){
+    returnFolhinha(is_restaurante){
+        if (is_restaurante)
+            return (
+                <View style={styles.viewInfoCurtidas}>
+                    <AutoHeightImage source={require('../../assets/imgs/folha_nutring.png')} width={20}/>
+                </View>
+            );
+    }
+
+    returnDots(meu_post){
         if (this.state.excluindo){
             return (
-                <View style={styles.viewInfoDots}>
+                <View style={styles.viewInfoFolha}>
                     <ActivityIndicator size="small" color="#777" />
                 </View>
             );
@@ -117,13 +126,6 @@ class Post extends Network {
                 <TouchableOpacity style={styles.viewInfoDots} onPress={() => this.abrirModalExclusao()}>
                     <Icon name="ellipsis-v" color="#000" size={18} />
                 </TouchableOpacity>
-            );
-        }
-        if (is_restaurante){
-            return (
-                <View style={styles.viewInfoCurtidas}>
-                    <AutoHeightImage source={require('../../assets/imgs/folha_nutring.png')} width={27}/>
-                </View>
             );
         }
         return null;
@@ -185,9 +187,36 @@ class Post extends Network {
         return null;
     }
 
+    renderCurtidores(curtidores){
+        if (!curtidores) return null;
+        return curtidores.map(curtidor => {
+            return (
+                <View key={curtidor.id_usuario} style={styles.pessoaCurtida}>
+                    <View style={{width: 20, height: 20, borderRadius: 20/2, backgroundColor: '#000'}}>
+                        <Image source={{uri: curtidor.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
+                    </View>
+                </View>
+            );
+        })
+    }
+
+    renderComentaristas(comentaristas){
+        if (!comentaristas) return null;
+        return comentaristas.map(comentarista => {
+            console.log("comentarista aqui = ", comentarista)
+            return (
+                <View key={comentarista.id_usuario} style={styles.pessoaComentario}>
+                    <View style={{width: 20, height: 20, borderRadius: 20/2, backgroundColor: '#000'}}>
+                        <Image source={{uri: comentarista.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
+                    </View>
+                </View>
+            );
+        })
+    }
+
     render(){
         let larguraImagem = imageWidth;
-        let { id_usuario, id_post, foto, is_restaurante, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios, meu_post } = this.state.data;
+        let { id_usuario, id_post, foto, is_restaurante, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios, meu_post, curtidores, comentaristas } = this.state.data;
         let { index } = this.props;
         return (
             <View style={styles.container}>
@@ -200,24 +229,17 @@ class Post extends Network {
                 botoes={this.state.modal.botoes}
                 />
                 <View style={styles.viewFoto}>
-                    <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2}}>
+                    <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000'}}>
                         <Image resizeMethod="resize" style={{height: 38, width: 38, borderRadius: 38/2, position: 'absolute', left: 0, top: 0}} source={{uri: foto}}/>
                     </TouchableOpacity>
                     <View style={styles.tabs}>
-                        <TouchableOpacity style={styles.pessoasComentarios}>
-                            <View style={styles.tracoComentarios}>
+                        <TouchableOpacity style={[comentaristas && comentaristas.length > 0 ? styles.pessoasComentarios : styles.pessoasComentariosFull]}
+                            onPress={() => this.props.navigation.push('Comentarios', { id_post: id_post })}>
+                            <View style={[comentaristas && comentaristas.length > 0 ? styles.tracoComentarios : styles.tracoComentariosFull]}>
                             </View>
-                            <View style={styles.pessoaComentario}>
-                                <Image source={{uri: 'http://www.osul.com.br/wp-content/uploads/2018/06/brad-pitt.jpg'}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
-                            </View>
-                            <View style={styles.pessoaComentario}>
-                                <Image source={{uri: 'http://www.osul.com.br/wp-content/uploads/2018/06/brad-pitt.jpg'}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
-                            </View>
-                            <View style={styles.pessoaComentario}>
-                                <Image source={{uri: 'http://www.osul.com.br/wp-content/uploads/2018/06/brad-pitt.jpg'}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
-                            </View>
+                            {this.renderComentaristas(comentaristas)}
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.tab} onPress={() => this.props.navigation.push('Comentarios', { id_post: id_post })}>
+                        <TouchableOpacity style={styles.tab}>
                             <Icon name="comment-dots" color="#777" solid size={25}/>
                             <View style={[styles.labelCurtidas, styles.labelCurtidasTop]}>
                                 <Text style={styles.textoLabelCurtidas}>{comentarios}</Text>
@@ -238,13 +260,14 @@ class Post extends Network {
                         <View style={styles.fotoETexto}>
                             
                             <View style={styles.viewInfoTexto}>
-                                <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })}>
+                                <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })}>
                                     <Text style={styles.nome}>{nome}</Text>
+                                    {this.returnFolhinha(is_restaurante)}
                                 </TouchableOpacity>
                                 {this.returnTextoPostedAgo(tempo_postado)}
                             </View>
                         </View>
-                        {this.returnFolhinha(meu_post, is_restaurante)}
+                        {this.returnDots(meu_post)}
                     </View>
                     <View style={styles.viewInfoEConteudo}>
                         {this.returnDescricao(descricao)}
@@ -253,17 +276,10 @@ class Post extends Network {
                         </View>
                         
                         
-                        <TouchableOpacity style={styles.pessoasCurtidas}>
-                            <View style={styles.pessoaCurtida}>
-                                <Image source={{uri: 'http://www.osul.com.br/wp-content/uploads/2018/06/brad-pitt.jpg'}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
-                            </View>
-                            <View style={styles.pessoaCurtida}>
-                                <Image source={{uri: 'http://www.osul.com.br/wp-content/uploads/2018/06/brad-pitt.jpg'}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
-                            </View>
-                            <View style={styles.pessoaCurtida}>
-                                <Image source={{uri: 'http://www.osul.com.br/wp-content/uploads/2018/06/brad-pitt.jpg'}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
-                            </View>
-                            <View style={styles.tracoCurtidas}>
+                        <TouchableOpacity style={styles.pessoasCurtidas}
+                                            onPress={() => this.props.navigation.push('Curtidas', { id_post })}>
+                            {this.renderCurtidores(curtidores)}
+                            <View style={[curtidores && curtidores.length > 0 ? styles.tracoCurtidas : styles.tracoCurtidasFull]}>
                             </View>
                         </TouchableOpacity>
                             {/* {this.returnTopComentario()}
@@ -285,7 +301,7 @@ const styles = {
         flexDirection: 'row',
         paddingVertical: 20,
         borderBottomColor: '#eee',
-        borderBottomWidth: 1
+        // borderBottomWidth: 1
     },
     labelCurtidas: {
         position: 'absolute',
@@ -310,33 +326,56 @@ const styles = {
     },
     pessoasCurtidas: {
         marginTop: 10,
+        height: 20,
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
     },
     pessoaCurtida: {
-        
+        width: 10,
+        elevation: 2
     },
     pessoasComentarios: {
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'flex-end',
         alignItems: 'center',
+        width: 52,
+        marginBottom: 10
+    },
+    pessoasComentariosFull: {
+        flex: 1,
+        flexDirection: 'column',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
+        width: 52,
     },
     pessoaComentario: {
-        
+        height: 10,
+        elevation: 2
     },
     tracoCurtidas: {
         flex: 1,
-        height: 2,
-        marginLeft: 10,
-        backgroundColor: '#aaa'
+        height: 1,
+        marginLeft: 20,
+        backgroundColor: '#ddd'
+    },
+    tracoCurtidasFull: {
+        flex: 1,
+        height: 1,
+        backgroundColor: '#ddd'
     },
     tracoComentarios: {
         flex: 1,
         width: 2,
         marginVertical: 10,
-        backgroundColor: '#aaa'
+        backgroundColor: '#ddd'
+    },
+    tracoComentariosFull: {
+        flex: 1,
+        width: 2,
+        marginTop: 10,
+        backgroundColor: '#ddd'
     },
     viewInfoAll: {
         flex: 1,
@@ -364,17 +403,12 @@ const styles = {
         fontSize: 16,
         color: '#000',
         fontWeight: 'bold',
-        maxHeight: 20
+        maxHeight: 20,
+        marginRight: 5
     },
     tempo: {
         fontSize: 13,
         color: '#aaa'
-    },
-    viewInfoCurtidas: {
-        flex: .3,
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
-        // paddingTop: 3
     },
     viewInfoDots: {
         flex: .3,
@@ -382,6 +416,11 @@ const styles = {
         justifyContent: 'flex-end',
         alignItems: 'center',
         paddingRight: 10
+    },
+    viewInfoFolha: {
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'center',
     },
     curtidas: {
         fontSize: 17,

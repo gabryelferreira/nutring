@@ -119,7 +119,7 @@ export default class Comentarios extends Network {
     returnBotaoEnviar(){
         if (!this.state.comentando)
             return (
-                <View style={styles.botaoEnviar}>
+                <View style={[this.state.comentario.length > 0 ? styles.botaoEnviar : [styles.botaoEnviar, styles.botaoBloqueado]]}>
                     <Icon name="rocket" size={16} color="#F8F8F8" onPress={() => this.comentarPost()}/>
                 </View>
             );
@@ -147,6 +147,24 @@ export default class Comentarios extends Network {
             comentando: false,
             comentario: ""
         })
+    }
+
+    renderCaixaTexto(){
+        return (
+            <View style={styles.caixaTexto}>
+                <TextInput
+                    placeholder="Escreva um comentário"
+                    placeholderTextColor="rgb(153, 153, 153)"
+                    value={this.state.comentario}
+                    onChangeText={(comentario) => this.setState({comentario})}
+                    style={styles.caixaTextoComentario}
+                    onSubmitEditing={() => this.comentarPost()}
+                />
+                <View style={styles.botaoEnviarGenerico}>
+                    {this.returnBotaoEnviar()}
+                </View>
+            </View>
+        );
     }
 
     renderView(){
@@ -179,27 +197,18 @@ export default class Comentarios extends Network {
     render(){
         if (this.state.carregandoInicial){
             return (
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657" />
+                <View style={{flex: 1}}>
+                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                        <ActivityIndicator size="large" color="#28b657" />
+                    </View>
+                    {this.renderCaixaTexto()}
                 </View>
             );
         }
         return (      
             <View style={{flex: 1}}>
                 {this.renderView()}
-                <View style={styles.caixaTexto}>
-                        <TextInput
-                            placeholder="Escreva um comentário"
-                            placeholderTextColor="rgb(153, 153, 153)"
-                            value={this.state.comentario}
-                            onChangeText={(comentario) => this.setState({comentario})}
-                            style={styles.caixaTextoComentario}
-                            onSubmitEditing={() => this.comentarPost()}
-                        />
-                        <View style={styles.botaoEnviarGenerico}>
-                            {this.returnBotaoEnviar()}
-                        </View>
-                </View>
+                {this.renderCaixaTexto()}
             </View>
         );
     }
@@ -232,6 +241,9 @@ const styles = {
         borderRadius: 40/2,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    botaoBloqueado: {
+        opacity: .4
     },
     botaoEnviarGenerico: {
         height: 40,
