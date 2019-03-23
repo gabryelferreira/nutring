@@ -43,15 +43,17 @@ export default class Feed extends Network {
         )
     };
 
+    offset = 0;
+
     state = {
         carregando: false,
         refreshing: true,
         carregandoPrimeiraVez: true,
         usuarios: [],
         dados: [],
-        offset: 0,
         semMaisDados: false,
         semMaisUsuarios: false,
+        avoidRender: true,
         modalComentarios: {
             visible: false
         },
@@ -64,31 +66,31 @@ export default class Feed extends Network {
     }
 
     componentDidMount(){
-        this.carregarDados();
+        this.carregarDadosIniciais();
         this.salvarToken();
     }
 
-    carregarDadosIniciais() {
-        this.setState({
-            offset: 0,
+    async carregarDadosIniciais() {
+        console.log("to aqui nos dados iniciais!!")
+        this.offset = 0;
+        await this.setState({
             semMaisDados: false,
             refreshing: true,
-            usuarios: []
-        }, this.carregarDados)
+            avoidRender: true,
+        });
+        await this.carregarDados();
     }
 
-    async salvarToken(token){
+    async salvarToken(){
         const fcmToken = await firebase.messaging().getToken();
-        console.log("fcm token = " + fcmToken)
         if (fcmToken) {
-            console.log("tem tokennn")
             await this.callMethod("salvarToken", { token: fcmToken });
         }
     }
 
     async carregarDados() {
         if (!this.state.semMaisDados){
-            let result = await this.callMethod("getFeed", { offset: this.state.offset, limit: 10 })
+            let result = await this.callMethod("getFeed", { offset: this.offset, limit: 10 })
             if (result.success){
                 if (this.state.refreshing){
                     await this.setState({
@@ -98,18 +100,18 @@ export default class Feed extends Network {
                 this.setState({
                     semInternet: false
                 })
-                if (result.result.length == 0 && this.state.offset == 0){
+                if (result.result.length == 0 && this.offset == 0){
+                    this.offset = 0;
                     await this.setState({
                         semMaisDados: true,
-                        offset: 0,
-                        refreshing: false,
                         dados: []
-                    })
-                    this.carregarUsuarios();
+                    }, await this.carregarUsuarios)
+                    
                 } else if (result.result.length == 0 && this.state.dados.length != 0){
                     await this.setState({
                         semMaisDados: true,
                         refreshing: false,
+                        avoidRender: false
                     })
                         
                 } else {
@@ -124,13 +126,14 @@ export default class Feed extends Network {
                     if (result.result.length < 10){
                         await this.setState({
                             semMaisDados: true,
-                            refreshing: false
+                            refreshing: false,
                         })
                     }
                     await this.setState({
                         dados: dados,
                         refreshing: false,
-                        carregandoPrimeiraVez: false
+                        carregandoPrimeiraVez: false,
+                        avoidRender: false
                     });
                 }
             } else {
@@ -143,10 +146,9 @@ export default class Feed extends Network {
     }
 
     async pegarDados(){
+        console.log("to aqui no pegarDados()")
         if (!this.state.carregando){
-            await this.setState({
-                offset: this.state.offset + 10
-            });
+            this.offset = this.offset + 10
             await this.carregarDados();
         }
     }
@@ -158,11 +160,13 @@ export default class Feed extends Network {
             await this.setState({
                 usuarios: result.result,
                 carregandoPrimeiraVez: false,
-                semInternet: false
+                semInternet: false,
+                refreshing: false
             })
         } else {
             this.setState({
-                semInternet: true
+                semInternet: true,
+                refreshing: false
             })
         }
     }
@@ -218,18 +222,41 @@ export default class Feed extends Network {
         })
     }
 
+    renderUsuarioCard(item, index){
+        if (index % 2 == 0){
+            return (
+                <View style={[{flex: .5, marginVertical: 10, marginLeft: 30, marginRight: 10}, index == 0 ? {marginTop: 25} : {}]}>
+                    <UsuarioCard key={item.id_usuario} usuario={item} navigation={this.props.navigation}/>
+                </View>
+            )
+        }
+        return (
+            <View style={[{flex: .5, marginVertical: 10, marginRight: 30, marginLeft: 10}, index == 1 ? {marginTop: 25} : {}]}>
+                <UsuarioCard key={item.id_usuario} usuario={item} navigation={this.props.navigation}/>
+            </View>
+        )
+    }
+
     returnUsuarios(){
         if (this.state.usuarios.length > 0){
             return (
-                <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                    <View style={{alignItems: 'center', paddingTop: 15, paddingBottom: 30, paddingHorizontal: 50}}>
-                        <Text style={{fontSize: 50, fontWeight: 'bold', color: '#000', textAlign: 'center'}}>Ei!</Text>
-                        <Text style={{fontSize: 15, color: '#000', textAlign: 'center'}}>Aqui vão algumas sugestões de quem seguir!</Text>
-                    </View>
-                    <View style={{flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 20}}>
-                        {this.renderUsuarios()}
-                    </View>
-                </ScrollView>
+                // <ScrollView contentContainerStyle={{flexGrow: 1}}>
+                
+                //     <View style={{flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 20}}>
+                //         {this.renderUsuarios()}
+                //     </View>
+                // </ScrollView>
+                <View style={{flex: 1}}>
+                    
+                    <FlatList
+                    data={this.state.usuarios}
+                    keyExtractor={(item, index) => item.id_usuario.toString()}
+                    numColumns={2}
+                    renderItem={({item, index}) => this.renderUsuarioCard(item, index)}
+                    refreshing={this.state.refreshing}
+                    onRefresh={async () => await this.carregarDadosIniciais()}
+                    />
+                </View>
             );
         } return null;
     }
@@ -275,7 +302,7 @@ export default class Feed extends Network {
                 </View>
             );
         }
-        if (this.state.semMaisDados && this.state.dados.length == 0){
+        if ((this.state.semMaisDados || this.state.avoidRender) && this.state.dados.length == 0){
             return (
                 <View style={{flex: 1, flexDirection: 'column'}}>
                     
