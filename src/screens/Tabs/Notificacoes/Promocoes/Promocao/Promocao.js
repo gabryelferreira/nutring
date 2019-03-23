@@ -93,7 +93,7 @@ export default class Promocao extends Network {
 
     returnImagemPublicacao(foto){
         if (foto){
-            return <Image style={{width: undefined, height: undefined, flex: 1}} source={{uri: foto}}/>
+            return <Image resizeMethod="resize" style={{width: undefined, height: undefined, flex: 1}} source={{uri: foto}}/>
         } else {
             return null;
         }

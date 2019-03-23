@@ -6,6 +6,7 @@ import Input from '../../../../components/Input/Input'
 import Sugestoes from '../../../../components/Sugestoes/Sugestoes';
 import BotaoPequeno from '../../../../components/Botoes/BotaoPequeno';
 import Modalzin from '../../../../components/Modal/Modal';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
 export default class EditarPerfil extends Network {
@@ -30,7 +31,8 @@ export default class EditarPerfil extends Network {
             loading: false,
             cor_fundo: "",
             cor_texto: "",
-            nome: ""
+            nome: "",
+            sobre: ""
         }
     }
 
@@ -45,7 +47,8 @@ export default class EditarPerfil extends Network {
             nome: this.state.user.nome,
             descricao: this.state.user.descricao,
             cor_fundo: this.state.user.cor_fundo,
-            cor_texto: this.state.user.cor_texto
+            cor_texto: this.state.user.cor_texto,
+            sobre: this.state.user.sobre
         })
     }
 
@@ -71,7 +74,7 @@ export default class EditarPerfil extends Network {
     }
 
     async editarPerfilRestaurante(){
-        let result = await this.callMethod("editarPerfil", { nome: this.state.nome, descricao: this.state.descricao, cor_fundo: this.state.cor_fundo, cor_texto: this.state.cor_texto, tipo_edicao: 'RESTAURANTE' });
+        let result = await this.callMethod("editarPerfil", { nome: this.state.nome, descricao: this.state.descricao, cor_fundo: this.state.cor_fundo, cor_texto: this.state.cor_texto, sobre: this.state.sobre, tipo_edicao: 'RESTAURANTE' });
         if (result.success){
             if (result.result == "PERFIL_ALTERADO"){
                 this.props.navigation.state.params.onGoBack();
@@ -130,12 +133,38 @@ export default class EditarPerfil extends Network {
                         inputRef={(input) => this.terceiroInput = input}
                         onChangeText={(cor_texto) => this.setState({cor_texto})}
                         value={this.state.cor_texto}
-                        onSubmitEditing={() => this.editarPerfil()}
+                        onSubmitEditing={() => this.quartoInput.focus()}
                         autoCapitalize={"none"}
                         small={true}
                         maxLength={6}
-                        returnKeyType={"send"}
+                        returnKeyType={"next"}
                         hashtag={true}
+                    />
+                </View>
+            );
+        }
+        return null;
+    }
+
+    renderInformacoesRestaurante(){
+        if (this.state.user.is_restaurante){
+            return (
+                <View style={[styles.container, styles.borderTop]}>
+                    <View style={styles.infoRestaurante}>
+                        <Icon name="info-circle" size={16} solid color="#000"/>
+                        <Text style={styles.tituloInfoRestaurante}>Informações</Text>
+                    </View>
+                    <Input label={"Sobre"}
+                            icone={"info-circle"}
+                            inputRef={(input) => this.quartoInput = input}
+                            onChangeText={(sobre) => this.setState({sobre})}
+                            value={this.state.sobre}
+                            autoCapitalize={"sentences"}
+                            small={true}
+                            multiline={true}
+                            numberOfLines={4}
+                            maxLength={255}
+                            returnKeyType={'none'}
                     />
                 </View>
             );
@@ -189,7 +218,11 @@ export default class EditarPerfil extends Network {
                             <Text style={{fontSize: 11, color: '#000'}}>A descrição ficará visível para quem acessar seu perfil.</Text>
                             {/* <Text style={{fontSize: 11, color: '#000'}}>Pode ficar tranquilo ;)</Text> */}
                         </View>
-                        <View style={{marginVertical: 10}}>
+                        
+                    </View>
+                    {this.renderInformacoesRestaurante()}
+                    <View style={styles.container}>
+                        <View style={{marginBottom: 10}}>
                             <BotaoPequeno texto={"Confirmar"} onPress={() => this.editarPerfil()} loading={this.state.loading}/>
                         </View>
                     </View>
@@ -204,5 +237,24 @@ const styles = {
     container: {
         paddingVertical: 10,
         paddingHorizontal: 15
+    },
+
+    borderTop: {
+        borderTopWidth: 1,
+        borderTopColor: '#ddd'
+    },
+
+    infoRestaurante: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingBottom: 10
+    },
+    tituloInfoRestaurante: {
+        color: '#000',
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 10
     }
+
+
 }

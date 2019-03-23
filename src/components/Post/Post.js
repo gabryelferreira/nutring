@@ -116,7 +116,7 @@ class Post extends Network {
     returnDots(meu_post){
         if (this.state.excluindo){
             return (
-                <View style={styles.viewInfoFolha}>
+                <View style={styles.viewInfoDots}>
                     <ActivityIndicator size="small" color="#777" />
                 </View>
             );
@@ -193,7 +193,7 @@ class Post extends Network {
             return (
                 <View key={curtidor.id_usuario} style={styles.pessoaCurtida}>
                     <View style={{width: 20, height: 20, borderRadius: 20/2, backgroundColor: '#000'}}>
-                        <Image source={{uri: curtidor.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
+                        <Image resizeMethod="resize" source={{uri: curtidor.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
                     </View>
                 </View>
             );
@@ -207,11 +207,23 @@ class Post extends Network {
             return (
                 <View key={comentarista.id_usuario} style={styles.pessoaComentario}>
                     <View style={{width: 20, height: 20, borderRadius: 20/2, backgroundColor: '#000'}}>
-                        <Image source={{uri: comentarista.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
+                        <Image resizeMethod="resize" source={{uri: comentarista.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
                     </View>
                 </View>
             );
         })
+    }
+
+    renderBotaoMultiplasImagens(conteudo){
+        if (Array.isArray(conteudo) && conteudo.length > 1){
+            return (
+                <View style={styles.iconeMultiplasFotos}>
+                    {/* <Icon name="images" solid size={11} color="#fff"/> */}
+                    <Text style={styles.textoMultiplasFotos}>{conteudo.length} fotos</Text>
+                </View>
+            );
+        }
+        return null;
     }
 
     render(){
@@ -239,7 +251,7 @@ class Post extends Network {
                             </View>
                             {this.renderComentaristas(comentaristas)}
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.tab}>
+                        <TouchableOpacity style={styles.tab} onPress={() => this.props.navigation.push('Comentarios', { id_post: id_post })}>
                             <Icon name="comment-dots" color="#777" solid size={25}/>
                             <View style={[styles.labelCurtidas, styles.labelCurtidasTop]}>
                                 <Text style={styles.textoLabelCurtidas}>{comentarios}</Text>
@@ -271,9 +283,10 @@ class Post extends Network {
                     </View>
                     <View style={styles.viewInfoEConteudo}>
                         {this.returnDescricao(descricao)}
-                        <View style={styles.viewImagem}>
-                            <AutoHeightImage source={{uri: conteudo}} width={larguraImagem}/>
-                        </View>
+                        <TouchableOpacity onPress={this.props.onClickFoto} style={styles.viewImagem}>
+                            <AutoHeightImage source={{uri: this.formatarConteudo(conteudo)}} width={larguraImagem}/>
+                            {this.renderBotaoMultiplasImagens(conteudo)}
+                        </TouchableOpacity>
                         
                         
                         <TouchableOpacity style={styles.pessoasCurtidas}
@@ -290,6 +303,11 @@ class Post extends Network {
                 </View>
             </View>
         );
+    }
+
+    formatarConteudo(conteudo){
+        if (Array.isArray(conteudo)) return conteudo[0].url_conteudo;
+        return conteudo;
     }
 
 }
@@ -495,5 +513,20 @@ const styles = {
         marginTop: 5,
         fontSize: 15
     },
+    iconeMultiplasFotos: {
+        position: 'absolute',
+        justifyContent: 'center',
+        alignItems: 'center',
+        right: 0,
+        bottom: 0,
+        paddingHorizontal: 8,
+        paddingVertical: 5,
+        backgroundColor: 'rgba(0, 0, 0, .8)',
+        borderTopLeftRadius: 10
+    },
+    textoMultiplasFotos: {
+        color: '#fff',
+        fontSize: 10
+    }
     
 }

@@ -19,6 +19,7 @@ import Comentarios from './src/screens/Tabs/Comentarios/Comentarios';
 import Curtidas from './src/screens/Tabs/Curtidas/Curtidas';
 import Configuracoes from './src/screens/Tabs/Configuracoes/Configuracoes';
 import Buscar from './src/screens/Tabs/Buscar/Buscar';
+import Receitas from './src/screens/Tabs/Receitas/Receitas';
 
 import AddButton from './src/components/AddButton/AddButton';
 import NutringAddButton from './src/components/AddButton/NutringAddButton';
@@ -108,6 +109,10 @@ const InsideTabs = {
     },
     Promocao: {
         screen: Promocao,
+        navigationOptions: NavigationOptions
+    },
+    Receitas: {
+        screen: Receitas,
         navigationOptions: NavigationOptions
     }
 }

@@ -9,6 +9,8 @@ import { ScrollView } from 'react-native-gesture-handler';
 import Novidades from '../../../components/Novidades/Novidades';
 import firebase from 'react-native-firebase';
 import SemDados from '../../../components/SemDados/SemDados';
+import ImageViewer from 'react-native-image-zoom-viewer';
+import ModalPostagemViewer from '../../../components/ModalPostagemViewer/ModalPostagemViewer';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -57,7 +59,9 @@ export default class Feed extends Network {
         modalComentarios: {
             visible: false
         },
+        modalFotoVisible: false,
         semInternet: false,
+        itemSelecionado: {}
     }
 
 
@@ -120,7 +124,7 @@ export default class Feed extends Network {
                         dados = this.state.dados;
                     }
                     for (var i = 0; i < result.result.length; i++){
-                        result.result[i].conteudo = result.result[i].conteudo[0].url_conteudo;
+                        // result.result[i].conteudo = result.result[i].conteudo[0].url_conteudo;
                         dados.push(result.result[i]);
                     }
                     if (result.result.length < 10){
@@ -276,7 +280,7 @@ export default class Feed extends Network {
                     
                     <View>
                         
-                        <Post data={item} index={index} navigation={this.props.navigation} onDelete={(id_post) => this.carregarDadosIniciais()}/>
+                        <Post onClickFoto={() => this.abrirFotos(item)} data={item} index={index} navigation={this.props.navigation} onDelete={(id_post) => this.carregarDadosIniciais()}/>
                         {this.returnLoader(index, 'dados')}
                     </View>
 
@@ -314,9 +318,30 @@ export default class Feed extends Network {
             
             <View>
                 {/* {this.returnNovidades()} */}
+                <ModalPostagemViewer visible={this.state.modalFotoVisible}
+                                    foto={this.state.itemSelecionado.foto}
+                                    titulo={this.state.itemSelecionado.nome}
+                                    imagens={this.state.itemSelecionado.conteudo}
+                                    onSwipeDown={() => this.setState({modalFotoVisible: false})}
+                                    onClose={() => this.setState({modalFotoVisible: false})}/>
                 {this.renderFeed()}
             </View>
                 
         );
+    }
+
+    abrirFotos(item){
+        console.log("item = ", item)
+        let newItem = {};
+        newItem["nome"] = item.nome;
+        newItem["foto"] = item.foto;
+        newItem["conteudo"] = item.conteudo;
+        newItem.conteudo = newItem.conteudo.map(foto => {
+            return foto.url_conteudo
+        })
+        this.setState({
+            modalFotoVisible: true,
+            itemSelecionado: newItem
+        })
     }
 }

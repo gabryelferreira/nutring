@@ -11,12 +11,20 @@ import FotoPerfil from '../../../components/FotoPerfil/FotoPerfil';
 import SemDadosPerfil from '../../../components/SemDadosPerfil/SemDadosPerfil';
 import Galeria from '../../../components/Galeria/Galeria';
 import RNFetchBlob from 'react-native-fetch-blob';
+import ModalPostagemViewer from '../../../components/ModalPostagemViewer/ModalPostagemViewer';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
 
 export default class Perfil extends Network {
+
+    imagens = [
+        'http://www.pacodasaguas.com.br/wp-content/uploads/2017/12/27-12-1080x630.jpg',
+        'https://abrilmdemulher.files.wordpress.com/2017/01/receita-feijoada.jpg?quality=90&strip=info&w=620',
+        'https://culinaria.culturamix.com/blog/wp-content/gallery/como-fazer-pratos-de-restaurante-2/Como-Fazer-Pratos-de-Restaurante-2.jpg',
+        'https://img.elo7.com.br/product/zoom/22565B3/adesivo-parede-prato-comida-frango-salada-restaurante-lindo-adesivo-parede.jpg'
+    ]
 
     static navigationOptions = ({navigation}) => ({
         title: navigation.getParam('nome', ''),
@@ -68,13 +76,14 @@ export default class Perfil extends Network {
             parandoDeSeguir: false,
             cor_fundo: '#fff',
             cor_texto: '#000',
+            modalFotoVisible: false,
 
             //GALERIA E MODAL DA GALERIA
             fotosGaleria: [],
             modal: {
                 visible: false,
-                titulo: "Alteração de foto",
-                subTitulo: "Deseja alterar sua foto de perfil?",
+                titulo: "Foto de Perfil",
+                subTitulo: "O que deseja fazer com sua foto de perfil?",
                 botoes: this.criarBotoes()
             },
             infoRestauranteVisible: false
@@ -97,7 +106,7 @@ export default class Perfil extends Network {
             })
         }
         let id_usuario_perfil = this.props.navigation.getParam('id_usuario_perfil', "");
-        let result = await this.callMethod("getPerfilV2", { id_usuario_perfil });
+        let result = await this.callMethod("getPerfil", { id_usuario_perfil });
         if (result.success){
             this.props.navigation.setParams({
                 nome: result.result.nome,
@@ -319,6 +328,29 @@ export default class Perfil extends Network {
         return null;
     }
 
+    renderCamerazinha(sou_eu){
+        if (sou_eu){
+            console.log("sou euuuu")
+            return (
+                <View style={styles.camerazinhaFoto}>
+                    <Icon name="camera" size={15} color="#fff"/>
+                </View>
+            );
+        }
+        return null;
+    }
+
+    renderReceitas(){
+        return this.imagens.map(imagem => {
+            return (
+                <View style={styles.receita}>
+                        {/* <Icon name="plus" size={15} color="#000"/> */}
+                    <Image resizeMethod="resize" source={{uri: imagem}} style={styles.fotoReceita}/>
+                </View>
+            );
+        })
+    }
+
     renderInfoPerfil(){
         let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa } = this.state.user;
         return (
@@ -332,6 +364,7 @@ export default class Perfil extends Network {
                 <View style={styles.viewInfo}>
                     <TouchableOpacity style={styles.viewFoto} onPress={() => this.validarAlteracaoFoto()}>
                         <Image resizeMethod="resize" style={styles.foto} source={{uri: foto}}/>
+                        {this.renderCamerazinha(sou_eu)}
                     </TouchableOpacity>
                     <Text style={styles.nome}>{nome}</Text>
                     <View style={{flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 30}}>
@@ -363,20 +396,19 @@ export default class Perfil extends Network {
                     </View>
                 </View>
 
-                {/* <View style={styles.viewReceitas}>
-                    <View style={styles.viewInfoReceitas}>
-                        <Text style={styles.tituloReceitas}>Receitas</Text>
-                        <Text style={styles.subTituloReceitas}>Compartilhe suas receitas favoritas</Text>
-                    </View>
-                    <View style={styles.receitas}>
-                        <View style={styles.receita}>
-                            <TouchableOpacity style={styles.bolaReceita}>
-                                <Icon name="plus" size={18} color="#000"/>
-                            </TouchableOpacity>
-                            <Text style={styles.textoReceita}>Nova receita</Text>
+                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { id_usuario })}>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                        <View style={styles.viewInfoReceitas}>
+                            <Text style={styles.tituloReceitas}>Receitas</Text>
+                            <Text style={styles.subTituloReceitas}>17 pratos</Text>
+                        </View>
+                        <View style={styles.receitas}>
+                            
+                            {this.renderReceitas()}
                         </View>
                     </View>
-                </View> */}
+                    <Icon name="chevron-right" solid size={15} color="#000"/>
+                </TouchableOpacity>
 
                 <View style={styles.fotos}>
                     <View style={styles.tabsFotos}>
@@ -404,6 +436,7 @@ export default class Perfil extends Network {
 
     renderBotaoAlterarCapa(sou_eu){
         if (sou_eu){
+            console.log("aqui sou eu sim")
             return (
                 <TouchableOpacity onPress={() => {
                     this.tipoFoto = "capaPerfil"
@@ -449,6 +482,7 @@ export default class Perfil extends Network {
                         <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: true})} style={styles.infoContato}><Icon name="info" size={18} solid color="#fff"/></TouchableOpacity>
                         <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2}} onPress={() => {this.tipoFoto = "fotoPerfil"; this.validarAlteracaoFoto()}}>
                             <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto}}/>
+                            {this.renderCamerazinha(sou_eu)}
                             <View style={{position: 'absolute', left: 0, right: 0, bottom: -12, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end'}}>
                                 <AutoHeightImage source={require('../../../assets/imgs/folhinha_da_macunha.png')}  width={30}/>
                             
@@ -577,7 +611,8 @@ export default class Perfil extends Network {
 
     criarBotoes(){
         let botoes = [
-            {chave: "ALTERAR", texto: "Abrir galeria", color: '#27ae60', fontWeight: 'bold'},
+            {chave: "ALTERAR", texto: "Alterar", color: '#27ae60', fontWeight: 'bold'},
+            {chave: "VER_FOTO", texto: "Visualizar", color: '#27ae60', fontWeight: 'bold'},
             {chave: "TENTAR", texto: "Cancelar"},
         ]
         return botoes;
@@ -596,6 +631,10 @@ export default class Perfil extends Network {
         console.log("clicando no " + key)
         if (key == "ALTERAR"){
             this.requisitarPermissaoGaleria();
+        } else if (key == "VER_FOTO"){
+            this.setState({
+                modalFotoVisible: true
+            })
         }
     }
 
@@ -643,12 +682,20 @@ export default class Perfil extends Network {
             this.setState({
                 modal: {
                     visible: true,
-                    titulo: "Alteração de foto",
-                    subTitulo: "Deseja alterar sua foto de perfil?",
+                    titulo: "Foto de Perfil",
+                    subTitulo: "O que deseja fazer com sua foto de perfil?",
                     botoes: this.criarBotoes()
                 }
             })
+        } else {
+            this.setState({
+                modalFotoVisible: true
+            })
         }
+    }
+
+    formatarImagemViewer(foto){
+        return [foto]
     }
 
     render(){
@@ -663,7 +710,7 @@ export default class Perfil extends Network {
         if (this.state.galeriaAberta){
             return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.alterarFotoPerfil(foto)} onClose={() => this.setState({galeriaAberta: false})}/>
         }
-        return (      
+        return (
             <View style={{flex: 1}}>
                 <Modalzin 
                     titulo={this.state.modal.titulo} 
@@ -673,6 +720,13 @@ export default class Perfil extends Network {
                     onClose={() => this.setState({modal: {visible: false}})}
                     botoes={this.state.modal.botoes}
                 />
+
+                <ModalPostagemViewer visible={this.state.modalFotoVisible}
+                            foto={this.state.user.foto}
+                            titulo={this.state.user.nome}
+                            imagens={this.formatarImagemViewer(this.state.user.foto)}
+                            onSwipeDown={() => this.setState({modalFotoVisible: false})}
+                            onClose={() => this.setState({modalFotoVisible: false})}/>
 
                 <Modal
                     
@@ -704,7 +758,7 @@ export default class Perfil extends Network {
                                 </View>
                             </View>
                             <View style={styles.viewFotoRestauranteInfo}>
-                                <Image source={{uri: this.state.user.foto}} style={styles.imagemRestauranteInfo}/>
+                                <Image resizeMethod="resize" source={{uri: this.state.user.foto}} style={styles.imagemRestauranteInfo}/>
                             </View>
                             <View style={styles.botaoFecharInfoRestaurante}>
                                 <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})}>
@@ -714,9 +768,7 @@ export default class Perfil extends Network {
                         </View>
                         <View style={[styles.column, styles.paddingInfoRestaurante, styles.viewSobreRestaurante]}>
                             <Text style={styles.tituloSobreRestaurante}>Sobre</Text>
-                            <Text style={styles.sobreRestaurante}>O conceito que está por trás da marca franqueada {this.state.user.nome}, abrange a ideia de uma culinária
-                             diferenciada por diversos fatores, um dos principais é a sua agilidade. Assim, um dos diferenciais do {this.state.user.nome} é, sem dúvida, o 
-                             amor que colocamos em cada prato no nosso estabelecimento.</Text>
+                            <Text style={styles.sobreRestaurante}>{this.state.user.sobre}</Text>
                         </View>
                     </View>
                 </Modal>
@@ -763,19 +815,30 @@ const styles = {
     viewInfo: {
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 55
+        marginTop: 55,
+        paddingBottom: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee'
     },
     viewFoto: {
         height: 85,
         width: 85,
         borderRadius: 85/2,
         elevation: 30,
-        backgroundColor: '#000'
+        backgroundColor: '#000',
+        overflow: 'hidden'
     },
     foto: {
         height: 85,
         width: 85,
         borderRadius: 85/2
+    },
+    camerazinhaFoto: {
+        position: 'absolute',
+        left: 0, right: 0, bottom: 0, height: 30,
+        backgroundColor: 'rgba(0, 0, 0, .5)',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     nome: {
         fontSize: 16,
@@ -835,41 +898,47 @@ const styles = {
         color: '#222'
     },
     viewReceitas: {
-        marginTop: 10,
+        paddingHorizontal: 20,
         paddingVertical: 10,
-        flexDirection: 'column',
-        borderTopColor: '#ddd',
-        borderTopWidth: 1
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     viewInfoReceitas: {
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingRight: 25
     },
     tituloReceitas: {
-        fontSize: 15,
+        fontSize: 20,
         color: '#333',
-        fontWeight: 'bold'
     },
     subTituloReceitas: {
-        fontSize: 13,
-        color: '#333',
+        fontSize: 12,
+        color: '#aaa',
     },
     receitas: {
-        marginTop: 10,
         flexDirection: 'row'
     },
     receita: {
         flexDirection: 'column',
-        marginHorizontal: 20,
+        width: 20,
         justifyContent: 'center',
         alignItems: 'center'
     },
     bolaReceita: {
-        height: 50,
-        width: 50,
-        borderRadius: 50/2,
+        height: 30,
+        width: 30,
+        borderRadius: 30/2,
         borderColor: '#ddd',
         borderWidth: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    fotoReceita: {
+        height: 30,
+        width: 30,
+        borderRadius: 30/2,
         justifyContent: 'center',
         alignItems: 'center'
     },
@@ -879,7 +948,6 @@ const styles = {
         marginTop: 5
     },
     fotos: {
-        marginTop: 10,
         flexDirection: 'column',
     },
     tabsFotos: {
