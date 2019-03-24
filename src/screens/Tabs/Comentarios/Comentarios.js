@@ -169,7 +169,7 @@ export default class Comentarios extends Network {
 
     renderView(){
         if (this.state.dados.length == 0 && !this.state.refreshing){
-            return <SemDados icone={"sad-tear"} titulo={"Nenhum comentário"} texto={"Esse post ainda não tem comentários."}/>
+            return <SemDados titulo={"Nenhum comentário"} texto={"Esse post ainda não tem comentários."}/>
         }
         return (
             <FlatList

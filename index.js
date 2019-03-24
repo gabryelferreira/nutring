@@ -32,6 +32,7 @@ import AlterarUsuario from './src/screens/Tabs/Configuracoes/EditarConta/Alterar
 import AlterarEmail from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarEmail';
 import AlterarSenha from './src/screens/Tabs/Configuracoes/EditarConta/Alterar/AlterarSenha';
 import NovaPromocao from './src/screens/Tabs/Configuracoes/NovaPromocao/NovaPromocao';
+import EnviarNotificacao from './src/screens/Tabs/Configuracoes/EnviarNotificacao/EnviarNotificacao';
 import EditarPerfil from './src/screens/Tabs/Perfil/EditarPerfil/EditarPerfil';
 import Postagem from './src/screens/Tabs/Postagem/Postagem';
 import Seguidores from './src/screens/Tabs/Perfil/Seguidores/Seguidores';
@@ -114,7 +115,15 @@ const InsideTabs = {
     Receitas: {
         screen: Receitas,
         navigationOptions: NavigationOptions
-    }
+    },
+    MeuPlano: {
+        screen: MeuPlano,
+        navigationOptions: NavigationOptions
+    },
+    Plano: {
+        screen: Plano,
+        navigationOptions: NavigationOptions
+    },
 }
 
 function addNewPage(_initialRouteName){
@@ -148,7 +157,7 @@ const Tabs = createBottomTabNavigator({
             tabBarLabel: "Início",
             tabBarIcon: ({ tintColor }) => (
                 <Icon
-                    name="home"
+                    name="leaf"
                     size={20}
                     color={tintColor} />
             )
@@ -191,7 +200,7 @@ const Tabs = createBottomTabNavigator({
             tabBarLabel: "Perfil",
             tabBarIcon: ({ tintColor }) => (
                 <Icon
-                    name="user"
+                    name="user-circle"
                     solid
                     size={20}
                     color={tintColor} />
@@ -268,12 +277,8 @@ const AppNavigator = createStackNavigator({
         screen: NovaPromocao,
         navigationOptions: NavigationOptions
     },
-    MeuPlano: {
-        screen: MeuPlano,
-        navigationOptions: NavigationOptions
-    },
-    Plano: {
-        screen: Plano,
+    EnviarNotificacao: {
+        screen: EnviarNotificacao,
         navigationOptions: NavigationOptions
     },
     NutringAddButton: {

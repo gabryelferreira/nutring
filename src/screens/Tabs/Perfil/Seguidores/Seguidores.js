@@ -86,7 +86,7 @@ export default class Seguidores extends Network {
             );
         }
         if (this.state.seguidores.length == 0){
-            return <SemDados icone={"sad-tear"} titulo={"Nenhum seguidor"} texto={"Você ainda não possui seguidores."}/>
+            return <SemDados titulo={"Nenhum seguidor"} texto={"Você ainda não possui seguidores."}/>
         }
         return (
             <FlatList

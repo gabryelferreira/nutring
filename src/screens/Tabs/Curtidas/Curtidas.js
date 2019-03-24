@@ -86,7 +86,7 @@ export default class Curtidas extends Network {
             );
         }
         if (this.state.curtidores.length == 0){
-            return <SemDados icone={"sad-tear"} titulo={"Nenhuma curtida"} texto={"Esse post não tem curtidores."}/>
+            return <SemDados titulo={"Nenhuma curtida"} texto={"Esse post não tem curtidores."}/>
         }
         return (
             <FlatList

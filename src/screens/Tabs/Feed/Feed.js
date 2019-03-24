@@ -297,7 +297,7 @@ export default class Feed extends Network {
 
     render(){
         if (this.state.semInternet){
-            return <SemDados icone={"sad-tear"} titulo={"Sem internet"} texto={"Parece que você está sem internet."}/>
+            return <SemDados titulo={"Sem internet"} texto={"Parece que você está sem internet."}/>
         }
         if (this.state.carregandoPrimeiraVez){
             return (

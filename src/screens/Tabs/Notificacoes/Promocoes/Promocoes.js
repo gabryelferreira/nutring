@@ -124,7 +124,7 @@ export default class Promocoes extends Network {
     }
 
     if (this.state.dados.length == 0 && !this.state.refreshing){
-      return <SemDados icone={"sad-tear"} titulo={"Sem promoções"} texto={"Você não possui promoções."}/>
+      return <SemDados titulo={"Sem promoções"} texto={"Você não possui promoções."}/>
     }
 
     return (

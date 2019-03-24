@@ -98,6 +98,7 @@ export default class Configuracoes extends Network {
             return (
                 <View>
                     <Opcao icone={"cart-plus"} texto={"Cadastrar promoção"} seta={true} onPress={() => this.props.navigation.navigate("NovaPromocao")}/>
+                    <Opcao icone={"paper-plane"} texto={"Enviar notificação"} seta={true} onPress={() => this.props.navigation.navigate("EnviarNotificacao")}/>
                     <Opcao icone={"hand-holding-usd"} texto={"Meu plano"} seta={true} onPress={() => this.props.navigation.navigate("MeuPlano")}/>
                 </View>
             );
@@ -127,7 +128,7 @@ export default class Configuracoes extends Network {
                     {this.renderNovaPromocao()}
                     <Opcao icone={"user-circle"} texto={"Editar conta"} seta={true} onPress={() => this.props.navigation.navigate("EditarConta")}/>
                     <Opcao icone={"question-circle"} texto={"Ajuda"} seta={true} onPress={() => this.props.navigation.navigate("Ajuda")}/>
-                    <Opcao icone={"key"} texto={"Privacidade"} seta={true} onPress={() => this.props.navigation.navigate("Privacidade")}/>
+                    {/* <Opcao icone={"key"} texto={"Privacidade"} seta={true} onPress={() => this.props.navigation.navigate("Privacidade")}/> */}
                     <Separador/>
                     {/* <Opcao icone={"external-link-alt"} texto={"Nutring Calorias"}/> */}
                     <Opcao icone={"sign-out-alt"} texto={"Sair"} onPress={() => this.abrirConfirmacaoSair()}/>

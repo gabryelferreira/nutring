@@ -3,13 +3,13 @@ import { View, Text, TouchableOpacity, Switch } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
-const Opcao = ({toggle, icone, texto, tela, seta, onPress, toggleChange, toggleValue}) => {
+const Opcao = ({toggle, icone, texto, tela, seta, onPress, toggleChange, toggleValue, switchDisabled}) => {
 
     renderSeta = () => {
         if (seta)
             return <Icon name="angle-right" size={18} color="#000"/>;
         if (toggle)
-            return <Switch trackColor={{true: "#27ae60", false: null}} onValueChange={toggleChange} value={toggleValue}/>
+            return <Switch disabled={switchDisabled} trackColor={{true: "#27ae60", false: null}} onValueChange={toggleChange} value={toggleValue}/>
         return null;
     }
 

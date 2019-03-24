@@ -21,7 +21,7 @@ export default class Notificacoes extends Network {
     return (
     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
       <View style={{flex: 1, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 30}}>
-        <SemDadosPerfil icone={"sad-tear"} titulo={"Sem notificações"} texto={"Você ainda não recebeu notificações."}/>
+        <SemDadosPerfil titulo={"Sem notificações"} texto={"Você ainda não recebeu notificações."}/>
       </View>
     </ScrollView>
     );

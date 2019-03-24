@@ -30,7 +30,7 @@ const Input = (props) => {
             {returnLabel()}
             <View style={styles.viewInput}>
                 <TextInput
-                    style={[props.small ? [props.multiline ? [styles.input, styles.inputPequeno] : [styles.input, styles.inputPequeno, styles.inputSuperPequeno]] : [styles.input, styles.inputGrande], props.disabled ? {backgroundColor: '#eee'} : {}]}
+                    style={[props.small ? [props.multiline ? [styles.input, styles.inputPequeno] : [styles.input, styles.inputPequeno, styles.inputSuperPequeno]] : [styles.input, styles.inputGrande], props.disabled ? {backgroundColor: '#eee'} : {}, props.hashtag ? styles.bigPaddingLeft : {}]}
                     onChangeText={props.onChangeText}
                     value={props.value ? props.value : ''}
                     returnKeyType={props.returnKeyType}
@@ -67,15 +67,18 @@ const styles = {
         flexDirection: 'row'
     },
     input: {
-        borderRadius: 30,
+        borderRadius: 5,
         color: '#000',
-        paddingHorizontal: 25,
+        paddingHorizontal: 10,
         fontSize: 14,
         backgroundColor: '#fafafa',
         borderWidth: 1,
         borderColor: '#ddd',
         marginTop: 7,
         marginBottom: 7
+    },
+    bigPaddingLeft: {
+        paddingLeft: 25
     },
     inputPequeno: {
         flex: .7,

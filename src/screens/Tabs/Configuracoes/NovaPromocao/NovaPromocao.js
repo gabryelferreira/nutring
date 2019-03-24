@@ -33,10 +33,12 @@ export default class NovaPromocao extends Network {
                 botoes: []
             },
             loading: false,
+            carregandoInicial: true,
             titulo: "",
             descricao: "",
             tituloNotificacao: "",
             descricaoNotificacao: "",
+            permissaoNotificacao: false,
             promocaoRelampago: false,
             seguidores: 0,
             disabled: true,
@@ -59,7 +61,13 @@ export default class NovaPromocao extends Network {
             this.setState({
                 tituloNotificacao: result.result.nome,
                 seguidores: result.result.seguidores,
-                disabled: false
+                permissaoNotificacao: result.result.permissao_notificacao,
+                disabled: false,
+                carregandoInicial: false
+            })
+        } else {
+            this.setState({
+                carregandoInicial: false
             })
         }
     }
@@ -111,10 +119,10 @@ export default class NovaPromocao extends Network {
     }
 
     async enviarNotificacao(){
-        let result = await this.callMethod("enviarNotificacao", { mensagem: this.state.descricaoNotificacao });
+        let result = await this.callMethod("enviarNotificacao", { mensagem: this.state.descricaoNotificacao, promocao: true });
         if (result.success){
             if (result.result == "NOTIFICACAO_ENVIADA"){
-                this.showModal("Promoção cadastrada", "Sua promoção foi cadastrada com sucesso e seus usuários já foram notificados sobre ela.");
+                this.showModal("Promoção cadastrada", "Sua promoção foi cadastrada com sucesso e seus seguidores já foram notificados sobre ela.");
             } else if (result.result == "NOTIFICACAO_FALHOU"){
                 this.showModal("Sua notificação falhou", "Não foi possível enviar sua notificação para seus seguidores. Entre em contato com o suporte para mais informações.");
             }
@@ -250,7 +258,17 @@ export default class NovaPromocao extends Network {
         }
     }
 
+    renderPermissaoNotificacao(){
+        if (this.state.carregandoInicial)
+            return null;
+        if (!this.state.permissaoNotificacao && !this.state.carregandoInicial){
+            return <Text style={{fontSize: 11, color: 'red'}}>Você já enviou suas notificações diárias.</Text>
+        }
+        return <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
+    }
+
     render(){
+        
         if (this.state.galeriaAberta){
             return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.setState({foto, galeriaAberta: false})} onClose={() => this.setState({galeriaAberta: false})}/>
         }
@@ -312,11 +330,12 @@ export default class NovaPromocao extends Network {
                             returnKeyType={"none"}
                         />
                     </View>
-                    <Opcao icone={"rocketchat"} texto={"Enviar notificação?"} toggle={true} toggleChange={() => this.setState({enviarNotificacao: !this.state.enviarNotificacao})} toggleValue={this.state.enviarNotificacao}/>
+                    <Opcao icone={"rocketchat"} texto={"Enviar notificação?"} switchDisabled={!this.state.permissaoNotificacao} toggle={true} toggleChange={() => this.setState({enviarNotificacao: !this.state.enviarNotificacao})} toggleValue={this.state.enviarNotificacao}/>
                     <View style={styles.container}>
-                        {this.renderEnviarNotificacao()}
+                        {this.renderPermissaoNotificacao()}
                         <View style={{marginVertical: 5, flex: .7}}>
-                            <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
+                            {this.renderEnviarNotificacao()}
+                            
                         </View>
                         <View style={{marginVertical: 10}}>
                             <BotaoPequeno disabled={this.state.disabled} texto={"Confirmar"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
