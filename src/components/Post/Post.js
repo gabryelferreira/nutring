@@ -193,7 +193,7 @@ class Post extends Network {
             return (
                 <View key={curtidor.id_usuario} style={styles.pessoaCurtida}>
                     <View style={{width: 20, height: 20, borderRadius: 20/2, backgroundColor: '#000'}}>
-                        <Image resizeMethod="resize" source={{uri: curtidor.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
+                        <Image source={{uri: curtidor.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
                     </View>
                 </View>
             );
@@ -207,7 +207,7 @@ class Post extends Network {
             return (
                 <View key={comentarista.id_usuario} style={styles.pessoaComentario}>
                     <View style={{width: 20, height: 20, borderRadius: 20/2, backgroundColor: '#000'}}>
-                        <Image resizeMethod="resize" source={{uri: comentarista.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
+                        <Image source={{uri: comentarista.foto}} style={{width: 20, height: 20, borderRadius: 20/2}}/>
                     </View>
                 </View>
             );
@@ -318,6 +318,7 @@ const styles = {
     container: {
         flexDirection: 'row',
         paddingVertical: 20,
+        paddingRight: 10,
         borderBottomColor: '#eee',
         // borderBottomWidth: 1
     },

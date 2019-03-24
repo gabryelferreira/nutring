@@ -317,7 +317,6 @@ export default class NovaPromocao extends Network {
                         {this.renderEnviarNotificacao()}
                         <View style={{marginVertical: 5, flex: .7}}>
                             <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
-                            {/* <Text style={{fontSize: 11, color: '#000'}}>Pode ficar tranquilo ;)</Text> */}
                         </View>
                         <View style={{marginVertical: 10}}>
                             <BotaoPequeno disabled={this.state.disabled} texto={"Confirmar"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
