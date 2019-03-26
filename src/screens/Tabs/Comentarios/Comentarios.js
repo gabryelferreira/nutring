@@ -119,34 +119,36 @@ export default class Comentarios extends Network {
     returnBotaoEnviar(){
         if (!this.state.comentando)
             return (
-                <View style={[this.state.comentario.length > 0 ? styles.botaoEnviar : [styles.botaoEnviar, styles.botaoBloqueado]]}>
-                    <Icon name="rocket" size={16} color="#F8F8F8" onPress={() => this.comentarPost()}/>
-                </View>
+                <TouchableOpacity style={styles.botaoEnviar}  onPress={() => this.comentarPost()}>
+                    <Icon name="rocket" size={16} color="#F8F8F8"/>
+                </TouchableOpacity>
             );
         return <ActivityIndicator color="#27ae60"/>
     }
 
     async comentarPost(){
-        await this.setState({
-            comentando: true
-        })
-        let result = await this.callMethod("commentPost", { id_post: this.state.id_post, comentario: this.state.comentario });
-        if (result.success){
-            let dados = this.state.dados;
-            await dados.unshift(result.result);
-            console.log("dados = ", dados)
+        if (this.state.comentario.length > 0){
             await this.setState({
-                dados: []
+                comentando: true
             })
+            let result = await this.callMethod("commentPost", { id_post: this.state.id_post, comentario: this.state.comentario });
+            if (result.success){
+                let dados = this.state.dados;
+                await dados.unshift(result.result);
+                console.log("dados = ", dados)
+                await this.setState({
+                    dados: []
+                })
+                await this.setState({
+                    dados: dados
+                })
+                console.log("dados agora = ", this.state.dados)
+            }
             await this.setState({
-                dados: dados
+                comentando: false,
+                comentario: ""
             })
-            console.log("dados agora = ", this.state.dados)
         }
-        await this.setState({
-            comentando: false,
-            comentario: ""
-        })
     }
 
     renderCaixaTexto(){

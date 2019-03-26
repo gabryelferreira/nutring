@@ -41,9 +41,9 @@ class NutringAddButton extends Component {
                     <View style={{
                         alignItems: 'center',
                     }}>
-                        <View>
-                            <Icon onPress={() => this.setState({visible: true})} style={{paddingHorizontal: 25, paddingVertical: 10}} name="camera" size={22} color="#c7c7c7"/>
-                        </View>
+                        <TouchableHighlight>
+                            <Icon onPress={() => this.setState({visible: true})} style={{paddingHorizontal: 25, paddingVertical: 10}} name="plus" size={22} color="#c7c7c7"/>
+                        </TouchableHighlight>
                     </View>
             </View>
         );

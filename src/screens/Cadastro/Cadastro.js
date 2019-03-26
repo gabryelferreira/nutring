@@ -740,7 +740,7 @@ const styles = {
     },
     picker: {
         alignSelf: 'stretch',
-        borderRadius: 30,
+        borderRadius: 5,
         paddingLeft: 15,
         paddingRight: 5,
         color: '#000',

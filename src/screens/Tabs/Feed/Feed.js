@@ -46,6 +46,7 @@ export default class Feed extends Network {
     };
 
     offset = 0;
+    refreshing = false;
 
     state = {
         carregando: false,
@@ -74,15 +75,15 @@ export default class Feed extends Network {
         this.salvarToken();
     }
 
-    async carregarDadosIniciais() {
+    carregarDadosIniciais() {
         console.log("to aqui nos dados iniciais!!")
         this.offset = 0;
-        await this.setState({
+        this.refreshing = true;
+        this.setState({
             semMaisDados: false,
             refreshing: true,
             avoidRender: true,
-        });
-        await this.carregarDados();
+        }, this.carregarDados);
     }
 
     async salvarToken(){
@@ -95,6 +96,7 @@ export default class Feed extends Network {
     async carregarDados() {
         if (!this.state.semMaisDados){
             let result = await this.callMethod("getFeed", { offset: this.offset, limit: 10 })
+            this.refreshing = false;
             if (result.success){
                 if (this.state.refreshing){
                     await this.setState({
@@ -151,7 +153,7 @@ export default class Feed extends Network {
 
     async pegarDados(){
         console.log("to aqui no pegarDados()")
-        if (!this.state.carregando){
+        if (!this.state.carregando && !this.state.refreshing){
             this.offset = this.offset + 10
             await this.carregarDados();
         }
@@ -175,19 +177,13 @@ export default class Feed extends Network {
         }
     }
 
-    returnFooterComponent(){
-        if (!this.state.semMaisDados){
-            return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 20, marginBottom: 40 }}/>
-        } else return <View style={{marginBottom: 20}}></View>
-    }
-
     returnLoader(index, campo){
         if (campo == 'dados'){
-            if (index == this.state.dados.length-1 && !this.state.semMaisDados)
+            if (index == this.state.dados.length-1 && !this.state.semMaisDados && !this.refreshing)
                 return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 0, marginBottom: 35 }}/>
         }
         if (campo == 'usuarios')
-            if (index == this.state.usuarios.length-1 && !this.state.semMaisUsuarios)
+            if (index == this.state.usuarios.length-1 && !this.state.semMaisUsuarios && !this.refreshing)
                 return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
         return;
     }
