@@ -17,7 +17,7 @@ import { Modal, Text, View, TouchableOpacity, Animated } from 'react-native';
 export default class Modalzin extends Component {
 
     renderBotoes(){
-        if (this.props.botoes){
+        if (this.props.botoes && this.props.botoes.length > 0){
             return this.props.botoes.map((botao, index) => {
                 let color = botao.color ? botao.color : '#444';
                 let fontWeight = botao.fontWeight ? botao.fontWeight : 'normal';

@@ -26,7 +26,9 @@ export default class MeuPlano extends Network {
                 botoes: []
             },
             planos: [],
-            usuario: {}
+            usuario: {},
+            assinando: false,
+            planoAssinando: {}
         }
     }
 
@@ -110,6 +112,97 @@ export default class MeuPlano extends Network {
         return preco.split('.');
     }
 
+    async confirmarAssinarPlano(plano){
+        this.setState({
+            planoAssinando: plano,
+            modal: {
+                visible: true,
+                titulo: "Confirmação",
+                subTitulo: `Deseja confirmar a assinatura do Plano Nutring ${plano.nome}?`,
+                botoes: [
+                    {chave: "CONFIRMAR", texto: "Confirmar", color: '#28b657', fontWeight: 'bold'},
+                    {chave: "CANCELAR", texto: "Cancelar"},
+                ]
+            }
+        })
+        // let result = await this.callMethod("")
+    }
+
+    async assinarPlano(id_plano){
+        this.setState({
+            assinando: true
+        })
+        let result = await this.callMethod("assinarPlano", {id_plano});
+        if (result.success){
+            this.setState({
+                assinando: false
+            })
+            // let titulo = "";
+            // let subTitulo = "";
+            // if (result.result == "SOLICITACAO_EXISTENTE"){
+            //     titulo = "Solicitação existente";
+            //     subTitulo = "Você já possui uma solicitação para assinatura ou renovação de um plano.";
+            // } else if (result.result == "SOLICITACAO_ENVIADA"){
+            //     titulo = "Solicitação enviada";
+            //     subTitulo = `Sua solicitação do Plano Nutring ${this.state.planoAssinando.nome} foi enviada com sucesso. Para realizar o pagamento, acesse o link enviado para seu e-mail.`;
+            // } else {
+            //     titulo = "Atualize o App";
+            //     subTitulo = "Vimos que sua versão do aplicativo não é a mais recente. Atualize seu app para ficar ligado nas novidades do Nutring.";
+            // }
+            // this.setState({
+            //     assinando: false,
+            //     solicitado: true,
+            //     modal: {
+            //         visible: true,
+            //         titulo,
+            //         subTitulo,
+            //         botoes: []
+            //     }
+            // })
+        } else {
+            this.setState({
+                modal: {
+                    visible: true,
+                    titulo: "Ocorreu um erro",
+                    subTitulo: "Verifique sua conexão a internet e tente novamente.",
+                    botoes: []
+                },
+                assinando: false
+            })
+        }
+    }
+
+    setModalState(visible){
+        this.setState({
+            modal: {
+                visible: visible,
+                titulo: "",
+                subTitulo: "",
+                botoes: []
+            }
+        })
+    }
+
+    getModalClick(key){
+        this.setModalState(false);
+        if (this.state.solicitado)
+            this.props.navigation.goBack(null);
+        console.log("clicando no " + key)
+        if (key == "CONFIRMAR"){
+            this.assinarPlano(this.state.planoAssinando.id_plano);
+        }
+    }
+
+    renderIconeForward(id_plano){
+        if (this.state.assinando){
+            if (this.state.planoAssinando.id_plano == id_plano){
+                return <ActivityIndicator animating color="#fff" size={14}/>
+            }
+            return <Icon name="chevron-right" solid size={14} color="#fff" style={{fontWeight: 'bold'}}/>
+        }
+        return <Icon name="chevron-right" solid size={14} color="#fff" style={{fontWeight: 'bold'}}/>
+    }
+
     renderPlanos(){
         return this.state.planos.map((plano) => {
             let color = plano.id_plano == 2 ? '#976938' : '#28b657';
@@ -127,9 +220,9 @@ export default class MeuPlano extends Network {
                                 <Icon name="chevron-right" solid size={12} color="#fff"/>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity style={[styles.botaoAssinarPlano, {borderColor: color}]}>
+                        <TouchableOpacity disabled={this.state.assinando} style={[styles.botaoAssinarPlano, {borderColor: color}]} onPress={() => this.confirmarAssinarPlano(plano)}>
                             <Text style={styles.textoBotaoAssinarPlano}>{plano.is_plano_atual ? 'RENOVE' : 'ASSINE'} O PLANO {plano.nome.toUpperCase()}</Text>
-                            <Icon name="chevron-right" solid size={14} color="#fff" style={{fontWeight: 'bold'}}/>
+                            {this.renderIconeForward(plano.id_plano)}
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -201,6 +294,14 @@ export default class MeuPlano extends Network {
         }
         return (
             <View style={{flex: 1, backgroundColor: '#000'}}>
+                <Modalzin 
+                    titulo={this.state.modal.titulo} 
+                    subTitulo={this.state.modal.subTitulo} 
+                    visible={this.state.modal.visible} 
+                    onClick={(key) => this.getModalClick(key)}
+                    onClose={() => this.getModalClick("OK")}
+                    botoes={this.state.modal.botoes}
+                    />
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
                     {this.renderMeuPlano()}
                     {this.renderPlanos()}
