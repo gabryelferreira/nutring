@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, WebView, Image } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, WebView, Image, Modal } from 'react-native';
 import Network from '../../../../network';
 import BotaoPequeno from '../../../../components/Botoes/BotaoPequeno';
 import Modalzin from '../../../../components/Modal/Modal';
@@ -28,7 +28,9 @@ export default class MeuPlano extends Network {
             planos: [],
             usuario: {},
             assinando: false,
-            planoAssinando: {}
+            planoAssinando: {},
+            meuPlano: {},
+            modalAberto: false,
         }
     }
 
@@ -52,9 +54,13 @@ export default class MeuPlano extends Network {
     async getPlanos(){
         let result = await this.callMethod("getPlanos");
         if (result.success){
+            let meuPlano = result.result.find(plano => {
+                return plano.is_plano_atual
+            });
             this.setState({
                 planos: result.result,
-                carregandoInicial: false
+                carregandoInicial: false,
+                meuPlano
             })
         }
     }
@@ -112,53 +118,38 @@ export default class MeuPlano extends Network {
         return preco.split('.');
     }
 
-    async confirmarAssinarPlano(plano){
-        this.setState({
-            planoAssinando: plano,
-            modal: {
-                visible: true,
-                titulo: "Confirmação",
-                subTitulo: `Deseja confirmar a assinatura do Plano Nutring ${plano.nome}?`,
-                botoes: [
-                    {chave: "CONFIRMAR", texto: "Confirmar", color: '#28b657', fontWeight: 'bold'},
-                    {chave: "CANCELAR", texto: "Cancelar"},
-                ]
-            }
-        })
-        // let result = await this.callMethod("")
-    }
-
-    async assinarPlano(id_plano){
+    async assinarPlano(plano){
         this.setState({
             assinando: true
         })
-        let result = await this.callMethod("assinarPlano", {id_plano});
+        let result = await this.callMethod("assinarPlano", {id_plano: plano.id_plano});
         if (result.success){
             this.setState({
-                assinando: false
+                assinando: false,
+                modalAberto: false
             })
-            // let titulo = "";
-            // let subTitulo = "";
-            // if (result.result == "SOLICITACAO_EXISTENTE"){
-            //     titulo = "Solicitação existente";
-            //     subTitulo = "Você já possui uma solicitação para assinatura ou renovação de um plano.";
-            // } else if (result.result == "SOLICITACAO_ENVIADA"){
-            //     titulo = "Solicitação enviada";
-            //     subTitulo = `Sua solicitação do Plano Nutring ${this.state.planoAssinando.nome} foi enviada com sucesso. Para realizar o pagamento, acesse o link enviado para seu e-mail.`;
-            // } else {
-            //     titulo = "Atualize o App";
-            //     subTitulo = "Vimos que sua versão do aplicativo não é a mais recente. Atualize seu app para ficar ligado nas novidades do Nutring.";
-            // }
-            // this.setState({
-            //     assinando: false,
-            //     solicitado: true,
-            //     modal: {
-            //         visible: true,
-            //         titulo,
-            //         subTitulo,
-            //         botoes: []
-            //     }
-            // })
+            let titulo = "";
+            let subTitulo = "";
+            if (result.result == "SOLICITACAO_EXISTENTE"){
+                titulo = "Solicitação existente";
+                subTitulo = "Você já possui uma solicitação para assinatura ou renovação de um plano. Reenviamos o e-mail com o link para pagamento.";
+            } else if (result.result == "SOLICITACAO_ENVIADA"){
+                titulo = "Solicitação enviada";
+                subTitulo = `Sua solicitação do Plano Nutring ${this.state.planoAssinando.nome} foi enviada com sucesso. Para realizar o pagamento, acesse o link enviado para seu e-mail.`;
+            } else {
+                titulo = "Atualize o App";
+                subTitulo = "Vimos que sua versão do aplicativo não é a mais recente. Atualize seu app para ficar ligado nas novidades do Nutring.";
+            }
+            this.setState({
+                assinando: false,
+                solicitado: true,
+                modal: {
+                    visible: true,
+                    titulo,
+                    subTitulo,
+                    botoes: []
+                }
+            })
         } else {
             this.setState({
                 modal: {
@@ -203,6 +194,35 @@ export default class MeuPlano extends Network {
         return <Icon name="chevron-right" solid size={14} color="#fff" style={{fontWeight: 'bold'}}/>
     }
 
+    renderIconeForwardModal(id_plano){
+        if (this.state.assinando){
+            if (this.state.planoAssinando.id_plano == id_plano){
+                return <ActivityIndicator animating color="#fff" size={16}/>
+            }
+            return <Icon name="chevron-right" solid size={16} color="#fff" style={{fontWeight: 'bold'}}/>
+        }
+        return <Icon name="chevron-right" solid size={16} color="#fff" style={{fontWeight: 'bold'}}/>
+    }
+
+    renderTextoBotaoAssinar(plano){
+        if (plano.id_plano != this.state.meuPlano.id_plano && plano.preco < this.state.meuPlano.preco){
+            return <Text style={styles.textoBotaoAssinarPlano}>CONHEÇA O PLANO {plano.nome.toUpperCase()}</Text>
+        }
+        return <Text style={styles.textoBotaoAssinarPlano}>{plano.is_plano_atual ? 'RENOVE' : 'ASSINE'} O PLANO {plano.nome.toUpperCase()}</Text>
+    }
+
+    renderTextoBotaoAssinarModal(plano){
+        return <Text style={styles.textoBotaoAssinarPlanoModal}>{plano.is_plano_atual ? 'RENOVE' : 'ASSINE'} O PLANO {plano.nome ? plano.nome.toUpperCase() : ""}</Text>
+    }
+
+    abrirPlano(plano){
+        // this.props.navigation.navigate("Plano", { plano, meuPlano: this.state.meuPlano });
+        this.setState({
+            modalAberto: true,
+            planoAssinando: plano
+        })
+    }
+
     renderPlanos(){
         return this.state.planos.map((plano) => {
             let color = plano.id_plano == 2 ? '#976938' : '#28b657';
@@ -215,13 +235,13 @@ export default class MeuPlano extends Network {
                         <Text style={styles.apenas}>por apenas</Text>
                         <View style={styles.alinharBaixo}>
                             <Text style={[styles.preco, {color}]}>R$ <Text style={styles.precoNumeroMaior}>{preco[0]}</Text>,{preco[1]}</Text>
-                            <TouchableOpacity style={[styles.alinharTextos, styles.botaoDetalhes]}>
+                            <TouchableOpacity style={[styles.alinharTextos, styles.botaoDetalhes]} onPress={() => this.abrirPlano(plano)}>
                                 <Text style={styles.detalhes}>Detalhes</Text>
                                 <Icon name="chevron-right" solid size={12} color="#fff"/>
                             </TouchableOpacity>
                         </View>
-                        <TouchableOpacity disabled={this.state.assinando} style={[styles.botaoAssinarPlano, {borderColor: color}]} onPress={() => this.confirmarAssinarPlano(plano)}>
-                            <Text style={styles.textoBotaoAssinarPlano}>{plano.is_plano_atual ? 'RENOVE' : 'ASSINE'} O PLANO {plano.nome.toUpperCase()}</Text>
+                        <TouchableOpacity disabled={this.state.assinando} style={[styles.botaoAssinarPlano, {borderColor: color}]} onPress={() => this.abrirPlano(plano)}>
+                            {this.renderTextoBotaoAssinar(plano)}
                             {this.renderIconeForward(plano.id_plano)}
                         </TouchableOpacity>
                     </View>
@@ -240,7 +260,7 @@ export default class MeuPlano extends Network {
         if (diasRestantes)
             return (
                 <View style={[styles.viewTextoPlano, styles.alinharTextos]}>
-                    <Icon name="clock" solid size={14} color="#777"/>
+                    <Icon name="clock" solid size={14} color="#000"/>
                     <Text style={styles.textoMeuPlano}>{diasRestantes} dias restantes</Text>
                 </View>
             );
@@ -268,7 +288,7 @@ export default class MeuPlano extends Network {
     renderPlanoAtual(plano){
         return (
             <View style={styles.meuPlano}>
-                <Image source={{uri: 'https://image.flaticon.com/icons/png/512/20/20177.png'}} style={styles.fotoMeuPlano}/>
+                <Image source={require('../../../../assets/imgs/icone-casinha.png')} style={styles.fotoMeuPlano}/>
                 <View>
                     <View style={[styles.viewTituloPlano, styles.alinharTextos]}>
                         <Icon name="star" solid size={14} color="#000"/>
@@ -282,6 +302,72 @@ export default class MeuPlano extends Network {
                 </View>
             </View>
         );
+    }
+
+    renderBotaoModal(plano){
+        if (!plano.disponivel){
+            return (
+                <Text style={styles.textoObsModal}>Você não pode assinar esse plano no momento, pois seu plano atual possui mais vantagens.</Text>
+            );
+        }
+        return (
+            <TouchableOpacity disabled={this.state.assinando} style={[styles.botaoAssinarPlanoModal, {borderColor: plano.id_plano == 2 ? '#976938' : '#28b657'}]} onPress={() => this.assinarPlano(plano)}>
+                {this.renderTextoBotaoAssinarModal(this.state.planoAssinando)}
+                {this.renderIconeForwardModal(this.state.planoAssinando.id_plano)}
+            </TouchableOpacity>
+        );
+    }
+
+    renderObsPlano(plano){
+        if (!plano.disponivel) return null;
+        if (plano.is_plano_atual){
+            return (
+                <Text style={[styles.textoObsModal, {marginVertical: 15}]}>Renovando o Plano Nutring {plano.nome}, você terá 30 dias acrescentados aos seus dias restantes, somando um total de {parseInt(plano.dias_restantes) + 30} dias.</Text>
+            );
+        } else {
+            return (
+                <Text style={[styles.textoObsModal, {marginVertical: 15}]}>Assinando o Plano Nutring {plano.nome}, você terá até o final do seu período atual para utilizá-lo, e pagará proporcional aos dias de uso.</Text>
+            );
+        }
+    }
+
+    renderModal(){
+        if (this.state.planoAssinando){
+            return (
+                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, .94)'}}>
+                    <View style={styles.modalHeader}>
+                        <TouchableOpacity onPress={() => this.setState({modalAberto: false})} style={styles.botaoFecharModal}>
+                            <Icon name="times" color="#fff" size={24}/>
+                        </TouchableOpacity>
+                        <Text style={styles.tituloModal}>Plano Nutring {this.state.planoAssinando.nome}</Text>
+                        <TouchableOpacity style={styles.botaoFecharModal}>
+                            <Icon name="times" color="#000" size={24}/>
+                        </TouchableOpacity>
+                    </View>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                        <View style={styles.viewModalFoto}>
+                            <Image style={[styles.fotoModal, {borderColor: this.state.planoAssinando.id_plano == 2 ? '#976938' : '#28b657'}]} source={{uri: this.state.planoAssinando.foto}}/>
+                        </View>
+                        <View style={[styles.viewDescricaoModal, {borderColor: this.state.planoAssinando.id_plano == 2 ? '#976938' : '#28b657'}]}>
+                            <Text style={styles.descricaoModal}>
+                                {this.state.planoAssinando.descricao}
+                            </Text>
+                        </View>
+                        <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center', paddingHorizontal: 20}}>
+                            <View style={styles.precosModal}>
+                                <Text style={[styles.porApenasModal, {transform: [{translateY: 18}]}]}>
+                                    por apenas
+                                </Text>
+                                <Text style={[styles.precoModal, {color: this.state.planoAssinando.id_plano == 2 ? '#976938' : '#28b657'}]}>R$ <Text style={styles.precoNumeroMaiorModal}>{this.corrigirPreco(this.state.planoAssinando.preco) ? this.corrigirPreco(this.state.planoAssinando.preco)[0] : ""}</Text>,{this.corrigirPreco(this.state.planoAssinando.preco) ? this.corrigirPreco(this.state.planoAssinando.preco)[1] : ""}</Text>
+                            </View>
+                            {this.renderBotaoModal(this.state.planoAssinando)}
+                            {this.renderObsPlano(this.state.planoAssinando)}
+                        </View>
+                    </ScrollView>
+                </View>
+            );
+        }
+        return null;
     }
 
     render(){
@@ -302,6 +388,17 @@ export default class MeuPlano extends Network {
                     onClose={() => this.getModalClick("OK")}
                     botoes={this.state.modal.botoes}
                     />
+                    <Modal 
+                            animationType="slide"
+                            transparent={true}
+                            visible={this.state.modalAberto}
+                            onRequestClose={() => {
+                                this.setState({modalAberto: false})
+                            }}
+                    >
+                        {this.renderModal()}
+                            
+                    </Modal>
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
                     {this.renderMeuPlano()}
                     {this.renderPlanos()}
@@ -316,6 +413,89 @@ export default class MeuPlano extends Network {
 }
 
 const styles = {
+
+    modalHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 10,
+        paddingHorizontal: 15
+    },
+    tituloModal: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 22
+    },
+    viewModalFoto: {
+        marginVertical: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    fotoModal: {
+        width: 140,
+        height: 140,
+        borderRadius: 140/2,
+        borderWidth: 2
+    },
+    viewDescricaoModal: {
+        borderTopWidth: 2,
+        borderBottomWidth: 2,
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    descricaoModal: {
+        color: '#fff',
+        fontWeight: 'bold',
+        lineHeight: 22
+    },
+    precosModal: {
+        flexDirection: 'column',
+        paddingVertical: 5,
+        paddingHorizontal: 20
+    },
+    porApenasModal: {
+        fontSize: 18,
+        color: '#fff',
+    },
+    precoModal: {
+        fontSize: 40,
+        fontWeight: 'bold',
+    },
+    precoNumeroMaiorModal: {
+        fontSize: 90
+    },
+    botaoAssinarPlanoModal: {
+        borderRadius: 30,
+        borderWidth: 1,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 30,
+        paddingVertical: 10,
+    },
+    textoBotaoAssinarPlanoModal: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginRight: 10
+    },
+    textoObsModal: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 14,
+        textAlign: 'center'
+    },
+
+
+
+
+
+
+
+
+
     alinharTextos: {
         flexDirection: 'row',
         alignItems: 'center'
@@ -348,7 +528,7 @@ const styles = {
     textoMeuPlano: {
         fontSize: 14,
         fontWeight: 'normal',
-        color: '#777',
+        color: '#000',
         marginLeft: 7
     },
 
@@ -415,7 +595,7 @@ const styles = {
         fontSize: 12,
         fontWeight: 'bold',
         marginRight: 7
-    }
+    },
     
 
 }

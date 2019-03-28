@@ -27,14 +27,13 @@ export default class Plano extends Network {
                 botoes: []
             },
             plano: {},
-            pagando: false,
-            abrindoWebView: false
+            assinando: false,
         }
     }
 
     componentDidMount(){
-        let id_plano = this.props.navigation.getParam("id_plano", "");
-        this.getPlano(id_plano);
+        let plano = this.props.navigation.getParam("plano", {});
+        this.getPlano(plano.id_plano);
     }
 
     async getPlano(id_plano){
@@ -80,55 +79,6 @@ export default class Plano extends Network {
         return botoes;
     }
 
-    returnBotaoUpgrade(plano){
-        if (plano.is_plano_atual){
-            return <Text style={{color: '#28b657'}}>Esse é seu plano</Text>
-        } else if (plano.id_plano != 1){
-            if (!plano.is_plano_atual){
-                return (
-                    <TouchableOpacity style={{backgroundColor: '#28b657'}}>
-                        <Text style={{color: '#fff'}}>Upgradezin</Text>
-                    </TouchableOpacity>
-                );
-            }
-        }
-        return null;
-    }
-
-    returnPlanos(){
-        return this.state.planos.map((plano) => {
-            return (
-                <View key={plano.id_plano} style={{flexDirection: 'row'}}>
-                    <Text>{plano.nome}</Text>
-                    {this.returnBotaoUpgrade(plano)}
-                </View>
-            );
-        })
-    }
-
-    async abrirUpgrade(){
-        this.setState({
-            abrindoWebView: true
-        })
-        let result = await this.callMethod("getTokenPlanoPagSeguro", { id_plano: this.state.plano.id_plano });
-        if (result.success){
-            this.setState({
-                pagSeguroUrl: this.state.pagSeguroUrl + result.result.code,
-                pagando: true
-            })
-        }
-    }
-
-    returnBotaoUpgrade(){
-        if (this.state.plano.is_plano_atual){
-            return <Text style={{color: '#28b657'}}>Esse é seu plano</Text>
-        } else if (this.state.plano.id_plano != 1){
-            return (
-                <BotaoPequeno texto={"Upgrade"} onPress={() => this.abrirUpgrade()} loading={this.state.abrindoWebView}/>
-            );
-        }
-        return null;
-    }
 
     render(){
         let { id_plano, nome, descricao, dt_expira, is_plano_atual } = this.state.plano;
@@ -139,16 +89,9 @@ export default class Plano extends Network {
                 </View>
             );
         }
-        if (this.state.pagando){
-            return <WebView
-                source={{uri: this.state.pagSeguroUrl}}
-            />
-        }
         return (
-            <View style={{flex: 1}}>
-                <Text style={{fontWeight: 'bold', fontSize: 20}}>Plano {nome}</Text>
-                <Text>{descricao}</Text>
-                {this.returnBotaoUpgrade()}
+            <View style={{flex: 1, backgroundColor: '#000'}}>
+                
             </View>
         );
     }
