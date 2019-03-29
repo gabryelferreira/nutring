@@ -40,7 +40,7 @@ export default class Camera extends Network {
     state = {
         flash: 'off',
         zoom: 0,
-        autoFocus: 'off',
+        autoFocus: 'on',
         depth: 0,
         type: 'back',
         whiteBalance: 'auto',
@@ -173,7 +173,7 @@ export default class Camera extends Network {
         console.log("tnc");
         this.setState({uploading: true});
         if (this.camera) {
-            const options = { quality: 0.28 };
+            const options = { quality: 0.28, forceUpOrientation: true, fixOrientation: true };
             const data = await this.camera.takePictureAsync(options);
             console.log("data = ", data);
             this.setState({
@@ -339,65 +339,78 @@ export default class Camera extends Network {
             return this.renderGaleria();
         }
         return (
-            <View style={{flex: 1}}>
-            
-                <RNCamera
-                    ref={ref => {
-                    this.camera = ref;
-                    }}
-                    style={{
-                    flex: 1
-                    }}
-                    type={this.state.type}
-                    flashMode={this.state.flash}
-                    permissionDialogTitle={'Permissão para usar a câmera'}
-                    permissionDialogMessage={'Precisamos da sua permissão para utilizar sua câmera'}
-                >
-                    <View style={{flex: .5, justifyContent: 'flex-start'}}>
-                        <View style={styles.botoesCima}>
-                                <View style={[styles.viewBotao, styles.alignEsquerda]}>
-                                    <TouchableOpacity disabled={this.state.uploading}
-                                    onPress={this.props.onClose}
-                                    >
-                                        <Icon name="angle-down" color="#fff" size={32}/>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={[styles.viewBotao, styles.alignDireita]}>
-                                    <TouchableOpacity disabled={this.state.uploading}
-                                    onPress={() => this.setState({flash: this.state.flash == "off" ? "on" : "off"})}
-                                    >
-                                        <Icon name="bolt" color="#fff" regular size={25}/>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+            <View style={{flex: 1, backgroundColor: '#000', justifyContent: 'space-between'}}>
+                <View style={{flex: .4,justifyContent: 'flex-start'}}>
+                    <View style={styles.botoesCima}>
+                        <View style={[styles.viewBotao, styles.alignEsquerda]}>
+                            <TouchableOpacity disabled={this.state.uploading}
+                            onPress={this.props.onClose}
+                            >
+                                <Icon name="angle-down" color="#fff" size={32}/>
+                            </TouchableOpacity>
                         </View>
-                    <View style={{flex: .5, justifyContent: 'flex-end'}}>
-                        <View style={styles.botoes}>
-                            <View style={[styles.viewBotao, styles.alignEsquerda]}>
-                                <TouchableOpacity disabled={this.state.uploading}
-                                    style={styles.botaoGaleria}
-                                    onPress={() => this.abrirGaleria()}
-                                >
-                                    <Image resizeMethod="resize" source={{uri: this.state.ultimaFotoGaleria}} style={{flex: 1, height: undefined, width: undefined}}/>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={[styles.viewBotao, styles.alignMeio]}>
-                                <TouchableOpacity disabled={this.state.uploading}
-                                    style={styles.botaoFoto}
-                                    onPress={() => this.takePicture()}
-                                >
-                                </TouchableOpacity>
-                            </View>
-                            <View style={[styles.viewBotao, styles.alignDireita]}>
-                                <TouchableOpacity disabled={this.state.uploading}
-                                    onPress={() => this.virarCamera()}
-                                >
-                                    <Icon name="sync-alt" color="#fff" size={20}/>
-                                </TouchableOpacity>
-                            </View>
+                        <View style={[styles.viewBotao, styles.alignDireita]}>
+                            <TouchableOpacity disabled={this.state.uploading}
+                            onPress={() => this.setState({flash: this.state.flash == "off" ? "on" : "off"})}
+                            >
+                                <Icon name="bolt" color="#fff" regular size={25}/>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                </RNCamera>
+                </View>
+                <View style={{
+                    position: 'absolute',
+                    left: 0,
+                    right: 0,
+                    top: 0,
+                    bottom: 0,
+                    justifyContent: 'center',
+                    
+                }}>
+                    <View style={{height: imageWidth/1.5, overflow: 'hidden'}}>
+                        <RNCamera
+                            ref={ref => {
+                            this.camera = ref;
+                            }}
+                            style={{
+                                flex: 1
+                            }}
+                            type={this.state.type}
+                            flashMode={this.state.flash}
+                            permissionDialogTitle={'Permissão para usar a câmera'}
+                            permissionDialogMessage={'Precisamos da sua permissão para utilizar sua câmera'}
+                        >
+                            
+                        </RNCamera>
+                    </View>
+                
+                </View>
+                <View style={{flex: .4,justifyContent: 'flex-end', marginTop: 20}}>
+                    <View style={styles.botoes}>
+                        <View style={[styles.viewBotao, styles.alignEsquerda]}>
+                            <TouchableOpacity disabled={this.state.uploading}
+                                style={styles.botaoGaleria}
+                                onPress={() => this.abrirGaleria()}
+                            >
+                                <Image resizeMethod="resize" source={{uri: this.state.ultimaFotoGaleria}} style={{flex: 1, height: undefined, width: undefined}}/>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[styles.viewBotao, styles.alignMeio]}>
+                            <TouchableOpacity disabled={this.state.uploading}
+                                style={styles.botaoFoto}
+                                onPress={() => this.takePicture()}
+                            >
+                            </TouchableOpacity>
+                        </View>
+                        <View style={[styles.viewBotao, styles.alignDireita]}>
+                            <TouchableOpacity disabled={this.state.uploading}
+                                onPress={() => this.virarCamera()}
+                            >
+                                <Icon name="sync-alt" color="#fff" size={20}/>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
             </View>
         );
     }
