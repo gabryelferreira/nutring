@@ -55,7 +55,7 @@ class Post extends Network {
     returnTopComentario(){
         if (this.props.data.top_comment){
             return (
-                <View style={[styles.wrapper, styles.viewComentarios]}>
+                <View style={styles.viewComentarios}>
                     <View style={styles.viewComentario}>
                         <View style={styles.bolinhaComentario}>
                         </View>
@@ -179,7 +179,7 @@ class Post extends Network {
     returnDescricao(descricao){
         if (descricao){
             return (
-                <View style={[styles.viewInfoDescricao, styles.wrapper]}>
+                <View style={styles.viewInfoDescricao}>
                     <Text style={styles.texto}>{descricao}</Text>
                 </View>
             );
@@ -226,6 +226,21 @@ class Post extends Network {
         return null;
     }
 
+    returnBotaoGostei(gostei){
+        if (gostei){
+            return (
+                <TouchableOpacity activeOpacity={0.7} onPress={() => this.likeUnlikePost(this.state.data.id_post)} style={[styles.botaoGostei, {backgroundColor: '#28b657'}]}>
+                    <Icon name="heart" size={20} color="#fff"/>
+                </TouchableOpacity>
+            );
+        }
+        return (
+            <TouchableOpacity activeOpacity={0.7} onPress={() => this.likeUnlikePost(this.state.data.id_post)} style={[styles.botaoGostei, {backgroundColor: '#fff'}]}>
+                <Icon name="heart" size={20} color="#28b657"/>
+            </TouchableOpacity>
+        );
+    }
+
     render(){
         let larguraImagem = imageWidth;
         let { id_usuario, id_post, foto, is_restaurante, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios, meu_post, curtidores, comentaristas } = this.state.data;
@@ -240,37 +255,12 @@ class Post extends Network {
                 onClose={() => this.setState({modal: {visible: false}})}
                 botoes={this.state.modal.botoes}
                 />
-                <View style={styles.viewFoto}>
-                    <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000'}}>
-                        <Image resizeMethod="resize" style={{height: 38, width: 38, borderRadius: 38/2, position: 'absolute', left: 0, top: 0}} source={{uri: foto}}/>
-                    </TouchableOpacity>
-                    <View style={styles.tabs}>
-                        <TouchableOpacity style={[comentaristas && comentaristas.length > 0 ? styles.pessoasComentarios : styles.pessoasComentariosFull]}
-                            onPress={() => this.props.navigation.push('Comentarios', { id_post: id_post })}>
-                            <View style={[comentaristas && comentaristas.length > 0 ? styles.tracoComentarios : styles.tracoComentariosFull]}>
-                            </View>
-                            {this.renderComentaristas(comentaristas)}
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tab} onPress={() => this.props.navigation.push('Comentarios', { id_post: id_post })}>
-                            <Icon name="comment-dots" color="#777" solid size={25}/>
-                            <View style={[styles.labelCurtidas, styles.labelCurtidasTop]}>
-                                <Text style={styles.textoLabelCurtidas}>{comentarios}</Text>
-                            </View>
-                            {/* {this.returnTextoComentar(comentarios)} */}
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.tab} onPress={() => this.likeUnlikePost(id_post)}>
-                            {this.returnGostei()}
-                            <View style={[styles.labelCurtidas, styles.labelCurtidasBottom]}>
-                                <Text style={styles.textoLabelCurtidas}>{curtidas}</Text>
-                            </View>
-                            {/* {this.returnTextoCurtidas(curtidas)} */}
-                        </TouchableOpacity>
-                    </View>
-                </View>
                 <View style={styles.viewInfoAll}>
-                    <View style={[styles.viewInfo, styles.wrapper]}>
+                    <View style={styles.viewInfo}>
                         <View style={styles.fotoETexto}>
-                            
+                            <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 50, width: 50, borderRadius: 50/2, backgroundColor: '#000', marginHorizontal: 15}}>
+                                <Image resizeMethod="resize" style={{height: 50, width: 50, borderRadius: 50/2}} source={{uri: foto}}/>
+                            </TouchableOpacity>
                             <View style={styles.viewInfoTexto}>
                                 <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })}>
                                     <Text style={styles.nome}>{nome}</Text>
@@ -282,19 +272,16 @@ class Post extends Network {
                         {this.returnDots(meu_post)}
                     </View>
                     <View style={styles.viewInfoEConteudo}>
-                        {this.returnDescricao(descricao)}
+                        
                         <TouchableOpacity onPress={this.props.onClickFoto} style={styles.viewImagem}>
                             <AutoHeightImage source={{uri: this.formatarConteudo(conteudo)}} width={larguraImagem}/>
-                            {this.renderBotaoMultiplasImagens(conteudo)}
-                        </TouchableOpacity>
-                        
-                        
-                        <TouchableOpacity style={styles.pessoasCurtidas}
-                                            onPress={() => this.props.navigation.push('Curtidas', { id_post })}>
-                            {this.renderCurtidores(curtidores)}
-                            <View style={[curtidores && curtidores.length > 0 ? styles.tracoCurtidas : styles.tracoCurtidasFull]}>
+                            <View style={styles.viewGostei}>
+                                {this.returnBotaoGostei(gostei)}
+                                <Text style={styles.textoBotaoGostei}>{curtidas}</Text>
                             </View>
+                            {/* {this.renderBotaoMultiplasImagens(conteudo)} */}
                         </TouchableOpacity>
+                        {this.returnDescricao(descricao)}
                             {/* {this.returnTopComentario()}
                         <View style={styles.wrapper}>
                                 {this.returnNumeroComentarios()}
@@ -317,8 +304,7 @@ export default Post;
 const styles = {
     container: {
         flexDirection: 'row',
-        paddingVertical: 20,
-        paddingRight: 10,
+        paddingVertical: 15,
         borderBottomColor: '#eee',
         // borderBottomWidth: 1
     },
@@ -399,9 +385,6 @@ const styles = {
     viewInfoAll: {
         flex: 1,
         flexDirection: 'column',
-        paddingHorizontal: 5
-    },
-    wrapper: {
     },
     viewFoto: {
         width: 58,
@@ -409,7 +392,8 @@ const styles = {
     },
     fotoETexto: {
         flex: .7,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center'
     },
     viewInfo: {
         flex: 1,
@@ -419,10 +403,10 @@ const styles = {
         flexDirection: 'column'
     },
     nome: {
-        fontSize: 16,
+        fontSize: 18,
         color: '#000',
         fontWeight: 'bold',
-        maxHeight: 20,
+        maxHeight: 24,
         marginRight: 5
     },
     tempo: {
@@ -447,7 +431,7 @@ const styles = {
         fontWeight: 'bold'
     },
     viewInfoEConteudo: {
-        marginTop: 15,
+        marginTop: 10,
         flexDirection: 'column'
     },
     viewInfoDescricao: {
@@ -461,11 +445,10 @@ const styles = {
     viewImagem: {
         marginTop: 5,
         flexDirection: 'row',
-        maxHeight: 200,
+        maxHeight: 400,
         overflow: 'hidden',
         justifyContent: 'center',
         alignItems: 'center',
-        borderRadius: 5,
         
     },
     tabs: {
@@ -528,6 +511,27 @@ const styles = {
     textoMultiplasFotos: {
         color: '#fff',
         fontSize: 10
+    },
+
+
+    viewGostei: {
+        position: 'absolute',
+        left: 10,
+        bottom: 10,
+        flexDirection: 'row',
+        alignItems: 'center'
+    },
+    botaoGostei: {
+        height: 40,
+        width: 40,
+        borderRadius: 40/2,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginRight: 5
+    },
+    textoBotaoGostei: {
+        color: '#fff',
+        fontSize: 16
     }
     
 }

@@ -32,6 +32,7 @@ class NutringAddButton extends Network {
 
     state = {
         visible: false,
+        cameraVisible: false,
         isRestaurante: false,
         carregando: true,
         erro: false
@@ -61,7 +62,10 @@ class NutringAddButton extends Network {
     }
 
     abrirCamera(){
-
+        this.setState({
+            visible: false,
+            cameraVisible: true
+        })
     }
 
     abrirPagina(pagina){
@@ -130,6 +134,7 @@ class NutringAddButton extends Network {
                 </View>
             );
         }
+
         return (
             // <View style={{
             //     position: 'absolute',
@@ -140,6 +145,17 @@ class NutringAddButton extends Network {
             //     borderRadius: 80
             // }}>
             <View>
+
+                <Modal 
+                visible={this.state.cameraVisible}
+                animationType="slide"
+                presentationStyle="fullScreen"
+                onRequestClose={() => {
+                    this.setState({cameraVisible: false})
+                }}
+                >
+                    <Camera onClose={() => this.setState({cameraVisible: false})}/>
+                </Modal>
                 
                 <Modal 
                 visible={this.state.visible}
@@ -159,7 +175,7 @@ class NutringAddButton extends Network {
                                     <Text style={styles.titulo}>Postar Prato</Text>
                                     <Text style={styles.descricao}>Compartilhe seus <Text style={styles.bold}>pratos favoritos! </Text>
                                     Poste fotos no <Text style={styles.bold}>seu feed.</Text> Podem ser fotos feitas por você, por algum amigo ou um prato lindo que você consumiu em um restaurante! ;)</Text>
-                                    <TouchableOpacity style={styles.botao} onPress={() => this.abrirPagina("Configuracoes")}>
+                                    <TouchableOpacity style={styles.botao} onPress={() => this.abrirCamera()}>
                                         <Text style={styles.textoBotao}>POSTAR PRATO</Text>
                                         <Icon name="chevron-right" solid size={14} color="#000" style={{fontWeight: 'bold'}}/>
                                     </TouchableOpacity>
