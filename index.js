@@ -177,8 +177,8 @@ const Tabs = createBottomTabNavigator({
     },
     TabAdd: {
         screen: () => null, // Empty screen
-        navigationOptions: () => ({
-            tabBarIcon: <NutringAddButton /> // Plus button component
+        navigationOptions: ({navigation}) => ({
+            tabBarIcon: ({  }) => <NutringAddButton navigation={navigation}/> // Plus button component
         })
     },
     TabNotificacoes: {
