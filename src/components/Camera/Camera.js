@@ -15,22 +15,46 @@ const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
 
-const Header = ({onCloseClick}) => {
+const Header = ({onCloseClick, onPress, loading}) => {
+
+    renderLoading = () => {
+        if (loading)
+            return (
+                <View style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .2}}>
+                    <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold'}}>Publicando</Text>
+                </View>
+            );
+        return (
+            <TouchableOpacity onPress={onPress} style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+                <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold'}}>Publicar</Text>
+            </TouchableOpacity>
+        );
+    }
+
     return (
         <View style={{
             elevation: 1,
             shadowOpacity: 0,
-            height: 50,
-            paddingHorizontal: 20,
+            height: 40,
+            paddingHorizontal: 10,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
             position: 'absolute',
             left: 0, right: 0, top: 0,
-            zIndex: 9999
+            zIndex: 9999,
+            backgroundColor: '#fff'
         }}>
-            <View style={{position: 'relative', zIndex: 9999, flexDirection: 'row', alignItems: 'center'}}>
-                <Icon onPress={onCloseClick} name="times" color="#fff" size={24} style={{flex: 1}}/>
+            <View style={{position: 'relative', flex:1, zIndex: 9999, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                <View style={{flexDirection: 'row', justifyContent: 'flex-start', flex: .3, alignItems: 'center'}}>
+                    <Icon onPress={onCloseClick} name="arrow-left" color="#000" size={20}/>
+                </View>
+                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: .4}}>
+                    <Text style={{color: '#000', fontWeight: 'bold', fontSize: 18}}>Postar Foto</Text>
+                </View>
+                <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', flex: .3}}>
+                    {renderLoading()}
+                </View>
             </View>
         </View>
     );
@@ -304,9 +328,9 @@ export default class Camera extends Network {
                         onClick={(key) => this.getModalClick(key)}
                         onClose={() => this.getModalClick("close")}
                     />
-                    <Header onCloseClick={() => this.setState({fotoTirada: ""})}/>
+                    <Header onPress={() => this.salvarPublicacao()} loading={this.state.loading} onCloseClick={() => this.setState({fotoTirada: ""})}/>
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                        <TouchableHighlight >
+                        <TouchableHighlight style={{marginTop: 40}}>
                             <Image resizeMethod="resize" source={{uri: this.state.fotoTirada}} style={{height: 250, width: imageWidth}}/>
                         </TouchableHighlight>
                         {/* <TouchableHighlight>
@@ -325,11 +349,11 @@ export default class Camera extends Network {
                                 returnKeyType={"none"}
                             />
                             <TouchableHighlight style={{marginVertical: 5, flex: .7}}>
-                                <Text style={{fontSize: 11, color: '#000'}}>Use hashtags para impulsionar sua postagem.</Text>
+                                <Text style={{fontSize: 11, color: '#000'}}>A foto ficará disponível para todos os seus seguidores.</Text>
                             </TouchableHighlight>
-                            <TouchableHighlight style={{marginVertical: 10}}>
-                                <BotaoPequeno texto={"Publicar"} onPress={() => this.salvarPublicacao()} loading={this.state.loading}/>
-                            </TouchableHighlight>
+                            {/* <TouchableHighlight style={{marginVertical: 10}}>
+                                <BotaoPequeno texto={"Publicar"}  loading={this.state.loading}/>
+                            </TouchableHighlight> */}
                         </View>
                     </ScrollView>
                 </View>
@@ -377,6 +401,7 @@ export default class Camera extends Network {
                             }}
                             type={this.state.type}
                             flashMode={this.state.flash}
+                            autoFocus={this.state.autoFocus}
                             permissionDialogTitle={'Permissão para usar a câmera'}
                             permissionDialogMessage={'Precisamos da sua permissão para utilizar sua câmera'}
                         >

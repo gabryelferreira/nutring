@@ -53,13 +53,13 @@ class Post extends Network {
     }
 
     returnTopComentario(){
-        if (this.props.data.top_comment){
+        if (this.props.data.comentario){
             return (
                 <View style={styles.viewComentarios}>
                     <View style={styles.viewComentario}>
                         <View style={styles.bolinhaComentario}>
                         </View>
-                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: this.state.data.id_usuario_comentario })} style={styles.nomeComentario}>{this.props.data.nome_usuario_comentario}</Text>  <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.top_comment}</Text></Text>
+                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: this.state.data.id_usuario_comentario })} style={styles.nomeComentario}>{this.props.data.pessoa_comentario}</Text>  <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.comentario}</Text></Text>
                     </View>
                 </View>
             )
@@ -69,15 +69,15 @@ class Post extends Network {
     returnNumeroComentarios(){
         if (this.props.data.comentarios > 1){
             return (
-            <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })} style={styles.verMais}>Ver todos os {this.props.data.comentarios} comentários</Text>
+            <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })} style={styles.verMais}>Ver mais ({this.props.data.comentarios} comentários)</Text>
             )
         } else return;
     }
 
     returnGostei(){
         if (!this.state.data.gostei)
-            return <Icon name="heart" color="#444" size={25}/>
-        return <Icon name="heart" color="#27ae60" solid size={25}/>
+            return <Icon name="heart" color="#444" size={22}/>
+        return <Icon name="heart" color="#27ae60" solid size={22}/>
     }
 
     returnTextoPostedAgo(tempo_postado){
@@ -90,17 +90,17 @@ class Post extends Network {
 
     returnTextoCurtidas(curtidas){
         if (curtidas > 0){
-            return <Text style={{fontSize: 13, marginLeft: 7, color: '#444'}}>{curtidas}</Text>;
+            return <Text style={{fontSize: 12, color: '#444'}}>{curtidas}</Text>;
         } else {
-            return <Text style={{fontSize: 13, marginLeft: 7, color: '#444'}}>Curtir</Text>;
+            return null;
         }
     }
 
     returnTextoComentar(comentarios){
         if (comentarios > 0){
-            return <Text style={{fontSize: 13, marginLeft: 7, color: '#444'}}>{comentarios}</Text>
+            return <Text style={{fontSize: 12, marginLeft: 7, color: '#444'}}>{comentarios}</Text>
         } else {
-            return <Text style={{fontSize: 13, marginLeft: 7, color: '#444'}}>Comentar</Text>
+            return null;
         }
     }
 
@@ -176,11 +176,11 @@ class Post extends Network {
         }
     }
     
-    returnDescricao(descricao){
-        if (descricao){
+    renderDescricao(nome, descricao){
+        if (nome && descricao){
             return (
                 <View style={styles.viewInfoDescricao}>
-                    <Text style={styles.texto}>{descricao}</Text>
+                    <Text style={styles.texto}><Text style={styles.bold}>{nome} </Text>{descricao}</Text>
                 </View>
             );
         }
@@ -226,17 +226,27 @@ class Post extends Network {
         return null;
     }
 
-    returnBotaoGostei(gostei){
-        if (gostei){
+    renderTextoCurtidas(curtidas){
+        if (curtidas == 0){
             return (
-                <TouchableOpacity activeOpacity={0.7} onPress={() => this.likeUnlikePost(this.state.data.id_post)} style={[styles.botaoGostei, {backgroundColor: '#28b657'}]}>
-                    <Icon name="heart" size={20} color="#fff"/>
+                <Text onPress={() => this.likeUnlikePost(this.state.data.id_post)} style={{flex: .7, fontSize: 14, fontWeight: 'bold', color: '#000', maxHeight: 24, marginLeft: 5}}>
+                    Seja o primeiro a curtir!
+                </Text>
+            );
+        } else if (curtidas == 1){
+            return (
+                <TouchableOpacity style={{flex: .7, marginLeft: 5}} onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })}>
+                    <Text onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })} style={{fontSize: 14, fontWeight: 'bold', color: '#000', maxHeight: 24}}>
+                        1 curtida
+                    </Text>
                 </TouchableOpacity>
             );
         }
         return (
-            <TouchableOpacity activeOpacity={0.7} onPress={() => this.likeUnlikePost(this.state.data.id_post)} style={[styles.botaoGostei, {backgroundColor: '#fff'}]}>
-                <Icon name="heart" size={20} color="#28b657"/>
+            <TouchableOpacity style={{flex: .7, marginLeft: 5}} onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })}>
+                <Text onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })} style={{fontSize: 14, fontWeight: 'bold', color: '#000', maxHeight: 24}}>
+                    {curtidas} curtidas
+                </Text>
             </TouchableOpacity>
         );
     }
@@ -275,17 +285,26 @@ class Post extends Network {
                         
                         <TouchableOpacity onPress={this.props.onClickFoto} style={styles.viewImagem}>
                             <AutoHeightImage source={{uri: this.formatarConteudo(conteudo)}} width={larguraImagem}/>
-                            <View style={styles.viewGostei}>
-                                {this.returnBotaoGostei(gostei)}
-                                <Text style={styles.textoBotaoGostei}>{curtidas}</Text>
-                            </View>
                             {/* {this.renderBotaoMultiplasImagens(conteudo)} */}
                         </TouchableOpacity>
-                        {this.returnDescricao(descricao)}
-                            {/* {this.returnTopComentario()}
+                        <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', marginTop: 10, marginHorizontal: 15}}>
+                            <TouchableOpacity activeOpacity={0.7} onPress={() => this.likeUnlikePost(this.state.data.id_post)} style={[styles.botaoGostei]}>
+                                {this.returnGostei()}
+                                {/* {this.returnTextoCurtidas(curtidas)} */}
+                            </TouchableOpacity>
+                            {this.renderTextoCurtidas(curtidas)}
+                            <View style={styles.viewGostei}>
+                                <TouchableOpacity activeOpacity={0.7} onPress={() => this.props.navigation.push('Comentarios', { id_post })} style={[styles.botaoGostei]}>
+                                    <Icon name="comment" size={22} color="#444"/>
+                                    {this.returnTextoComentar(comentarios)}
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        {this.renderDescricao(nome, descricao)}
                         <View style={styles.wrapper}>
-                                {this.returnNumeroComentarios()}
-                        </View> */}
+                            {this.returnNumeroComentarios()}
+                            {this.returnTopComentario()}
+                        </View>
                     </View>
                 </View>
             </View>
@@ -302,6 +321,12 @@ class Post extends Network {
 export default Post;
 
 const styles = {
+    wrapper: {
+        paddingHorizontal: 15
+    },
+    bold: {
+        fontWeight: 'bold'
+    },
     container: {
         flexDirection: 'row',
         paddingVertical: 15,
@@ -435,17 +460,20 @@ const styles = {
         flexDirection: 'column'
     },
     viewInfoDescricao: {
-        flexDirection: 'column'
+        flexDirection: 'column',
+        flex: 1,
+        paddingHorizontal: 15,
+        marginTop: 5,
     },
     texto: {
         marginBottom: 5,
-        fontSize: 16,
+        fontSize: 14,
         color: '#000'
     },
     viewImagem: {
         marginTop: 5,
         flexDirection: 'row',
-        maxHeight: 400,
+        maxHeight: 300,
         overflow: 'hidden',
         justifyContent: 'center',
         alignItems: 'center',
@@ -515,23 +543,20 @@ const styles = {
 
 
     viewGostei: {
-        position: 'absolute',
-        left: 10,
-        bottom: 10,
+        flex: .3,
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'flex-end'
     },
     botaoGostei: {
-        height: 40,
-        width: 40,
-        borderRadius: 40/2,
         alignItems: 'center',
         justifyContent: 'center',
-        marginRight: 5
+        flexDirection: 'row',
     },
     textoBotaoGostei: {
-        color: '#fff',
-        fontSize: 16
+        color: '#444',
+        fontSize: 16,
+        marginLeft: 5
     }
     
 }

@@ -125,8 +125,8 @@ export default class AlterarUsuario extends Network {
                         <View style={{marginVertical: 5, flex: .7}}>
                             <Text style={{fontSize: 11, color: '#000'}}>O usuário é usado para ser marcado em publicações.</Text>
                         </View>
-                        <View style={{marginVertical: 10}}>
-                            <BotaoPequeno texto={"Confirmar"} onPress={() => this.alterarUsuario()} loading={this.state.loading}/>
+                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                            <BotaoPequeno texto={"Alterar"} textoLoading={"Alterando"} onPress={() => this.alterarUsuario()} loading={this.state.loading}/>
                         </View>
                     </View>
                 </ScrollView>

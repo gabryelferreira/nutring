@@ -62,6 +62,7 @@ export default class NovaPromocao extends Network {
                 tituloNotificacao: result.result.nome,
                 seguidores: result.result.seguidores,
                 permissaoNotificacao: result.result.permissao_notificacao,
+                planoNotificacao: result.result.plano_notificacao,
                 disabled: false,
                 carregandoInicial: false
             })
@@ -261,7 +262,9 @@ export default class NovaPromocao extends Network {
     renderPermissaoNotificacao(){
         if (this.state.carregandoInicial)
             return null;
-        if (!this.state.permissaoNotificacao && !this.state.carregandoInicial){
+        if (!this.state.planoNotificacao)
+            return <Text style={{fontSize: 11, color: 'red'}}>Seu plano atual não permite o envio de notificações.</Text>
+        if (!this.state.permissaoNotificacao){
             return <Text style={{fontSize: 11, color: 'red'}}>Você já enviou suas notificações diárias.</Text>
         }
         return <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
@@ -330,15 +333,15 @@ export default class NovaPromocao extends Network {
                             returnKeyType={"none"}
                         />
                     </View>
-                    <Opcao icone={"rocketchat"} texto={"Enviar notificação?"} switchDisabled={!this.state.permissaoNotificacao} toggle={true} toggleChange={() => this.setState({enviarNotificacao: !this.state.enviarNotificacao})} toggleValue={this.state.enviarNotificacao}/>
+                    <Opcao icone={"rocketchat"} texto={"Enviar notificação?"} switchDisabled={!this.state.permissaoNotificacao || !this.state.planoNotificacao} toggle={true} toggleChange={() => this.setState({enviarNotificacao: !this.state.enviarNotificacao})} toggleValue={this.state.enviarNotificacao}/>
                     <View style={styles.container}>
                         {this.renderPermissaoNotificacao()}
                         <View style={{marginVertical: 5, flex: .7}}>
                             {this.renderEnviarNotificacao()}
                             
                         </View>
-                        <View style={{marginVertical: 10}}>
-                            <BotaoPequeno disabled={this.state.disabled} texto={"Confirmar"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
+                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                            <BotaoPequeno disabled={this.state.disabled} texto={"Cadastrar"} textoLoading={"Cadastrando"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
                         </View>
                     </View>
                 </ScrollView>

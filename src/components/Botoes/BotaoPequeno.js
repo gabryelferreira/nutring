@@ -1,19 +1,23 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, View } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const BotaoPequeno = ({texto, onPress, loading, disabled}) => {
+
+const BotaoPequeno = ({texto, textoLoading, onPress, loading, disabled}) => {
 
     botao = () => {
         if (loading){
             return (
-                <TouchableOpacity style={styles.botao}>
-                    <ActivityIndicator animating color="#fff"/>
-                </TouchableOpacity>
+                <View style={[styles.botao, {opacity: .2}]}>
+                    <Text style={styles.textoBotao}>{textoLoading}</Text>
+                    <ActivityIndicator animating color="#000" size={13}/>
+                </View>
             );
         }
         return (
             <TouchableOpacity style={styles.botao} onPress={this.handleOnPress}>
                 <Text style={styles.textoBotao}>{texto}</Text>
+                <Icon name="chevron-right" solid color="#000" size={13}/>
             </TouchableOpacity>
         );
     }
@@ -31,19 +35,19 @@ export default BotaoPequeno;
 
 const styles = {
     botao: {
-        paddingVertical: 6,
-        paddingHorizontal: 12,
-        backgroundColor: '#28b657',
-        borderRadius: 20,
-        elevation: 2,
-        flexDirection: 'column',
+        paddingVertical: 5,
+        paddingHorizontal: 15,
+        flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        alignSelf: 'flex-start'
+        borderWidth: 1,
+        borderColor: '#000',
+        borderRadius: 20
     },
     textoBotao: {
-        color: '#fff',
+        color: '#000',
         fontWeight: 'bold',
-        fontSize: 14
+        fontSize: 14,
+        marginRight: 6
     }
 }

@@ -75,7 +75,8 @@ const styles = {
         borderWidth: 1,
         borderColor: '#ddd',
         marginTop: 7,
-        marginBottom: 7
+        marginBottom: 7,
+        textAlignVertical: 'top'
     },
     bigPaddingLeft: {
         paddingLeft: 25

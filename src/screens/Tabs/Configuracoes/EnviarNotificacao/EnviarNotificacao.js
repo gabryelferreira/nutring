@@ -37,6 +37,7 @@ export default class EnviarNotificacao extends Network {
             tituloNotificacao: "",
             descricaoNotificacao: "",
             permissaoNotificacao: false,
+            planoNotificacao: false,
             seguidores: 0,
             disabled: true,
             carregandoInicial: true,
@@ -54,6 +55,7 @@ export default class EnviarNotificacao extends Network {
             this.setState({
                 tituloNotificacao: result.result.nome,
                 permissaoNotificacao: result.result.permissao_notificacao,
+                planoNotificacao: result.result.plano_notificacao,
                 seguidores: result.result.seguidores,
                 disabled: false,
                 carregandoInicial: false
@@ -141,6 +143,19 @@ export default class EnviarNotificacao extends Network {
         if (this.state.semConexao){
             return <SemDados titulo={"Sem conexão"} texto={"Você está sem internet."}/>
         }
+        if (!this.state.planoNotificacao){
+            return (
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 30}}>
+                    <Text style={{fontWeight: 'bold', color: '#000', fontSize: 20, textAlign: 'center'}}>
+                        Notificação não permitida
+                    </Text>
+                    <Text style={{fontSize: 14, color: '#000', marginTop: 5, marginBottom: 20, textAlign: 'center'}}>
+                        Seu plano atual não permite o envio de notificações. Clique no botão abaixo para ver nossos planos.
+                    </Text>
+                    <BotaoPequeno texto={"Ver planos"} onPress={() => this.props.navigation.navigate("MeuPlano")}/>
+                </View>
+            );
+        }
         if (!this.state.permissaoNotificacao){
             return <SemDados titulo={"Notificação não permitida"} texto={"Parece que você já enviou suas notificações diárias."}/>
         }
@@ -182,7 +197,7 @@ export default class EnviarNotificacao extends Network {
                             <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
                         </View>
                         <View style={{marginVertical: 10}}>
-                            <BotaoPequeno disabled={this.state.disabled} texto={"Confirmar"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
+                            <BotaoPequeno disabled={this.state.disabled} texto={"Enviar"} textoLoading={"Enviando"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
                         </View>
                     </View>
                 </ScrollView>

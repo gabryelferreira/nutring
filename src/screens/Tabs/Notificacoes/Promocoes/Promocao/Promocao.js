@@ -126,8 +126,8 @@ export default class Promocao extends Network {
     returnBotaoConfirmar(){
         if (!this.state.promocao.estou_confirmado && !this.state.promocao.eh_minha_promocao){
             return (
-                <View style={{marginVertical: 10, alignItems: 'center', justifyContent: 'center'}}>
-                    <BotaoMedio texto={"Pegar Cupom"} onPress={() => this.confirmarPresenca()} loading={this.state.loading}/>
+                <View style={{marginVertical: 10, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+                    <BotaoPequeno texto={"Gerar Cupom"} textoLoading={"Gerando"} onPress={() => this.confirmarPresenca()} loading={this.state.loading}/>
                 </View>
             );
         }
@@ -185,11 +185,11 @@ export default class Promocao extends Network {
                         <View style={styles.viewDescricao}>
                             <Text style={styles.titulo}>{this.state.promocao.titulo}</Text>
                             <Text style={styles.descricao}>{this.state.promocao.descricao}</Text>
+                            {this.returnBotaoConfirmar()}
                         </View>
                         {/* <View style={{marginVertical: 5, flex: .7}}>
                             <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
                         </View> */}
-                        {this.returnBotaoConfirmar()}
                     </View>
                 </ScrollView>
             </View>

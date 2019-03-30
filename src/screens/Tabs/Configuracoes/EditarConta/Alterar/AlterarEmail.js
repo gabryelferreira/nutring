@@ -126,8 +126,8 @@ export default class AlterarEmail extends Network {
                             <Text style={{fontSize: 11, color: '#000'}}>Seu email não será mostrado em seu perfil do Nutring.</Text>
                             <Text style={{fontSize: 11, color: '#000'}}>Pode ficar tranquilo ;)</Text>
                         </View>
-                        <View style={{marginVertical: 10}}>
-                            <BotaoPequeno texto={"Confirmar"} onPress={() => this.alterarEmail()} loading={this.state.loading}/>
+                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                            <BotaoPequeno texto={"Confirmar"} textoLoading={"Alterando"} onPress={() => this.alterarEmail()} loading={this.state.loading}/>
                         </View>
                     </View>
                 </ScrollView>

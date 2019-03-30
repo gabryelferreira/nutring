@@ -135,8 +135,8 @@ export default class AlterarSenha extends Network {
                             secureTextEntry={true}
                             small={true}
                         />
-                        <View style={{marginVertical: 10}}>
-                            <BotaoPequeno texto={"Alterar senha"} onPress={() => this.alterarSenha()} loading={this.state.loading}/>
+                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                            <BotaoPequeno texto={"Alterar"} textoLoading={"Alterando"} onPress={() => this.alterarSenha()} loading={this.state.loading}/>
                         </View>
                     </View>
                 </ScrollView>

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { TouchableHighlight, View, Modal, ScrollView, Text, Image, TouchableOpacity, ActivityIndicator } from "react-native";
+import { TouchableHighlight, View, Modal, ScrollView, Text, Image, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Camera from '../Camera/Camera';
 import Network from '../../network';
@@ -21,9 +21,10 @@ const Header = ({onCloseClick}) => {
             borderBottomWidth: 1,
             borderBottomColor: '#eee'
         }}>
-            <View style={{position: 'relative', zIndex: 9999, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-start'}}>
+            <View style={{position: 'relative', flex: 1, zIndex: 9999, flexDirection: 'row', alignItems: 'center', justifyContent: Platform.OS === 'ios' ? 'space-between' : 'flex-start'}}>
                 <Icon onPress={onCloseClick} name="times" color="#000" size={24}/>
-                <Text style={{color: '#000', fontWeight: 'bold', fontSize: 22, marginLeft: 30}}>Escolha</Text>
+                <Text style={{color: '#000', fontWeight: 'bold', fontSize: 22, marginLeft: Platform.OS === 'ios' ? 0 : 30}}>Escolha</Text>
+                <Icon name="times" color="#fff" size={24}/>
             </View>
         </View>
     );
@@ -76,7 +77,8 @@ class NutringAddButton extends Network {
     }
 
     renderReceitas(){
-        if (this.state.isRestaurante) return null;
+        if (this.state.isRestaurante || this.state.carregando) return null;
+        if (1 == 1) return null;
         return (
             <View style={[styles.opcao, styles.borderBottom]}>
                 <Image source={require('../../assets/imgs/tela-mais/prato2.png')} style={styles.foto}/>
@@ -127,13 +129,13 @@ class NutringAddButton extends Network {
     }
 
     render() {
-        if (this.state.carregando){
-            return (
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657"/>
-                </View>
-            );
-        }
+        // if (this.state.carregando){
+        //     return (
+        //         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        //             <ActivityIndicator size="large" color="#28b657"/>
+        //         </View>
+        //     );
+        // }
 
         return (
             // <View style={{

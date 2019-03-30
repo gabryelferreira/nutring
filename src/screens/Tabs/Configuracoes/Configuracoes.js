@@ -107,13 +107,13 @@ export default class Configuracoes extends Network {
     }
 
     render(){
-        if (this.state.loading){
-            return (
-                <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator color="#27ae60" size="large"/>
-                </View>
-            );
-        }
+        // if (this.state.loading){
+        //     return (
+        //         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        //             <ActivityIndicator color="#27ae60" size="large"/>
+        //         </View>
+        //     );
+        // }
         return (
             <View style={{flex: 1}}>
                 <Modalzin 

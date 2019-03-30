@@ -31,6 +31,7 @@ export default class MeuPlano extends Network {
             planoAssinando: {},
             meuPlano: {},
             modalAberto: false,
+            erro: false
         }
     }
 
@@ -48,6 +49,11 @@ export default class MeuPlano extends Network {
             this.setState({
                 usuario: result.result
             }, this.getPlanos)
+        } else {
+            this.setState({
+                carregandoInicial: false,
+                erro: true
+            })
         }
     }
 
@@ -61,6 +67,11 @@ export default class MeuPlano extends Network {
                 planos: result.result,
                 carregandoInicial: false,
                 meuPlano
+            })
+        } else {
+            this.setState({
+                carregandoInicial: false,
+                erro: true
             })
         }
     }
@@ -178,7 +189,6 @@ export default class MeuPlano extends Network {
         this.setModalState(false);
         if (this.state.solicitado)
             this.props.navigation.goBack(null);
-        console.log("clicando no " + key)
         if (key == "CONFIRMAR"){
             this.assinarPlano(this.state.planoAssinando.id_plano);
         }
@@ -186,7 +196,7 @@ export default class MeuPlano extends Network {
 
     renderIconeForward(id_plano){
         if (this.state.assinando){
-            if (this.state.planoAssinando.id_plano == id_plano){
+            if (this.state.planoAssinando && this.state.planoAssinando.id_plano == id_plano){
                 return <ActivityIndicator animating color="#fff" size={14}/>
             }
             return <Icon name="chevron-right" solid size={14} color="#fff" style={{fontWeight: 'bold'}}/>
@@ -196,7 +206,7 @@ export default class MeuPlano extends Network {
 
     renderIconeForwardModal(id_plano){
         if (this.state.assinando){
-            if (this.state.planoAssinando.id_plano == id_plano){
+            if (this.state.planoAssinando && this.state.planoAssinando.id_plano == id_plano){
                 return <ActivityIndicator animating color="#fff" size={16}/>
             }
             return <Icon name="chevron-right" solid size={16} color="#fff" style={{fontWeight: 'bold'}}/>
@@ -205,7 +215,7 @@ export default class MeuPlano extends Network {
     }
 
     renderTextoBotaoAssinar(plano){
-        if (plano.id_plano != this.state.meuPlano.id_plano && plano.preco < this.state.meuPlano.preco){
+        if (this.state.meuPlano && plano.id_plano != this.state.meuPlano.id_plano && plano.preco < this.state.meuPlano.preco){
             return <Text style={styles.textoBotaoAssinarPlano}>CONHEÇA O PLANO {plano.nome.toUpperCase()}</Text>
         }
         return <Text style={styles.textoBotaoAssinarPlano}>{plano.is_plano_atual ? 'RENOVE' : 'ASSINE'} O PLANO {plano.nome.toUpperCase()}</Text>
@@ -377,6 +387,9 @@ export default class MeuPlano extends Network {
                     <ActivityIndicator size="large" color="#28b657" />
                 </View>
             );
+        }
+        if (this.state.erro){
+            return <SemDados titulo={"Sem internet"} texto={"Verifique sua internet e tente novamente."}/>
         }
         return (
             <View style={{flex: 1, backgroundColor: '#000'}}>

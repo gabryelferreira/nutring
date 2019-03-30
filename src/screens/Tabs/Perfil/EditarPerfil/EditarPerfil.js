@@ -222,8 +222,8 @@ export default class EditarPerfil extends Network {
                     </View>
                     {this.renderInformacoesRestaurante()}
                     <View style={styles.container}>
-                        <View style={{marginBottom: 10}}>
-                            <BotaoPequeno texto={"Confirmar"} onPress={() => this.editarPerfil()} loading={this.state.loading}/>
+                        <View style={{marginBottom: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                            <BotaoPequeno texto={"Confirmar"} textoLoading={"Confirmando"} onPress={() => this.editarPerfil()} loading={this.state.loading}/>
                         </View>
                     </View>
                 </ScrollView>
