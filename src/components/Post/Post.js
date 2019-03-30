@@ -172,6 +172,9 @@ class Post extends Network {
         })
         let result = await this.callMethod("excluirPost", { id_post: this.state.data.id_post });
         if (result.success){
+            this.setState({
+                excluindo: false
+            })
             this.props.onDelete(this.state.data.id_post);
         }
     }
@@ -229,13 +232,13 @@ class Post extends Network {
     renderTextoCurtidas(curtidas){
         if (curtidas == 0){
             return (
-                <Text onPress={() => this.likeUnlikePost(this.state.data.id_post)} style={{flex: .7, fontSize: 14, fontWeight: 'bold', color: '#000', maxHeight: 24, marginLeft: 5}}>
+                <Text onPress={() => this.likeUnlikePost(this.state.data.id_post)} style={{flex: .7, fontSize: 14, fontWeight: 'bold', color: '#000', maxHeight: 24, marginLeft: 7}}>
                     Seja o primeiro a curtir!
                 </Text>
             );
         } else if (curtidas == 1){
             return (
-                <TouchableOpacity style={{flex: .7, marginLeft: 5}} onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })}>
+                <TouchableOpacity style={{flex: .7, marginLeft: 7}} onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })}>
                     <Text onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })} style={{fontSize: 14, fontWeight: 'bold', color: '#000', maxHeight: 24}}>
                         1 curtida
                     </Text>
@@ -243,7 +246,7 @@ class Post extends Network {
             );
         }
         return (
-            <TouchableOpacity style={{flex: .7, marginLeft: 5}} onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })}>
+            <TouchableOpacity style={{flex: .7, marginLeft: 7}} onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })}>
                 <Text onPress={() => this.props.navigation.navigate("Curtidas", { id_post: this.state.data.id_post })} style={{fontSize: 14, fontWeight: 'bold', color: '#000', maxHeight: 24}}>
                     {curtidas} curtidas
                 </Text>
@@ -283,7 +286,7 @@ class Post extends Network {
                     </View>
                     <View style={styles.viewInfoEConteudo}>
                         
-                        <TouchableOpacity onPress={this.props.onClickFoto} style={styles.viewImagem}>
+                        <TouchableOpacity activeOpacity={0.9} onPress={this.props.onClickFoto} style={styles.viewImagem}>
                             <AutoHeightImage source={{uri: this.formatarConteudo(conteudo)}} width={larguraImagem}/>
                             {/* {this.renderBotaoMultiplasImagens(conteudo)} */}
                         </TouchableOpacity>

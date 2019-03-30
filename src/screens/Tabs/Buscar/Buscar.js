@@ -17,128 +17,134 @@ const imageWidth = dimensions.width;
 export default class Buscar extends Network {
 
     static navigationOptions = ({ navigation }) => 
-  ({
-    header: (
-        <View style={{
-            borderBottom: 1,
-            borderColor: '#ddd',
-            elevation: 1,
-            shadowOpacity: 0,
-            height: 50,
-            overflow: 'hidden'
-        }}>
-            <SearchButton onPress={navigation.getParam('abrirModal')}/>
-        </View>
-    )
-  });
+    ({
+        header: (
+            <View style={{
+                borderBottom: 1,
+                borderColor: '#ddd',
+                elevation: 1,
+                shadowOpacity: 0,
+                height: 50,
+                overflow: 'hidden'
+            }}>
+                <SearchButton onPress={navigation.getParam('abrirModal')}/>
+            </View>
+        )
+    });
 
-  imagens = [
-        "https://images.pexels.com/photos/1095550/pexels-photo-1095550.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
-        "https://images.pexels.com/photos/51163/tomatoes-eggs-dish-the-green-plate-51163.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
-        "https://images.pexels.com/photos/22420/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=650&w=940",
-        "https://images.pexels.com/photos/1162540/pexels-photo-1162540.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
-        "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        "https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        "https://images.pexels.com/photos/1440119/pexels-photo-1440119.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        "https://images.pexels.com/photos/101533/pexels-photo-101533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        "https://images.pexels.com/photos/812860/pexels-photo-812860.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-        "https://images.pexels.com/photos/1095550/pexels-photo-1095550.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
-        "https://images.pexels.com/photos/51163/tomatoes-eggs-dish-the-green-plate-51163.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
-        "https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
-    ];
+    imagens = [
+            "https://images.pexels.com/photos/1095550/pexels-photo-1095550.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+            "https://images.pexels.com/photos/51163/tomatoes-eggs-dish-the-green-plate-51163.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+            "https://images.pexels.com/photos/22420/pexels-photo.jpg?auto=compress&cs=tinysrgb&h=650&w=940",
+            "https://images.pexels.com/photos/1162540/pexels-photo-1162540.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+            "https://images.pexels.com/photos/699953/pexels-photo-699953.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+            "https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+            "https://images.pexels.com/photos/1440119/pexels-photo-1440119.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+            "https://images.pexels.com/photos/101533/pexels-photo-101533.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+            "https://images.pexels.com/photos/812860/pexels-photo-812860.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+            "https://images.pexels.com/photos/1095550/pexels-photo-1095550.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+            "https://images.pexels.com/photos/51163/tomatoes-eggs-dish-the-green-plate-51163.jpeg?auto=compress&cs=tinysrgb&h=650&w=940",
+            "https://images.pexels.com/photos/1410235/pexels-photo-1410235.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500",
+        ];
 
-  abrirModal(){
-    this.props.navigation.navigate('BuscarEspecifico');
-  }
+    abrirModal(){
+        this.props.navigation.navigate('BuscarEspecifico');
+    }
 
-  state = {
-      loading: true,
-      restaurantes: [],
-      pratosRestaurantes: [],
-      pratos: [],
-      offset: 0,
-      limit: 12,
-      loadingPratos: false,
-      semMaisPratos: false
-  }
+    state = {
+        loading: true,
+        restaurantes: [],
+        pratosRestaurantes: [],
+        pratos: [],
+        offset: 0,
+        limit: 12,
+        loadingPratos: false,
+        semMaisPratos: false
+    }
 
-  constructor(props){
-      super(props);
-  }
+    constructor(props){
+        super(props);
+    }
 
-  componentDidMount() {
-    this.props.navigation.setParams({
-        abrirModal: this.abrirModal.bind(this)
-    })
-    this.getTopRestaurantes();
-  }
+    componentDidMount() {
+        this.props.navigation.setParams({
+            abrirModal: this.abrirModal.bind(this)
+        })
+        this.getTopRestaurantes();
+    }
 
-  async getTopRestaurantes(){
-      let result = await this.callMethod("getTopRestaurantes");
-      if (result.success){
+    async getTopRestaurantes(){
         this.setState({
-            restaurantes: result.result
-        }, this.getTopPratosRestaurantes)
-      }
-  }
-
-  async getTopPratosRestaurantes(){
-    let result = await this.callMethod("getTopPratosRestaurantes");
-    if (result.success){
-      this.setState({
-          pratosRestaurantes: result.result
-      }, this.getTopPratosClientes)
-    }
-  }
-
-  async getTopPratosClientes(){
-    let result = await this.callMethod("getTopPratosClientes", { offset: this.state.offset, limit: this.state.limit });
-    if (result.success){
-        if (result.result.length < this.state.limit){
+            loading: true
+        })
+        let result = await this.callMethod("getTopRestaurantes");
+        if (result.success){
             this.setState({
-                semMaisPratos: true
-            })
+                restaurantes: result.result
+            }, this.getTopPratosRestaurantes)
         }
-        let pratos = this.state.pratos;
-        for (var i = 0; i < result.result.length; i++){
-            pratos.push(result.result[i]);
-        }
-      this.setState({
-          pratos,
-          loading: false,
-          loadingPratos: false
-      })
-      setTimeout(() => {
-          this.carregando = false;
-      }, 200);
     }
-  }
 
-  getMaisPratos(){
-      if (!this.carregando && !this.state.semMaisPratos){
-          this.carregando = true;
-          this.setState({
-              offset: this.state.offset + this.state.limit,
-              loadingPratos: true
-          }, this.getTopPratosClientes)
-      }
-  }
+    async getTopPratosRestaurantes(){
+        let result = await this.callMethod("getTopPratosRestaurantes");
+        if (result.success){
+        this.setState({
+            pratosRestaurantes: result.result
+        }, this.getTopPratosClientes)
+        }
+    }
 
-  componentWillUnmount() {
-    this.props.navigation.setParams({
-        abrirModal: null
-    })
-  }
+    async getTopPratosClientes(){
+        let result = await this.callMethod("getTopPratosClientes", { offset: this.state.offset, limit: this.state.limit });
+        if (result.success){
+            if (result.result.length < this.state.limit){
+                this.setState({
+                    semMaisPratos: true,
+                })
+            }
+            let pratos = this.state.pratos;
+            for (var i = 0; i < result.result.length; i++){
+                pratos.push(result.result[i]);
+            }
+        this.setState({
+            pratos,
+            loading: false,
+            loadingPratos: false
+        })
+        setTimeout(() => {
+            this.carregando = false;
+        }, 200);
+        }
+    }
 
-  fecharBusca(){
-      this.props.navigation.setParams({
-          modalAberto: false
-      })
-  }
+    getMaisPratos(){
+        if (!this.carregando && !this.state.semMaisPratos){
+            this.carregando = true;
+            this.setState({
+                offset: this.state.offset + this.state.limit,
+                loadingPratos: true
+            }, this.getTopPratosClientes)
+        }
+    }
 
-  irParaPerfil(id_post){
-      this.props.navigation.navigate("Postagem", { id_post });
-  }
+    componentWillUnmount() {
+        this.props.navigation.setParams({
+            abrirModal: null
+        })
+    }
+
+    fecharBusca(){
+        this.props.navigation.setParams({
+            modalAberto: false
+        })
+    }
+
+    irParaPerfil(id_post){
+        this.props.navigation.navigate("Postagem", {
+            onGoBack: () => this.getTopRestaurantes(),
+            id_post
+        });
+    }
 
     renderImagens(){
         console.log("renderizando imagens")

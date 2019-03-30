@@ -83,8 +83,9 @@ const styles = {
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
+        alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, .6)',
-        paddingHorizontal: 45,
+        paddingHorizontal: 65,
     },
     modal: {
         alignSelf: 'stretch',
@@ -93,7 +94,7 @@ const styles = {
         shadowOffset:{  width: 10,  height: 10,  },
         shadowColor: 'black',
         shadowOpacity: 1.0,
-        borderRadius: 5
+        borderRadius: 5,
     },
     paddingHorizontal: {
         paddingHorizontal: 15

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, Platform } from 'react-native';
+import { View, TouchableOpacity, Text, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, ActivityIndicator } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -20,8 +20,9 @@ const Header = ({onCloseClick, onPress, loading}) => {
     renderLoading = () => {
         if (loading)
             return (
-                <View style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .2}}>
-                    <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold'}}>Publicando</Text>
+                <View style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .3}}>
+                    <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Publicando</Text>
+                    <ActivityIndicator animating color="#28b657" size={12}/>
                 </View>
             );
         return (
@@ -276,7 +277,7 @@ export default class Camera extends Network {
                 visible: false
             }
         })
-        if (key == "close" || this.state.fotoPostada){
+        if (this.state.fotoPostada){
             this.props.onClose();
         }
     }
@@ -326,7 +327,7 @@ export default class Camera extends Network {
                         subTitulo={this.state.modal.subTitulo} 
                         visible={this.state.modal.visible} 
                         onClick={(key) => this.getModalClick(key)}
-                        onClose={() => this.getModalClick("close")}
+                        onClose={() => this.getModalClick()}
                     />
                     <Header onPress={() => this.salvarPublicacao()} loading={this.state.loading} onCloseClick={() => this.setState({fotoTirada: ""})}/>
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>

@@ -37,7 +37,9 @@ export default class Postagem extends Network {
     }
 
     voltarParaPerfil(){
-        this.props.navigation.state.params.onGoBack();
+        if (this.props.navigation.state.params.onGoBack){
+            this.props.navigation.state.params.onGoBack();
+        }
         this.props.navigation.goBack();
     }
 

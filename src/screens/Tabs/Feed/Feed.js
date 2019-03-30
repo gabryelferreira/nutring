@@ -57,6 +57,7 @@ export default class Feed extends Network {
         semMaisDados: false,
         semMaisUsuarios: false,
         avoidRender: true,
+        avoidBugFlatList: false,
         modalComentarios: {
             visible: false
         },
@@ -267,7 +268,26 @@ export default class Feed extends Network {
         return null;
     }
 
+    excluirPost(id_post){
+        let dados = this.state.dados.filter(post => {
+            return id_post != post.id_post
+        })
+        this.setState({
+            avoidBugFlatList: true
+        }, function(){
+            this.setState({
+                dados,
+                avoidBugFlatList: false
+            })
+        })
+        
+        console.log("dados = ", dados)
+    }
+
     renderFeed(){
+        if (this.state.avoidBugFlatList){
+            return null;
+        }
         return (
             <FlatList
                 data={this.state.dados}
@@ -276,7 +296,7 @@ export default class Feed extends Network {
                     
                     <View>
                         
-                        <Post onClickFoto={() => this.abrirFotos(item)} data={item} index={index} navigation={this.props.navigation} onDelete={(id_post) => this.carregarDadosIniciais()}/>
+                        <Post onClickFoto={() => this.abrirFotos(item)} data={item} index={index} navigation={this.props.navigation} onDelete={(id_post) => this.excluirPost(id_post)}/>
                         {this.returnLoader(index, 'dados')}
                     </View>
 
