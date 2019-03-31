@@ -73,6 +73,15 @@ export default class Buscar extends Network {
         this.getTopRestaurantes();
     }
 
+    async recarregarDados(){
+        this.setState({
+            restaurantes: [],
+            pratosRestaurantes: [],
+            pratos: [],
+            offset: 0
+        }, this.getTopRestaurantes)
+    }
+
     async getTopRestaurantes(){
         this.setState({
             loading: true
@@ -141,7 +150,7 @@ export default class Buscar extends Network {
 
     irParaPerfil(id_post){
         this.props.navigation.navigate("Postagem", {
-            onGoBack: () => this.getTopRestaurantes(),
+            onGoBack: () => this.recarregarDados(),
             id_post
         });
     }

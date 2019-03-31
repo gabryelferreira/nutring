@@ -7,6 +7,30 @@ const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
 
+const Header = ({onCloseClick}) => {
+    return (
+        <View style={{
+            elevation: 1,
+            shadowOpacity: 0,
+            height: 50,
+            paddingHorizontal: 20,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            left: 0, right: 0, top: 0,
+            zIndex: 9999,
+            borderBottomWidth: 1,
+            borderBottomColor: '#eee'
+        }}>
+            <View style={{position: 'relative', flex: 1, zIndex: 9999, flexDirection: 'row', alignItems: 'center', justifyContent: Platform.OS === 'ios' ? 'space-between' : 'flex-start'}}>
+                <Icon onPress={onCloseClick} name="times" color="#000" size={24}/>
+                <Text style={{color: '#000', fontWeight: 'bold', fontSize: 22, marginLeft: Platform.OS === 'ios' ? 0 : 30}}>Escolha</Text>
+                <Icon name="times" color="#fff" size={24}/>
+            </View>
+        </View>
+    );
+}
+
 const Galeria = ({fotos, onPress, onClose}) => {
 
     handleOnPress = (foto) => {
@@ -45,32 +69,9 @@ const Galeria = ({fotos, onPress, onClose}) => {
             visible={true}
             animationType="slide"
             presentationStyle="fullScreen"
-            onRequestClose={() => {
-                this.setState({visible: false})
-            }}
+            onRequestClose={onClose}
             >
-            <View style={{
-                borderBottom: 1,
-                borderColor: '#ddd',
-                elevation: 1,
-                shadowOpacity: 0,
-                height: 50,
-                overflow: 'hidden',
-                alignItems: 'center',
-                flexDirection: 'row'
-            }}>
-                <TouchableOpacity style={{height: 50, width: 50, justifyContent: 'center', alignItems: 'center', zIndex: 2}}
-                        onPress={onClose}>
-                    <Icon name="times" 
-                        size={18} 
-                        color="#000" 
-                        />
-                </TouchableOpacity>
-                <View style={[Platform.OS == "ios" ? {justifyContent: 'center'} : {justifyContent: 'flex-start', paddingLeft: 50}, 
-                        {position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, flexDirection: 'row', alignItems: 'center'}]}>
-                    <Text style={{fontSize: 20, color: '#000', fontWeight: 'bold'}}>Galeria</Text>
-                </View>
-            </View>        
+            <Header onCloseClick={onClose}/>       
             <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                 <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
                     {returnFotos()}

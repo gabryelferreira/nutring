@@ -15,7 +15,6 @@ const Header = ({onCloseClick}) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            position: 'absolute',
             left: 0, right: 0, top: 0,
             zIndex: 9999,
             borderBottomWidth: 1,
@@ -78,7 +77,7 @@ class NutringAddButton extends Network {
 
     renderReceitas(){
         if (this.state.isRestaurante || this.state.carregando) return null;
-        if (1 == 1) return null;
+        // if (1 == 1) return null;
         return (
             <View style={[styles.opcao, styles.borderBottom]}>
                 <Image source={require('../../assets/imgs/tela-mais/prato2.png')} style={styles.foto}/>
@@ -168,7 +167,7 @@ class NutringAddButton extends Network {
                 }}
                 >
                     <Header onCloseClick={() => this.setState({visible: false})}/>
-                    <View style={{flex: 1, marginTop: 50}}>
+                    <View style={{flex: 1}}>
                         <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
 
                             <View style={[styles.opcao, styles.borderBottom]}>

@@ -4,6 +4,7 @@ import Network from '../../../network';
 import Post from '../../../components/Post/Post';
 import { ScrollView } from 'react-native-gesture-handler';
 import ModalPostagemViewer from '../../../components/ModalPostagemViewer/ModalPostagemViewer';
+import SemDados from '../../../components/SemDados/SemDados';
 
 export default class Postagem extends Network {
 
@@ -17,7 +18,9 @@ export default class Postagem extends Network {
             loading: true,
             post: {},
             modalFotoVisible: false,
-            itemSelecionado: {}
+            itemSelecionado: {},
+            naoEncontrado: false,
+            semInternet: false
         }
     }
 
@@ -29,9 +32,21 @@ export default class Postagem extends Network {
         let id_post = this.props.navigation.getParam("id_post", "0");
         let result = await this.callMethod("getPostById", { id_post });
         if (result.success){
+            if (result.result == "NAO_ENCONTRADO"){
+                this.setState({
+                    naoEncontrado: true,
+                    loading: false
+                })
+            } else {
+                this.setState({
+                    post: result.result,
+                    loading: false
+                })
+            }
+        } else {
             this.setState({
-                post: result.result,
-                loading: false
+                loading: false,
+                semInternet: false
             })
         }
     }
@@ -51,6 +66,10 @@ export default class Postagem extends Network {
                 </View>
             );
         }
+        if (this.state.naoEncontrado)
+            return <SemDados titulo={"Postagem não encontrada"} texto={"A postagem pode ter sido excluída."}/>
+        if (this.state.semInternet)
+            return <SemDados titulo={"Sem internet"} texto={"Verifique sua internet e tente novamente."}/>
         return (
             <View style={{flex: 1}}>
                 <ModalPostagemViewer visible={this.state.modalFotoVisible}

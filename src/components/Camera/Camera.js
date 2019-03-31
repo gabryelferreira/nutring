@@ -41,7 +41,6 @@ const Header = ({onCloseClick, onPress, loading}) => {
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
-            position: 'absolute',
             left: 0, right: 0, top: 0,
             zIndex: 9999,
             backgroundColor: '#fff'
@@ -331,7 +330,7 @@ export default class Camera extends Network {
                     />
                     <Header onPress={() => this.salvarPublicacao()} loading={this.state.loading} onCloseClick={() => this.setState({fotoTirada: ""})}/>
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                        <TouchableHighlight style={{marginTop: 40}}>
+                        <TouchableHighlight>
                             <Image resizeMethod="resize" source={{uri: this.state.fotoTirada}} style={{height: 250, width: imageWidth}}/>
                         </TouchableHighlight>
                         {/* <TouchableHighlight>
@@ -374,13 +373,13 @@ export default class Camera extends Network {
                                 <Icon name="angle-down" color="#fff" size={32}/>
                             </TouchableOpacity>
                         </View>
-                        <View style={[styles.viewBotao, styles.alignDireita]}>
+                        {/* <View style={[styles.viewBotao, styles.alignDireita]}>
                             <TouchableOpacity disabled={this.state.uploading}
                             onPress={() => this.setState({flash: this.state.flash == "off" ? "on" : "off"})}
                             >
                                 <Icon name="bolt" color="#fff" regular size={25}/>
                             </TouchableOpacity>
-                        </View>
+                        </View> */}
                     </View>
                 </View>
                 <View style={{

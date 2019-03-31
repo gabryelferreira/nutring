@@ -183,7 +183,7 @@ class Post extends Network {
         if (nome && descricao){
             return (
                 <View style={styles.viewInfoDescricao}>
-                    <Text style={styles.texto}><Text style={styles.bold}>{nome} </Text>{descricao}</Text>
+                    <Text style={styles.texto}><Text onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: this.state.data.id_usuario })} style={styles.bold}>{nome} </Text><Text onPress={() => this.props.navigation.push('Postagem', { id_post: this.state.data.id_post })}>{descricao}</Text></Text>
                 </View>
             );
         }
@@ -469,7 +469,6 @@ const styles = {
         marginTop: 5,
     },
     texto: {
-        marginBottom: 5,
         fontSize: 14,
         color: '#000'
     },
@@ -526,7 +525,7 @@ const styles = {
     verMais: {
         color: '#aaa',
         marginTop: 5,
-        fontSize: 15
+        fontSize: 14
     },
     iconeMultiplasFotos: {
         position: 'absolute',
