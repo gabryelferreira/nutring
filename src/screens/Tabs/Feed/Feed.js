@@ -181,11 +181,11 @@ export default class Feed extends Network {
     returnLoader(index, campo){
         if (campo == 'dados'){
             if (index == this.state.dados.length-1 && !this.state.semMaisDados && !this.refreshing)
-                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 0, marginBottom: 35 }}/>
+                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 0, marginBottom: 10 }}/>
         }
         if (campo == 'usuarios')
             if (index == this.state.usuarios.length-1 && !this.state.semMaisUsuarios && !this.refreshing)
-                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
+                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 10 }}/>
         return;
     }
 

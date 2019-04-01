@@ -30,7 +30,7 @@ const Input = (props) => {
             {returnLabel()}
             <View style={styles.viewInput}>
                 <TextInput
-                    style={[props.small ? [props.multiline ? [styles.input, styles.inputPequeno] : [styles.input, styles.inputPequeno, styles.inputSuperPequeno]] : [styles.input, styles.inputGrande], props.disabled ? {backgroundColor: '#eee'} : {}, props.hashtag ? styles.bigPaddingLeft : {}]}
+                    style={[props.small ? [props.multiline ? [styles.input, styles.inputPequeno, styles.alignVerticalTop] : [styles.input, styles.inputPequeno, styles.inputSuperPequeno]] : [styles.input, styles.inputGrande], props.disabled ? {backgroundColor: '#eee'} : {}, props.hashtag ? styles.bigPaddingLeft : {}]}
                     onChangeText={props.onChangeText}
                     value={props.value ? props.value : ''}
                     returnKeyType={props.returnKeyType}
@@ -76,6 +76,9 @@ const styles = {
         borderColor: '#ddd',
         marginTop: 7,
         marginBottom: 7,
+        
+    },
+    alignVerticalTop: {
         textAlignVertical: 'top'
     },
     bigPaddingLeft: {

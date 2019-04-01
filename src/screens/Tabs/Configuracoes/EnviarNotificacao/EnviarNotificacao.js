@@ -196,7 +196,7 @@ export default class EnviarNotificacao extends Network {
                         <View style={{marginVertical: 5, flex: .7}}>
                             <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
                         </View>
-                        <View style={{marginVertical: 10}}>
+                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
                             <BotaoPequeno disabled={this.state.disabled} texto={"Enviar"} textoLoading={"Enviando"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
                         </View>
                     </View>

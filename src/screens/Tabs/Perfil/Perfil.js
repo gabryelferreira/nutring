@@ -185,11 +185,10 @@ export default class Perfil extends Network {
     }
 
     returnHeaderComponent(){
-        if (this.state.user.cnpj)
+        if (this.state.user.is_restaurante)
             return this.renderInfoPerfilRestaurante();
-        if (this.state.user.nome)
-            return this.renderInfoPerfil();
-        return null;
+        
+        return this.renderInfoPerfil();
     }
 
     getTextoSemFotos(){

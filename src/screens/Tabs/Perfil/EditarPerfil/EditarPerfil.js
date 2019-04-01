@@ -63,8 +63,12 @@ export default class EditarPerfil extends Network {
     async editarPerfilCliente(){
         let result = await this.callMethod("editarPerfil", { nome: this.state.nome, descricao: this.state.descricao, tipo_edicao: 'CLIENTE' });
         if (result.success){
-            this.props.navigation.state.params.onGoBack();
-            this.props.navigation.goBack();
+            if (result.result == "PERFIL_ALTERADO"){
+                this.props.navigation.state.params.onGoBack();
+                this.props.navigation.goBack();
+            } else {
+                this.showModal("Ocorreu um erro", result.result);
+            }
         } else {
             this.showModal("Ocorreu um erro", "Verifique sua internet e tente novamente.");
         }
@@ -190,7 +194,7 @@ export default class EditarPerfil extends Network {
                 />
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                     <View style={styles.container}>
-                        <Input label={"Nome"}
+                        <Input label={"Nome *"}
                             icone={"user"}
                             onChangeText={(nome) => this.setState({nome})}
                             value={this.state.nome}
