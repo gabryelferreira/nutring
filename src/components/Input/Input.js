@@ -70,7 +70,6 @@ const styles = {
         borderRadius: 5,
         color: '#000',
         paddingHorizontal: 10,
-        height: 50,
         fontSize: 14,
         backgroundColor: '#fafafa',
         borderWidth: 1,
@@ -86,10 +85,10 @@ const styles = {
         paddingLeft: 25
     },
     inputPequeno: {
-        flex: .7,
+        flex: 1,
     },
     inputSuperPequeno: {
-        height: 40
+        height: 50
     },
     inputGrande: {
         flex: 1,
