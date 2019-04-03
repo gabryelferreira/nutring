@@ -120,7 +120,7 @@ export default class EditarPerfil extends Network {
         if (this.state.user.is_restaurante){
             return (
                 <View>
-                    <Input label={"Cor de fundo"}
+                    <Input label={"Cor de fundo (hexadecimal)"}
                         icone={"palette"}
                         onChangeText={(cor_fundo) => this.setState({cor_fundo})}
                         value={this.state.cor_fundo}
@@ -132,7 +132,7 @@ export default class EditarPerfil extends Network {
                         returnKeyType={"next"}
                         hashtag={true}
                     />
-                    <Input label={"Cor do texto"}
+                    <Input label={"Cor do texto (hexadecimal)"}
                         icone={"palette"}
                         inputRef={(input) => this.terceiroInput = input}
                         onChangeText={(cor_texto) => this.setState({cor_texto})}

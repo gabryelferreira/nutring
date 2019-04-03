@@ -70,6 +70,7 @@ const styles = {
         borderRadius: 5,
         color: '#000',
         paddingHorizontal: 10,
+        height: 50,
         fontSize: 14,
         backgroundColor: '#fafafa',
         borderWidth: 1,

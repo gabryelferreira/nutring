@@ -10,6 +10,7 @@ import Input from '../../components/Input/Input';
 import Label from '../../components/Label/Label';
 import { validarCNPJ, validarData } from '../../validacoes';
 import { removerCaracteresEspeciais, removerCaracter, formatarCNPJ, formatarData, formatarCep } from '../../help-functions';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -653,8 +654,12 @@ export default class Cadastro extends Network {
                 />
                 <ScrollView keyboardShouldPersistTaps={"handled"}>
 
-
                     <View style={styles.viewCadastro}>
+
+                        {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.botaoVoltar}>
+                            <Icon name="chevron-left" solid color="#28b657" size={22}/>
+                        </TouchableOpacity> */}
+
                         <View style={{alignItems: 'center'}}>
                             <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>
                         </View>
@@ -696,7 +701,7 @@ const styles = {
         alignItems: 'center'
     },
     viewCadastro: {
-        flex: .8,
+        flex: 1,
         flexDirection: 'column',
         justifyContent: 'center',
         paddingTop: 40
@@ -786,5 +791,9 @@ const styles = {
     textoProblemaLink: {
         color: '#222',
         fontWeight: 'bold',
+    },
+    botaoVoltar: {
+        marginHorizontal: 20,
+        padding: 10
     }
 }

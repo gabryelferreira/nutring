@@ -1,10 +1,11 @@
 /** @format */
 import React, { Component } from 'react';
-import { AppRegistry, View, Text, Animated, Easing } from 'react-native';
+import { AppRegistry, View, Text, Animated, Easing, Platform } from 'react-native';
 import Login from './src/screens/Login/Login';
 import Principal from './src/screens/Principal/Principal';
 
 import { createStackNavigator, createAppContainer, createBottomTabNavigator } from "react-navigation";
+import StackViewStyleInterpolator from "react-navigation-stack/dist/views/StackView/StackViewStyleInterpolator";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { name as appName } from './app.json';
 import Cadastro from './src/screens/Cadastro/Cadastro';
@@ -41,6 +42,7 @@ import Promocoes from './src/screens/Tabs/Notificacoes/Promocoes/Promocoes';
 import Promocao from './src/screens/Tabs/Notificacoes/Promocoes/Promocao/Promocao';
 import MeuPlano from './src/screens/Tabs/Configuracoes/MeuPlano/MeuPlano';
 import Plano from './src/screens/Tabs/Configuracoes/MeuPlano/Plano/Plano';
+import NovaReceita from './src/screens/Tabs/NovaReceita/NovaReceita';
 
 const NavigationOptions = {
     headerStyle: {
@@ -130,13 +132,35 @@ function addNewPage(_initialRouteName){
     return createStackNavigator(
         InsideTabs, {
             initialRouteName: _initialRouteName,
-            transitionConfig : () => ({
-                transitionSpec: {
-                    duration: 0,
-                    timing: Animated.timing,
-                    easing: Easing.step0,
-                },
-            }),
+            transitionConfig : () => (Platform.OS === 'android' ? {
+                
+                screenInterpolator: props => {
+                    // Transitioning to search screen (navigate)
+                    // if (props.scene.route.routeName === 'Search') {
+                    //   return StackViewStyleInterpolator.forFade(props);
+                    // }
+              
+                    // const last = props.scenes[props.scenes.length - 1];
+              
+                    // // Transitioning from search screen (goBack)
+                    // if (last.route.routeName === 'Search') {
+                    //   return StackViewStyleInterpolator.forFade(props);
+                    // }
+                    // if (Platform.OS === 'ios') {
+                      return StackViewStyleInterpolator.forHorizontal(props);
+                    // }
+              
+                    // return;
+                  },
+                } : {
+                    transitionSpec: {
+                        duration: 0,
+                        timing: Animated.timing,
+                        easing: Easing.step0,
+                    },
+                }
+            ),
+
         },
         
     )
@@ -288,16 +312,44 @@ const AppNavigator = createStackNavigator({
     BuscarEspecifico: {
         screen: BuscarEspecifico,
         navigationOptions: NavigationOptions
+    },
+    NovaReceita: {
+        screen: NovaReceita,
+        navigationOptions: NavigationOptions
     }
 }, {
     initialRouteName: 'Principal',
-    transitionConfig : () => ({
-        transitionSpec: {
-            duration: 0,
-            timing: Animated.timing,
-            easing: Easing.step0,
-        },
-    }),
+    transitionConfig : () => (Platform.OS === 'android' ? {
+                
+        screenInterpolator: props => {
+            // Transitioning to search screen (navigate)
+            // if (props.scene.route.routeName === 'Search') {
+            //   return StackViewStyleInterpolator.forFade(props);
+            // }
+      
+            // const last = props.scenes[props.scenes.length - 1];
+      
+            // // Transitioning from search screen (goBack)
+            // if (last.route.routeName === 'Search') {
+            //   return StackViewStyleInterpolator.forFade(props);
+            // }
+            // if (Platform.OS === 'ios') {
+            if (props.scene.route.routeName == 'BuscarEspecifico'){
+                return;
+            }
+            return StackViewStyleInterpolator.forHorizontal(props);
+            // }
+      
+            // return;
+          },
+        } : {
+            transitionSpec: {
+                duration: 0,
+                timing: Animated.timing,
+                easing: Easing.step0,
+            },
+        }
+    ),
 }
 );
 

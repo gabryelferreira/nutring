@@ -7,6 +7,7 @@ import Modalzin from '../../components/Modal/Modal';
 import Network from '../../network';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Input from '../../components/Input/Input';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -151,6 +152,9 @@ export default class Login extends Network {
                 />
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
 
+                    {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.botaoVoltar}>
+                        <Icon name="chevron-left" solid color="#28b657" size={22}/>
+                    </TouchableOpacity> */}
 
                     <View style={styles.viewLogin}>
                         <View style={{alignItems: 'center', justifyContent: 'flex-end', flex: .5}}>
@@ -317,5 +321,10 @@ const styles = {
     textoCadastroLink: {
         color: '#222',
         fontWeight: 'bold'
+    },
+    botaoVoltar: {
+        marginHorizontal: 20,
+        paddingTop: 50,
+        paddingHorizontal: 10
     }
 }

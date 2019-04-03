@@ -115,7 +115,7 @@ export default class InserirCodigoRecuperacao extends Network {
                         onSubmitEditing={() => this.recuperar()}
                         autoCapitalize = 'none'
                         keyboardType='number-pad'
-                        maxLength={5}
+                        maxLength={6}
                         />
                         <TouchableOpacity onPress={() => this.recuperar()} style={styles.botao}>
                             {this.renderTextoBotao()}

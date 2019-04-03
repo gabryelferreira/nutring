@@ -1,9 +1,12 @@
 import React, {Component} from 'react';
-import { TouchableHighlight, View, Modal, ScrollView, Text, Image, TouchableOpacity, ActivityIndicator, Platform } from "react-native";
+import { TouchableHighlight, View, Modal, ScrollView, Text, Image, TouchableOpacity, ActivityIndicator, Platform, Dimensions } from "react-native";
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Camera from '../Camera/Camera';
 import Network from '../../network';
 
+const dimensions = Dimensions.get('window');
+const imageHeight = dimensions.height;
+const imageWidth = dimensions.width;
 
 const Header = ({onCloseClick}) => {
     return (
@@ -85,7 +88,7 @@ class NutringAddButton extends Network {
                     <Text style={styles.titulo}>Postar Receita</Text>
                     <Text style={styles.descricao}>Compartilhe suas <Text style={styles.bold}>melhores receitas! </Text>
                     Poste para a <Text style={styles.bold}>aba receitas.</Text> Pode ser uma receita feita por você, pelo seu amigo ou uma que você viu na internet e deseja compartilhar! ;)</Text>
-                    <TouchableOpacity style={styles.botao}>
+                    <TouchableOpacity style={styles.botao} onPress={() => this.abrirPagina("NovaReceita")}>
                         <Text style={styles.textoBotao}>POSTAR RECEITA</Text>
                         <Icon name="chevron-right" solid size={14} color="#000" style={{fontWeight: 'bold'}}/>
                     </TouchableOpacity>
@@ -193,9 +196,9 @@ class NutringAddButton extends Network {
                     <View style={{
                         alignItems: 'center',
                     }}>
-                        <TouchableHighlight>
-                            <Icon onPress={() => this.setState({visible: true})} style={{paddingHorizontal: 25, paddingVertical: 10}} name="plus" size={22} color="#c7c7c7"/>
-                        </TouchableHighlight>
+                        <TouchableOpacity activeOpacity={1} onPress={() => this.setState({visible: true})} style={{width: imageWidth, flexDirection: 'row', justifyContent: 'center'}}>
+                            <Icon style={{paddingHorizontal: 25, paddingVertical: 10}} name="plus" size={22} color="#c7c7c7"/>
+                        </TouchableOpacity>
                     </View>
             </View>
         );
