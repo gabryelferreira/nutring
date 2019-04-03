@@ -461,7 +461,8 @@ const styles = {
     descricaoModal: {
         color: '#fff',
         fontWeight: 'bold',
-        lineHeight: 22
+        lineHeight: 22,
+        textAlign: 'center'
     },
     precosModal: {
         flexDirection: 'column',

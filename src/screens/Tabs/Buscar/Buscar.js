@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image, Button, Modal, ScrollView, Dimensions, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, Text, Image, Button, Modal, ScrollView, Dimensions, ActivityIndicator,RefreshControl } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
 import SearchBar from '../../../components/SearchBar/SearchBar';
@@ -51,15 +51,17 @@ export default class Buscar extends Network {
         this.props.navigation.navigate('BuscarEspecifico');
     }
 
+    offset = 0;
+    limit = 12;
+
     state = {
         loading: true,
         restaurantes: [],
         pratosRestaurantes: [],
         pratos: [],
-        offset: 0,
-        limit: 12,
         loadingPratos: false,
-        semMaisPratos: false
+        semMaisPratos: false,
+        refreshing: false
     }
 
     constructor(props){
@@ -74,18 +76,16 @@ export default class Buscar extends Network {
     }
 
     async recarregarDados(){
+        console.log("dados = top")
+        this.offset = 0;
+        console.log("offset = ", this.offset)
         this.setState({
-            restaurantes: [],
-            pratosRestaurantes: [],
-            pratos: [],
-            offset: 0
+            refreshing: true,
+            semMaisPratos: false
         }, this.getTopRestaurantes)
     }
 
     async getTopRestaurantes(){
-        this.setState({
-            loading: true
-        })
         let result = await this.callMethod("getTopRestaurantes");
         if (result.success){
             this.setState({
@@ -104,21 +104,27 @@ export default class Buscar extends Network {
     }
 
     async getTopPratosClientes(){
-        let result = await this.callMethod("getTopPratosClientes", { offset: this.state.offset, limit: this.state.limit });
+        let result = await this.callMethod("getTopPratosClientes", { offset: this.offset, limit: this.limit });
         if (result.success){
-            if (result.result.length < this.state.limit){
+            if (result.result.length < this.limit){
                 this.setState({
                     semMaisPratos: true,
                 })
             }
-            let pratos = this.state.pratos;
-            for (var i = 0; i < result.result.length; i++){
-                pratos.push(result.result[i]);
+            let pratos = [];
+            if (this.offset == 0){
+                pratos = result.result
+            } else {
+                pratos = this.state.pratos;
+                for (var i = 0; i < result.result.length; i++){
+                    pratos.push(result.result[i]);
+                }
             }
         this.setState({
             pratos,
             loading: false,
-            loadingPratos: false
+            loadingPratos: false,
+            refreshing: false
         })
         setTimeout(() => {
             this.carregando = false;
@@ -129,8 +135,8 @@ export default class Buscar extends Network {
     getMaisPratos(){
         if (!this.carregando && !this.state.semMaisPratos){
             this.carregando = true;
+            this.offset += this.limit;
             this.setState({
-                offset: this.state.offset + this.state.limit,
                 loadingPratos: true
             }, this.getTopPratosClientes)
         }
@@ -157,7 +163,7 @@ export default class Buscar extends Network {
 
     renderImagens(){
         console.log("renderizando imagens")
-        let totalImagensPossiveis = this.state.limit;
+        let totalImagensPossiveis = this.limit;
         let imagensCount = Math.floor(this.state.pratos.length/totalImagensPossiveis);
         let imagens = [];
         for (var i = 0; i < imagensCount; i++){
@@ -293,6 +299,12 @@ export default class Buscar extends Network {
                 this.getMaisPratos();
             }
         }}
+        refreshControl={
+            <RefreshControl
+                refreshing={this.state.refreshing}
+                onRefresh={this.recarregarDados.bind(this)}
+            />
+        }
         scrollEventThrottle={400}>
             <Text style={[styles.titulo, styles.paddingHorizontal]}>Em alta</Text>
             

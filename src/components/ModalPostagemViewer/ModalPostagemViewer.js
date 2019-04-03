@@ -56,14 +56,17 @@ export default class ModalPostagemViewer extends Component {
                     onRequestClose={() => {
                         this.props.onClose()
                     }}>
-                    <TouchableOpacity style={{flex: 1, backgroundColor: '#000'}}>
+                    <View style={{flex: 1, backgroundColor: '#000'}}>
                         <View style={styles.detalhes}>
-                            <View style={styles.viewFoto}>
-                                <TouchableOpacity style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000'}}>
+                            <View style={styles.viewTitulos}>
+                                <View style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000', marginRight: 10}}>
                                     <Image resizeMethod="resize" style={{height: 38, width: 38, borderRadius: 38/2, position: 'absolute', left: 0, top: 0}} source={{uri: this.props.foto}}/>
-                                </TouchableOpacity>
+                                </View>
+                                <Text style={styles.tituloDetalhes}>{this.props.titulo}</Text>
                             </View>
-                            <Text style={styles.tituloDetalhes}>{this.props.titulo}</Text>
+                            <TouchableOpacity onPress={() => this.props.onClose()} style={{alignItems: 'center', justifyContent: 'center', padding: 5}}>
+                                <Icon name="times" solid color="#fff" size={18}/>
+                            </TouchableOpacity>
                         </View>
                         <ImageViewer imageUrls={this.formatImages(this.props.imagens)}
                                     onSwipeDown={this.props.onSwipeDown}
@@ -71,7 +74,7 @@ export default class ModalPostagemViewer extends Component {
                                     enableImageZoom={true}
                                     swipeDownThreshold={230}
                                     renderIndicator={() => null}/>
-                    </TouchableOpacity>
+                    </View>
             </Modal>
         );
     }
@@ -126,10 +129,14 @@ const styles = {
 
     detalhes: {
         flexDirection: 'row',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 15,
-        paddingHorizontal: 10
+        paddingHorizontal: 15
+    },
+    viewTitulos: {
+        flexDirection: 'row',
+        alignItems: 'center',
     },
     viewFoto: {
         width: 58,

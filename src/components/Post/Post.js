@@ -431,7 +431,7 @@ const styles = {
         flexDirection: 'column'
     },
     nome: {
-        fontSize: 18,
+        fontSize: 16,
         color: '#000',
         fontWeight: 'bold',
         maxHeight: 24,
