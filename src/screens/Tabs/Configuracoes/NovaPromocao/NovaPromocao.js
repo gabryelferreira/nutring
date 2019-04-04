@@ -250,7 +250,7 @@ export default class NovaPromocao extends Network {
                         autoCapitalize={"sentences"}
                         small={true}
                         multiline={true}
-                        numberOfLines={4}
+                        numberOfLines={5}
                         maxLength={100}
                         returnKeyType={"send"}
                     />
@@ -328,7 +328,7 @@ export default class NovaPromocao extends Network {
                             autoCapitalize={"sentences"}
                             small={true}
                             multiline={true}
-                            numberOfLines={4}
+                            numberOfLines={5}
                             maxLength={255}
                             returnKeyType={"none"}
                         />

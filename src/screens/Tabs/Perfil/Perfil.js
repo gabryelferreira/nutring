@@ -309,11 +309,11 @@ export default class Perfil extends Network {
     }
 
     renderLocalizacao(){
-        if (this.state.user.cidade && this.state.user.estado){
+        if (this.state.user.endereco && this.state.user.endereco.cidade && this.state.user.endereco.estado){
             return (
                 <View style={{flexDirection: 'row', marginTop: 5}}>
                     <Icon name="map-marker-alt" color="#fff" size={14} style={{marginRight: 5}}/>
-                    <Text style={styles.localizacao}>{this.state.user.cidade} - {this.state.user.estado}</Text>
+                    <Text style={styles.localizacao}>{this.state.user.endereco.cidade} - {this.state.user.endereco.estado}</Text>
                 </View>
             );
         }
@@ -697,6 +697,90 @@ export default class Perfil extends Network {
         return [foto]
     }
 
+    renderBolinha(status_funcionamento){
+        if (!this.state.user.tem_horario) return null;
+        if (status_funcionamento == 'ABERTO'){
+            return <View style={[styles.bola, styles.bolaVerde]}></View>
+        } else if (status_funcionamento == 'FECHOU' || status_funcionamento == 'NAO_ABRIU'){
+            return <View style={[styles.bola, styles.bolaVermelha]}></View>
+        } else return null;
+
+    }
+
+    renderStatusFuncionamento(status_funcionamento){
+        if (!this.state.user.tem_horario) return null;
+        if (status_funcionamento == 'ABERTO'){
+            return <Text style={[styles.textoStatus, styles.textoAberto]}>Aberto</Text>
+        } else if (status_funcionamento == 'FECHOU' || status_funcionamento == 'NAO_ABRIU'){
+            return <Text style={[styles.textoStatus, styles.textoFechado]}>Fechado</Text>
+        } else return null;
+    }
+
+    renderTextoHorario(status_funcionamento){
+        if (!this.state.user.tem_horario) return <Text style={styles.horarioRestaurante}>Sem informação do horário</Text>
+        if (status_funcionamento == 'ABERTO'){
+            return <Text style={styles.horarioRestaurante}>Fecha às {this.state.user.horario_fechamento}</Text>
+        } else if (status_funcionamento == 'FECHOU'){
+            return <Text style={styles.horarioRestaurante}>Fechou às {this.state.user.horario_fechamento}</Text>
+        } else if (status_funcionamento == 'NAO_ABRIU'){
+            return <Text style={styles.horarioRestaurante}>Abre às {this.state.user.horario_abertura}</Text>
+        } else {
+            return <Text style={styles.horarioRestaurante}>Sem informação do horário</Text>
+        }
+    }
+
+    renderModalRestaurante(){
+        if (this.state.user.is_restaurante){
+            return (
+                <Modal
+                    
+                  animationType="slide"
+                    transparent={true}
+                    visible={this.state.infoRestauranteVisible}
+                    onRequestClose={() => {
+                        this.setState({infoRestauranteVisible: false})
+                    }}
+                    >
+                    <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})} style={{flex: 1}}>
+                    
+                    </TouchableOpacity>
+                    <View style={styles.informacoesRestaurante}>
+                        <View style={[styles.row, styles.paddingInfoRestaurante, styles.headerInfoRestaurante]}>
+                            <View style={[styles.column, {flex: 1}]}>
+                                <View style={[styles.row, styles.alignCenter]}>
+                                    <Text style={styles.tituloHeaderRestaurante}>{this.state.user.nome}</Text>
+                                    {this.renderBolinha(this.state.user.status_funcionamento)}
+                                    {this.renderStatusFuncionamento(this.state.user.status_funcionamento)}
+                                </View>
+                                <View style={[styles.row, styles.alignCenter, {marginTop: 10}]}>
+                                    <Icon name="clock" size={15} color="#222" solid/>
+                                    {this.renderTextoHorario(this.state.user.status_funcionamento)}
+                                </View>
+                                <View style={[styles.row, styles.alignCenter, {marginTop: 5}]}>
+                                    <Icon name="map-marker-alt" size={15} color="#222" solid/>
+                                    <Text style={styles.enderecoRestaurante}>{this.state.user.endereco.logradouro}{this.state.user.endereco.numero ? ',' : ''} {this.state.user.endereco.numero}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.viewFotoRestauranteInfo}>
+                                <Image resizeMethod="resize" source={{uri: this.state.user.foto}} style={styles.imagemRestauranteInfo}/>
+                            </View>
+                            <View style={styles.botaoFecharInfoRestaurante}>
+                                <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})}>
+                                    <Icon name="times" color="#222" size={24}/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={[styles.column, styles.paddingInfoRestaurante, styles.viewSobreRestaurante]}>
+                            <Text style={styles.tituloSobreRestaurante}>Sobre</Text>
+                            <Text style={styles.sobreRestaurante}>{this.state.user.sobre}</Text>
+                        </View>
+                    </View>
+                </Modal>
+            );
+        }
+        return null;
+    }
+
     render(){
         let { nome, foto } = this.state.user;
         if (this.state.carregandoPrimeiraVez){
@@ -727,50 +811,7 @@ export default class Perfil extends Network {
                             onSwipeDown={() => this.setState({modalFotoVisible: false})}
                             onClose={() => this.setState({modalFotoVisible: false})}/>
 
-                <Modal
-                    
-                  animationType="slide"
-                    transparent={true}
-                    visible={this.state.infoRestauranteVisible}
-                    onRequestClose={() => {
-                        this.setState({infoRestauranteVisible: false})
-                    }}
-                    >
-                    <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})} style={{flex: 1}}>
-                    
-                    </TouchableOpacity>
-                    <View style={styles.informacoesRestaurante}>
-                        <View style={[styles.row, styles.paddingInfoRestaurante, styles.headerInfoRestaurante]}>
-                            <View style={[styles.column, {flex: 1}]}>
-                                <View style={[styles.row, styles.alignCenter]}>
-                                    <Text style={styles.tituloHeaderRestaurante}>{this.state.user.nome}</Text>
-                                    <View style={styles.bolaVerde}></View>
-                                    <Text style={styles.textoAberto}>Aberto</Text>
-                                </View>
-                                <View style={[styles.row, styles.alignCenter, {marginTop: 10}]}>
-                                    <Icon name="clock" size={15} color="#222" solid/>
-                                    <Text style={styles.horarioRestaurante}>Fecha as 23h</Text>
-                                </View>
-                                <View style={[styles.row, styles.alignCenter, {marginTop: 5}]}>
-                                    <Icon name="map-marker-alt" size={15} color="#777" solid/>
-                                    <Text style={styles.enderecoRestaurante}>{this.state.user.logradouro}{this.state.user.numero ? ',' : ''} {this.state.user.numero}</Text>
-                                </View>
-                            </View>
-                            <View style={styles.viewFotoRestauranteInfo}>
-                                <Image resizeMethod="resize" source={{uri: this.state.user.foto}} style={styles.imagemRestauranteInfo}/>
-                            </View>
-                            <View style={styles.botaoFecharInfoRestaurante}>
-                                <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})}>
-                                    <Icon name="times" color="#222" size={24}/>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style={[styles.column, styles.paddingInfoRestaurante, styles.viewSobreRestaurante]}>
-                            <Text style={styles.tituloSobreRestaurante}>Sobre</Text>
-                            <Text style={styles.sobreRestaurante}>{this.state.user.sobre}</Text>
-                        </View>
-                    </View>
-                </Modal>
+                {this.renderModalRestaurante()}
                 
                 {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}> */}
                     {this.returnFotos()}
@@ -793,12 +834,17 @@ const styles = {
     column: {
         flexDirection: 'column'
     },
+    bola: {
+        height: 6,
+        width: 6,
+        borderRadius: 6/2,
+        marginHorizontal: 7
+    },
     bolaVerde: {
-        height: 8,
-        width: 8,
-        borderRadius: 8/2,
         backgroundColor: '#28b657',
-        marginHorizontal: 10
+    },
+    bolaVermelha: {
+        backgroundColor: '#DC143C'
     },
     paddingInfoRestaurante: {
         paddingHorizontal: 25,
@@ -1074,13 +1120,18 @@ const styles = {
     },
     tituloHeaderRestaurante: {
         fontWeight: 'bold',
-        fontSize: 24,
+        fontSize: 18,
         color: '#000'
+    },
+    textoStatus: {
+        fontWeight: 'bold',
+        fontSize: 14
     },
     textoAberto: {
         color: '#28b657',
-        fontWeight: 'bold',
-        fontSize: 18
+    },
+    textoFechado: {
+        color: '#DC143C',
     },
     horarioRestaurante: {
         fontSize: 14,
@@ -1090,7 +1141,7 @@ const styles = {
     enderecoRestaurante: {
         fontSize: 14,
         marginLeft: 10,
-        color: '#777'
+        color: '#222'
     },
     viewFotoRestauranteInfo: {
         width: 100,

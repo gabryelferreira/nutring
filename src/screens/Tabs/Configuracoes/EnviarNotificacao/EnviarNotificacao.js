@@ -189,7 +189,7 @@ export default class EnviarNotificacao extends Network {
                             autoCapitalize={"sentences"}
                             small={true}
                             multiline={true}
-                            numberOfLines={4}
+                            numberOfLines={5}
                             maxLength={100}
                             returnKeyType={"send"}
                         />

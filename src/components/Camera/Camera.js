@@ -344,7 +344,7 @@ export default class Camera extends Network {
                                 autoCapitalize={"sentences"}
                                 multiline={true}
                                 small={true}
-                                numberOfLines={4}
+                                numberOfLines={5}
                                 maxLength={500}
                                 returnKeyType={"none"}
                             />
