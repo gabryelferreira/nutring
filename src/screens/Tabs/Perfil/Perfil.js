@@ -479,15 +479,16 @@ export default class Perfil extends Network {
                 
                     <View style={styles.viewInfoContato}>
                         <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: true})} style={styles.infoContato}><Icon name="info" size={18} solid color="#fff"/></TouchableOpacity>
-                        <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2}} onPress={() => {this.tipoFoto = "fotoPerfil"; this.validarAlteracaoFoto()}}>
+                        <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2, overflow: 'hidden'}} onPress={() => {this.tipoFoto = "fotoPerfil"; this.validarAlteracaoFoto()}}>
                             <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto}}/>
                             {this.renderCamerazinha(sou_eu)}
-                            <View style={{position: 'absolute', left: 0, right: 0, bottom: -12, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end'}}>
-                                <AutoHeightImage source={require('../../../assets/imgs/folhinha_da_macunha.png')}  width={30}/>
-                            
-                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => Linking.openURL(`tel:${ddd}${telefone}`)} style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                        <View style={{position: 'absolute', top: -10, flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end'}}>
+                            <AutoHeightImage source={require('../../../assets/imgs/folhinha_da_macunha.png')}  width={30}/>
+                        </View>
                     </View>
 
                     <Text style={styles.tituloRestaurante}>{nome}</Text>
@@ -629,6 +630,7 @@ export default class Perfil extends Network {
         this.setModalState(false);
         console.log("clicando no " + key)
         if (key == "ALTERAR"){
+            this.tipoFoto = "fotoPerfil";
             this.requisitarPermissaoGaleria();
         } else if (key == "VER_FOTO"){
             this.setState({

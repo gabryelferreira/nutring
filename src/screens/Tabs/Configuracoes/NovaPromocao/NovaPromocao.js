@@ -288,7 +288,7 @@ export default class NovaPromocao extends Network {
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                     <View style={styles.imagem}>
                         {this.returnImagemPublicacao(this.state.foto)}
-                        <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 2, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+                        <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
                             <TouchableOpacity onPress={() => {
                                     this.requisitarPermissaoGaleria()
                                 }}

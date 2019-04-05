@@ -306,6 +306,8 @@ export default class Feed extends Network {
                 onRefresh={async () => await this.carregarDadosIniciais()}
                 onEndReached={async () => await this.pegarDados()}
                 onEndReachedThreshold={0.5}
+                // legacyImplementation={true}
+                // enableEmptySections={true}
                 />
         );
     }

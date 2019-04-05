@@ -296,7 +296,7 @@ class Post extends Network {
     }
 
     renderConteudo(conteudo){
-        if (this.state.altura){
+        if (this.state.altura || !this.state.carregandoImagem){
             return (
                 <View style={{flexDirection: 'row', flex: 1}}>
                     <ShimmerPlaceHolder
