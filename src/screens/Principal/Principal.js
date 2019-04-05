@@ -20,9 +20,7 @@ export default class Login extends Component {
         this.state = {
             carregando: true
         }
-        setTimeout(() => {
-            this.isUsuarioLogado();
-        }, 750);
+        this.isUsuarioLogado();
     }
 
     async isUsuarioLogado(){
@@ -51,11 +49,7 @@ export default class Login extends Component {
 
     render(){
         if (this.state.carregando){
-            return (
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657"/>
-                </View>
-            );
+            return null;
         }
         return (
             <View style={{flex: 1}}>

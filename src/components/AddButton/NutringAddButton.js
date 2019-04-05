@@ -43,9 +43,6 @@ class NutringAddButton extends Network {
 
     constructor(props){
         super(props);
-    }
-
-    componentDidMount(){
         this.isRestaurante();
     }
 

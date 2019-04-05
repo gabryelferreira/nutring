@@ -53,7 +53,7 @@ export default class Feed extends Network {
         refreshing: true,
         carregandoPrimeiraVez: true,
         usuarios: [],
-        dados: [],
+        dados: ['', '', '', '', ''],
         semMaisDados: false,
         semMaisUsuarios: false,
         avoidRender: true,
@@ -111,7 +111,6 @@ export default class Feed extends Network {
                     this.offset = 0;
                     await this.setState({
                         semMaisDados: true,
-                        dados: []
                     }, await this.carregarUsuarios)
                     
                 } else if (result.result.length == 0 && this.state.dados.length != 0){
@@ -154,6 +153,7 @@ export default class Feed extends Network {
 
     async pegarDados(){
         console.log("to aqui no pegarDados()")
+        if (this.state.carregandoPrimeiraVez) return null;
         if (!this.state.carregando && !this.state.refreshing){
             this.offset = this.offset + 10
             await this.carregarDados();
@@ -179,6 +179,7 @@ export default class Feed extends Network {
     }
 
     returnLoader(index, campo){
+        if (this.state.carregandoPrimeiraVez) return null;
         if (campo == 'dados'){
             if (index == this.state.dados.length-1 && !this.state.semMaisDados && !this.refreshing)
                 return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 0, marginBottom: 10 }}/>
@@ -254,7 +255,7 @@ export default class Feed extends Network {
                     keyExtractor={(item, index) => item.id_usuario.toString()}
                     numColumns={2}
                     renderItem={({item, index}) => this.renderUsuarioCard(item, index)}
-                    refreshing={this.state.refreshing}
+                    refreshing={this.state.refreshing && !this.state.carregandoPrimeiraVez}
                     onRefresh={async () => await this.carregarDadosIniciais()}
                     />
                 </View>
@@ -291,22 +292,20 @@ export default class Feed extends Network {
         return (
             <FlatList
                 data={this.state.dados}
-                keyExtractor={(item, index) => item.id_post.toString()}
+                keyExtractor={(item, index) => item.id_post ? item.id_post.toString() : index.toString()}
                 renderItem={({item, index}) => (
                     
                     <View>
                         
-                        <Post onClickFoto={() => this.abrirFotos(item)} data={item} index={index} navigation={this.props.navigation} onDelete={(id_post) => this.excluirPost(id_post)}/>
+                        <Post shimmer={this.state.carregandoPrimeiraVez} onClickFoto={() => this.abrirFotos(item)} data={item} index={index} navigation={this.props.navigation} onDelete={(id_post) => this.excluirPost(id_post)}/>
                         {this.returnLoader(index, 'dados')}
                     </View>
 
                 )}
-                refreshing={this.state.refreshing}
+                refreshing={this.state.refreshing && !this.state.carregandoPrimeiraVez}
                 onRefresh={async () => await this.carregarDadosIniciais()}
                 onEndReached={async () => await this.pegarDados()}
                 onEndReachedThreshold={0.5}
-                legacyImplementation={true}
-                enableEmptySections={true}
                 />
         );
     }
@@ -315,14 +314,14 @@ export default class Feed extends Network {
         if (this.state.semInternet){
             return <SemDados titulo={"Sem internet"} texto={"Parece que você está sem internet."}/>
         }
-        if (this.state.carregandoPrimeiraVez){
-            return (
-                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657"/>
-                </View>
-            );
-        }
-        if ((this.state.semMaisDados || this.state.avoidRender) && this.state.dados.length == 0){
+        // if (this.state.carregandoPrimeiraVez){
+        //     return (
+        //         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        //             <ActivityIndicator size="large" color="#28b657"/>
+        //         </View>
+        //     );
+        // }
+        if ((this.state.semMaisDados || this.state.avoidRender) && this.state.dados.length == 0 && !this.state.carregandoPrimeiraVez){
             return (
                 <View style={{flex: 1, flexDirection: 'column'}}>
                     

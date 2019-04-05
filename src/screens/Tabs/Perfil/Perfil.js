@@ -717,7 +717,7 @@ export default class Perfil extends Network {
     }
 
     renderTextoHorario(status_funcionamento){
-        if (!this.state.user.tem_horario) return <Text style={styles.horarioRestaurante}>Sem informação do horário</Text>
+        if (!this.state.user.tem_horario) return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
         if (status_funcionamento == 'ABERTO'){
             return <Text style={styles.horarioRestaurante}>Fecha às {this.state.user.horario_fechamento}</Text>
         } else if (status_funcionamento == 'FECHOU'){
@@ -725,7 +725,7 @@ export default class Perfil extends Network {
         } else if (status_funcionamento == 'NAO_ABRIU'){
             return <Text style={styles.horarioRestaurante}>Abre às {this.state.user.horario_abertura}</Text>
         } else {
-            return <Text style={styles.horarioRestaurante}>Sem informação do horário</Text>
+            return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
         }
     }
 
@@ -870,7 +870,7 @@ const styles = {
         width: 85,
         borderRadius: 85/2,
         elevation: 30,
-        backgroundColor: '#000',
+        backgroundColor: '#eee',
         overflow: 'hidden'
     },
     foto: {
@@ -1036,7 +1036,7 @@ const styles = {
         left: 0,
         top: 0,
         right: 0,
-        backgroundColor: '#000'
+        backgroundColor: '#fff'
     },
     capaUsuario: {
         position: 'absolute',
@@ -1044,7 +1044,7 @@ const styles = {
         left: 0,
         top: 0,
         right: 0,
-        backgroundColor: '#000'
+        backgroundColor: '#fff'
     },
     viewInfoRestaurante: {
         flexDirection: 'column',

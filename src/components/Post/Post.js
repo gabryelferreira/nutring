@@ -4,6 +4,8 @@ import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../network';
 import Modalzin from '../Modal/Modal';
+import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
+
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -21,15 +23,24 @@ class Post extends Network {
                 subTitulo: "",
                 botoes: []
             },
-            excluindo: false
+            excluindo: false,
+            hideShimmer: false,
+            altura: 0,
+            carregandoImagem: true
         }
-        // console.log("state = ", this.state.data)
+        this.calcularHeight(this.props.data.conteudo);
     }
 
-    // componentWillReceiveProps(props){
-    //     this.setState({data: props.data});
-    //     // console.log("props = ", props)
-    // }
+    calcularHeight(conteudo){
+        let img = "";
+        if (!Array.isArray(conteudo)) return null;
+        img = conteudo[0].url_conteudo;
+        Image.getSize(img, (width, height) => {
+            let alturaIdeal = imageWidth * height / width;
+            this.setState({altura: alturaIdeal})
+        });
+        
+    }
 
     async likeUnlikePost(id_post){
         let data = this.state.data;
@@ -160,7 +171,6 @@ class Post extends Network {
 
     getModalClick(key){
         this.setModalState(false);
-        console.log("clicando no " + key)
         if (key == "EXCLUIR"){
             this.excluirPost();
         }
@@ -188,33 +198,6 @@ class Post extends Network {
             );
         }
         return null;
-    }
-
-    renderCurtidores(curtidores){
-        if (!curtidores) return null;
-        return curtidores.map(curtidor => {
-            return (
-                <View key={curtidor.id_usuario} style={styles.pessoaCurtida}>
-                    <View style={{width: 20, height: 20, borderRadius: 20/2, backgroundColor: '#000'}}>
-                        <Image source={{uri: curtidor.foto}} style={{width: 20, height: 20, borderRadius: 20/2, borderWidth: 2, borderColor: '#fff'}}/>
-                    </View>
-                </View>
-            );
-        })
-    }
-
-    renderComentaristas(comentaristas){
-        if (!comentaristas) return null;
-        return comentaristas.map(comentarista => {
-            console.log("comentarista aqui = ", comentarista)
-            return (
-                <View key={comentarista.id_usuario} style={styles.pessoaComentario}>
-                    <View style={{width: 20, height: 20, borderRadius: 20/2, backgroundColor: '#000'}}>
-                        <Image source={{uri: comentarista.foto}} style={{width: 20, height: 20, borderRadius: 20/2, borderWidth: 2, borderColor: '#fff'}}/>
-                    </View>
-                </View>
-            );
-        })
     }
 
     renderBotaoMultiplasImagens(conteudo){
@@ -254,10 +237,96 @@ class Post extends Network {
         );
     }
 
+    renderShimmer(){
+        return (
+            <View style={{paddingVertical: 15}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <ShimmerPlaceHolder
+                        style={{height: 50, width: 50, borderRadius: 50/2, marginHorizontal: 15}}
+                        autoRun={true}
+                        visible={false}
+                    ></ShimmerPlaceHolder>
+                    <View style={{flexDirection: 'column', flex: 1}}>
+                        <View style={{flexDirection: 'row'}}>
+                            <ShimmerPlaceHolder
+                                style={{flex: .5, height: 18, marginBottom: 5}}
+                                autoRun={true}
+                                visible={false}
+                            ></ShimmerPlaceHolder>
+                        </View>
+                        <View style={{flexDirection: 'row'}}>
+                            <ShimmerPlaceHolder
+                                style={{height: 13, flex: .3}}
+                                autoRun={true}
+                                visible={false}
+                            ></ShimmerPlaceHolder>
+                        </View>
+                    </View>
+                </View>
+                <View style={{flexDirection: 'row', flex: 1, marginTop: 10}}>
+                    <ShimmerPlaceHolder
+                        style={{flex: 1, height: 220}}
+                        autoRun={true}
+                        visible={false}
+                    ></ShimmerPlaceHolder>
+                </View>
+                <View style={{flexDirection: 'row', flex: 1, marginHorizontal: 15, marginVertical: 10}}>
+                    <View style={{flexDirection: 'row', flex: .7}}>
+                        <ShimmerPlaceHolder
+                            style={{height: 19, width: 19, marginRight: 7}}
+                            autoRun={true}
+                            visible={false}
+                        ></ShimmerPlaceHolder>
+                        <ShimmerPlaceHolder
+                            style={{height: 19, flex: .85}}
+                            autoRun={true}
+                            visible={false}
+                        ></ShimmerPlaceHolder>
+                    </View>
+                    <View style={{flexDirection: 'row', flex: .3, alignItems: 'center', justifyContent: 'flex-end'}}>
+                        <ShimmerPlaceHolder
+                            style={{height: 19, width: 19}}
+                            autoRun={true}
+                            visible={false}
+                        ></ShimmerPlaceHolder>
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
+    renderConteudo(conteudo){
+        if (this.state.altura){
+            return (
+                <View style={{flexDirection: 'row', flex: 1}}>
+                    <ShimmerPlaceHolder
+                        style={{flex: 1, height: this.state.altura}}
+                        autoRun={true}
+                        visible={!this.state.carregandoImagem}
+                    >
+                        <Image onLoad={() => this.setState({ carregandoImagem: false })} resizeMethod="resize" source={{uri: this.formatarConteudo(conteudo)}} style={{width: imageWidth, height: this.state.altura}}/>
+                    </ShimmerPlaceHolder>
+                </View>
+            );
+        }
+        return (
+            <View style={{flexDirection: 'row', flex: 1}}>
+                <ShimmerPlaceHolder
+                    style={{flex: 1, height: 220}}
+                    autoRun={true}
+                    visible={false}>
+                </ShimmerPlaceHolder>
+            </View>
+        );
+    }
+
     render(){
         let larguraImagem = imageWidth;
         let { id_usuario, id_post, foto, is_restaurante, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios, meu_post, curtidores, comentaristas } = this.state.data;
         let { index } = this.props;
+        if (this.props.shimmer){
+            return this.renderShimmer();
+        }
         return (
             <View style={styles.container}>
             <Modalzin 
@@ -287,7 +356,8 @@ class Post extends Network {
                     <View style={styles.viewInfoEConteudo}>
                         
                         <TouchableOpacity activeOpacity={0.9} onPress={this.props.onClickFoto} style={styles.viewImagem}>
-                            <AutoHeightImage source={{uri: this.formatarConteudo(conteudo)}} width={larguraImagem}/>
+                        
+                            {this.renderConteudo(conteudo)}
                             {/* {this.renderBotaoMultiplasImagens(conteudo)} */}
                         </TouchableOpacity>
                         <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', marginTop: 10, marginHorizontal: 15}}>
@@ -473,7 +543,6 @@ const styles = {
         color: '#000'
     },
     viewImagem: {
-        marginTop: 5,
         flexDirection: 'row',
         maxHeight: 300,
         overflow: 'hidden',

@@ -154,7 +154,7 @@ const styles = {
         borderRadius: 55/2,
         overflow: 'hidden',
         marginBottom: 5,
-        backgroundColor: '#000'
+        backgroundColor: '#eee'
     },
     nome: {
         color: '#000',
