@@ -44,6 +44,7 @@ import MeuPlano from './src/screens/Tabs/Configuracoes/MeuPlano/MeuPlano';
 import Plano from './src/screens/Tabs/Configuracoes/MeuPlano/Plano/Plano';
 import NovaReceita from './src/screens/Tabs/NovaReceita/NovaReceita';
 import EditarReceita from './src/screens/Tabs/EditarReceita/EditarReceita';
+import EditarPasso from './src/screens/Tabs/EditarReceita/EditarPasso/EditarPasso';
 
 const NavigationOptions = {
     headerStyle: {
@@ -321,6 +322,10 @@ const AppNavigator = createStackNavigator({
     EditarReceita: {
         screen: EditarReceita,
         navigationOptions: NavigationOptions
+    },
+    EditarPasso: {
+        screen: EditarPasso,
+        navigationOptions: NavigationOptions
     }
 }, {
     initialRouteName: 'Principal',
@@ -332,16 +337,19 @@ const AppNavigator = createStackNavigator({
             //   return StackViewStyleInterpolator.forFade(props);
             // }
       
-            // const last = props.scenes[props.scenes.length - 1];
-      
+            
             // // Transitioning from search screen (goBack)
-            // if (last.route.routeName === 'Search') {
-            //   return StackViewStyleInterpolator.forFade(props);
-            // }
             // if (Platform.OS === 'ios') {
-            if (props.scene.route.routeName == 'BuscarEspecifico'){
-                return;
-            }
+                if (props.scene.route.routeName == 'BuscarEspecifico'){
+                    return;
+                }
+                if (props.scene.route.routeName == 'EditarPasso'){
+                    return StackViewStyleInterpolator.forFade(props);
+                }
+                const last = props.scenes[props.scenes.length - 1];
+                if (last.route.routeName === 'EditarPasso') {
+                    return StackViewStyleInterpolator.forFade(props);
+                }
             return StackViewStyleInterpolator.forHorizontal(props);
             // }
       

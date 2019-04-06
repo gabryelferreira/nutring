@@ -1,28 +1,28 @@
 import React, { Component } from 'react';
 import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
-import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
-import Loader from '../../../components/Loader/Loader';
-import Modalzin from '../../../components/Modal/Modal';
-import Network from '../../../network';
+import ImagemNutring from '../../../../components/ImagemNutring/ImagemNutring';
+import Loader from '../../../../components/Loader/Loader';
+import Modalzin from '../../../../components/Modal/Modal';
+import Network from '../../../../network';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import FotoPerfil from '../../../components/FotoPerfil/FotoPerfil';
-import SemDadosPerfil from '../../../components/SemDadosPerfil/SemDadosPerfil';
-import Galeria from '../../../components/Galeria/Galeria';
+import FotoPerfil from '../../../../components/FotoPerfil/FotoPerfil';
+import SemDadosPerfil from '../../../../components/SemDadosPerfil/SemDadosPerfil';
+import Galeria from '../../../../components/Galeria/Galeria';
 import RNFetchBlob from 'react-native-fetch-blob';
-import Input from '../../../components/Input/Input';
-import BotaoPequeno from '../../../components/Botoes/BotaoPequeno';
+import Input from '../../../../components/Input/Input';
+import BotaoPequeno from '../../../../components/Botoes/BotaoPequeno';
 import DraggableFlatList from 'react-native-draggable-flatlist'
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
-export default class NovaReceita extends Network {
+export default class EditarPasso extends Network {
 
-    static navigationOptions = {
-        title: 'Postar Receita',
-    };
+    static navigationOptions = ({navigation}) => ({
+        title: navigation.getParam("dados", null) ? (navigation.getParam("tipo", null) == 'EDITAR_DADOS' ? 'Editar Receita' : 'Editar Passo') : 'Novo Passo',
+    });
 
     segundoInput;
 
@@ -41,13 +41,32 @@ export default class NovaReceita extends Network {
             titulo: "",
             descricao: "",
             foto: "",
+            key: "",
             permissaoGaleria: false,
             fotosGaleria: [],
             galeriaAberta: false,
+            dados: {
+                foto: "",
+                titulo: "",
+                descricao: "",
+                key: ""
+            }
         }
     }
 
     componentDidMount(){
+        let dados = this.props.navigation.getParam("dados", {
+            foto: "",
+            titulo: "",
+            descricao: "",
+            key: ""
+        });
+        this.setState({
+            foto: dados.foto,
+            titulo: dados.titulo,
+            descricao: dados.descricao,
+            key: dados.key
+        })
     }
 
     getModalClick(key){
@@ -76,11 +95,12 @@ export default class NovaReceita extends Network {
         })
     }
 
-    confirmarEnvio(){
+    confirmar(){
         let dados = {
             foto: this.state.foto,
             titulo: this.state.titulo,
-            descricao: this.state.descricao
+            descricao: this.state.descricao,
+            key: this.state.key
         }
         if (!dados.foto){
             this.showModal("Foto obrigatória", "Clique em alterar foto para selecionar uma foto da sua galeria.");
@@ -89,8 +109,17 @@ export default class NovaReceita extends Network {
         } else if (!dados.descricao.trim()){
             this.showModal("Descrição obrigatória", "Escreva no campo descrição para poder avançar.");
         } else {
-            this.props.navigation.navigate("EditarReceita", { dados });
+            this.props.navigation.state.params.onGoBack(dados, this.props.navigation.getParam("tipo", null));
+            this.props.navigation.goBack();
         }
+    }
+
+    criarBotoesExclusao(){
+        let botoes = [
+            {chave: "ENVIAR", texto: "Confirmar", color: '#28b657', fontWeight: 'bold'},
+            {chave: "CANCELAR", texto: "Cancelar"},
+        ]
+        return botoes;
     }
 
     async requisitarPermissaoGaleria() {
@@ -209,7 +238,7 @@ export default class NovaReceita extends Network {
                     </View>
                     <View style={styles.container}>
                         <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <BotaoPequeno disabled={this.state.disabled} texto={"Avançar"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
+                            <BotaoPequeno disabled={this.state.disabled} texto={"Confirmar"} onPress={() => this.confirmar()} loading={this.state.loading}/>
                         </View>
                     </View>
                 </ScrollView>

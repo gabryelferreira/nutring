@@ -21,19 +21,36 @@ const imageWidth = dimensions.width;
 
 export default class EditarReceita extends Network {
 
-    static navigationOptions = {
+    static navigationOptions = ({ navigation }) => ({
         title: 'Sua Receita',
-    };
+        headerRight: !navigation.getParam("loading", null) ? (
+            <TouchableOpacity onPress={navigation.getParam("onPress")} style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 20}}>
+                <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold'}}>Confirmar</Text>
+            </TouchableOpacity>
+        ) : (
+            <View style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .3, marginRight: 20}}>
+                <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Publicando</Text>
+                <ActivityIndicator animating color="#28b657" size={12}/>
+            </View>
+        )
+    });
 
     segundoInput;
 
     state = {
-        data: [...Array(20)].map((d, index) => ({
-          key: `item-${index}`,
-          label: index,
-          backgroundColor: `rgb(${Math.floor(Math.random() * 255)}, ${index * 5}, ${132})`,
-        })),
-        dados: []
+        // data: [...Array(20)].map((d, index) => ({
+        //   key: `item-${index}`,
+        //   titulo: "",
+        //   descricao: ""
+        // })),
+        data: [],
+        dados: {},
+        modal: {
+            visible: false,
+            titulo: "",
+            subTitulo: "",
+            botoes: []
+        }
     }
 
     // state = {
@@ -54,6 +71,9 @@ export default class EditarReceita extends Network {
         } else {
             console.log("pegar dados receita");
         }
+        this.props.navigation.setParams({
+            onPress: this.confirmar.bind(this)
+        })
     }
 
     getModalClick(key){
@@ -62,9 +82,20 @@ export default class EditarReceita extends Network {
                 visible: false
             }
         })
+        if (key == "CONFIRMAR"){
+            this.props.navigation.setParams({
+                loading: true
+            }, this.confirmarReceita)
+        }
         if (this.state.promocaoFinalizada){
             this.props.navigation.goBack();
         }
+    }
+
+    async confirmarReceita(){
+        let dados = JSON.stringify(this.state.dados);
+        let passos = JSON.stringify(this.state.data);
+        let result = await this.callMethod("confirmarReceita", { dados, passos });
     }
 
     async salvarReceita(){
@@ -82,13 +113,18 @@ export default class EditarReceita extends Network {
         })
     }
 
-    confirmarEnvio(){
-        console.log("Ir para tela de criar step");
+    confirmar(){
+        console.log("oi bb")
+        if (this.state.data.length == 0){
+            this.showModal("Nenhum passo", "Sua receita não contem passos. Para concluir sua receita, adicione pelo menos um passo.");
+        } else {
+            this.showModal("Confirmação", "Deseja confirmar sua receita?", this.criarBotoesConfirmar());
+        }
     }
 
-    criarBotoesExclusao(){
+    criarBotoesConfirmar(){
         let botoes = [
-            {chave: "ENVIAR", texto: "Confirmar", color: '#28b657', fontWeight: 'bold'},
+            {chave: "CONFIRMAR", texto: "Confirmar", color: '#28b657', fontWeight: 'bold'},
             {chave: "CANCELAR", texto: "Cancelar"},
         ]
         return botoes;
@@ -141,10 +177,9 @@ export default class EditarReceita extends Network {
     renderItem = ({ item, index, move, moveEnd, isActive }) => {
 
         return (
-            <View>
-                <View style={styles.bordaMenor}></View>
-                <TouchableOpacity 
-                    delayLongPress={1}
+            <View style={styles.border}>
+                <TouchableOpacity
+                    onPress={() => this.abrirEditar(item, "EDITAR_PASSO")}
                     onLongPress={move}
                     onPressOut={moveEnd}
                     style={[styles.dado, styles.flexRow, styles.justifySpaceBetween, styles.alignCenter, [isActive ? styles.border : '']]}
@@ -154,16 +189,21 @@ export default class EditarReceita extends Network {
                             <Image resizeMethod="resize" style={styles.fotoPasso} source={{uri: item.foto}}/>
                         </View>
                         <View style={styles.textos}>
-                            <Text style={styles.titulo} numberOfLines={1}>{item.label}</Text>
-                            <Text style={styles.descricao} numberOfLines={2}>{item.label}</Text>
+                            <Text style={styles.tituloPasso} numberOfLines={1}>{item.titulo}</Text>
+                            <Text style={styles.descricao} numberOfLines={2}>{item.descricao}</Text>
                         </View>
                     </View>
                     <View style={{flex: .2, flexDirection: 'row',  justifyContent: 'flex-end', alignItems: 'center'}}>
                         <Text style={{color: '#000', fontWeight: 'bold', fontSize: 12, marginRight: 8}}>{index}</Text>
-                        <Icon name="bars" solid size={18} color="#000"/>
+                        <TouchableOpacity 
+                            
+                            onPressIn={move}
+                            onPressOut={moveEnd}
+                        >
+                            <Icon name="bars" solid size={18} color="#000"/>
+                        </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
-                <View style={styles.bordaMenor}></View>
             </View>
         );
 
@@ -187,32 +227,82 @@ export default class EditarReceita extends Network {
         // )
     }
 
+    abrirAdicionarPasso(){
+        this.props.navigation.navigate("EditarPasso", {
+            onGoBack: (dados) => this.adicionarPasso(dados)
+        });
+    }
+    
+    adicionarPasso(dados){
+        let data = this.state.data.map((d, index) => {
+            return {
+                key: `item-${index}`,
+                foto: d.foto,
+                titulo: d.titulo,
+                descricao: d.descricao
+            }
+        });
+        dados.key = data.length;
+        data.push(dados)
+        this.setState({
+            data
+        })
+    }
+
+    abrirEditar(dados, tipo = ""){
+        this.props.navigation.navigate("EditarPasso", {
+            dados,
+            tipo,
+            onGoBack: (dados, tipo) => this.tratarDadosEdicao(dados, tipo)
+        })
+    }
+
+    tratarDadosEdicao(dados, tipo){
+        if (tipo == "EDITAR_DADOS"){
+            this.setState({
+                dados
+            })
+        } else if (tipo == "EDITAR_PASSO"){
+            let data = this.state.data.map(d => {
+                if (d.key == dados.key){
+                    d = dados
+                }
+                return d;
+            })
+            this.setState({
+                data
+            })
+        }
+    }
+
     returnDadosReceita(){
         return (
             <View>
-                <TouchableOpacity style={[styles.dado, styles.flexRow, styles.justifySpaceBetween, styles.alignCenter, styles.borderBottom]}>
-                    <View style={[styles.flexRow, styles.alignCenter, styles.dadosPrincipais]}>
-                        <View style={[styles.fotoReceita, styles.backgroundGray]}>
-                            <Image resizeMethod="resize" style={styles.fotoReceita} source={{uri: this.state.dados.foto}}/>
+                <View style={styles.borderBottom}>
+                    <TouchableOpacity onPress={() => this.abrirEditar(this.state.dados, 'EDITAR_DADOS')} style={[styles.dado, styles.flexRow, styles.justifySpaceBetween, styles.alignCenter]}>
+                        <View style={[styles.flexRow, styles.alignCenter, styles.dadosPrincipais]}>
+                            <View style={[styles.fotoReceita, styles.backgroundGray]}>
+                                <Image resizeMethod="resize" style={styles.fotoReceita} source={{uri: this.state.dados.foto}}/>
+                            </View>
+                            <View style={styles.textos}>
+                                <Text style={styles.titulo} numberOfLines={1}>{this.state.dados.titulo}</Text>
+                                <Text style={styles.descricao} numberOfLines={3}>{this.state.dados.descricao}</Text>
+                            </View>
                         </View>
-                        <View style={styles.textos}>
-                            <Text style={styles.titulo} numberOfLines={1}>{this.state.dados.titulo}</Text>
-                            <Text style={styles.descricao} numberOfLines={3}>{this.state.dados.descricao}</Text>
+                        <View style={{flex: .2, flexDirection: 'row',  justifyContent: 'flex-end'}}>
+                            <Icon name="chevron-right" solid size={16} color="#aaa"/>
                         </View>
-                    </View>
-                    <View style={{flex: .2, flexDirection: 'row',  justifyContent: 'flex-end'}}>
-                        <Icon name="chevron-right" solid size={16} color="#aaa"/>
-                    </View>
-                </TouchableOpacity>
-                <View style={styles.borda}></View>
+                    </TouchableOpacity>
+                </View>
             
-            <View style={[styles.dado, styles.borderBottom, styles.justifySpaceBetween, styles.alignCenter, styles.flexRow]}>
-                <Text style={styles.labelPassos}>Passos</Text>
-                <TouchableOpacity>
-                    <Text style={styles.adicionar}>Adicionar</Text>
-                </TouchableOpacity>
+            <View style={styles.borderBottom}>
+                <View style={[styles.dado, styles.justifySpaceBetween, styles.alignCenter, styles.flexRow]}>
+                    <Text style={styles.labelPassos}>Passos</Text>
+                    <TouchableOpacity onPress={() => this.abrirAdicionarPasso()}>
+                        <Text style={styles.adicionar}>Adicionar</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={styles.bordaMenor}></View>
 
             </View>
         );
@@ -222,6 +312,13 @@ export default class EditarReceita extends Network {
 
         return (
             <View style={{ flex: 1 }}>
+                <Modalzin 
+                    titulo={this.state.modal.titulo} 
+                    subTitulo={this.state.modal.subTitulo} 
+                    visible={this.state.modal.visible} 
+                    onClick={(key) => this.getModalClick(key)}
+                    onClose={() => this.getModalClick()}
+                    botoes={this.state.modal.botoes}/>
               <DraggableFlatList
                 data={this.state.data}
                 renderItem={this.renderItem}
@@ -257,9 +354,13 @@ const styles = {
     },
     border: {
         borderBottomColor: '#222',
-        borderBottomWidth: .6,
+        borderBottomWidth: .4,
         borderTopColor: '#222',
         borderTopWidth: .4
+    },
+    borderBottom: {
+        borderBottomColor: '#222',
+        borderBottomWidth: .6,
     },
     dadosPrincipais: {
         flex: .7
@@ -285,6 +386,12 @@ const styles = {
         color: '#000',
         fontWeight: 'bold',
         fontSize: 18,
+        marginBottom: 3
+    },
+    tituloPasso: {
+        color: '#000',
+        fontWeight: 'bold',
+        fontSize: 16,
         marginBottom: 3
     },
     descricao: {
