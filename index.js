@@ -43,6 +43,7 @@ import Promocao from './src/screens/Tabs/Notificacoes/Promocoes/Promocao/Promoca
 import MeuPlano from './src/screens/Tabs/Configuracoes/MeuPlano/MeuPlano';
 import Plano from './src/screens/Tabs/Configuracoes/MeuPlano/Plano/Plano';
 import NovaReceita from './src/screens/Tabs/NovaReceita/NovaReceita';
+import EditarReceita from './src/screens/Tabs/EditarReceita/EditarReceita';
 
 const NavigationOptions = {
     headerStyle: {
@@ -315,6 +316,10 @@ const AppNavigator = createStackNavigator({
     },
     NovaReceita: {
         screen: NovaReceita,
+        navigationOptions: NavigationOptions
+    },
+    EditarReceita: {
+        screen: EditarReceita,
         navigationOptions: NavigationOptions
     }
 }, {

@@ -13,6 +13,7 @@ import Galeria from '../../../components/Galeria/Galeria';
 import RNFetchBlob from 'react-native-fetch-blob';
 import Input from '../../../components/Input/Input';
 import BotaoPequeno from '../../../components/Botoes/BotaoPequeno';
+import DraggableFlatList from 'react-native-draggable-flatlist'
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -39,18 +40,10 @@ export default class NovaReceita extends Network {
             carregandoInicial: true,
             titulo: "",
             descricao: "",
-            tituloNotificacao: "",
-            descricaoNotificacao: "",
-            permissaoNotificacao: false,
-            promocaoRelampago: false,
-            seguidores: 0,
-            disabled: true,
             foto: "",
             permissaoGaleria: false,
             fotosGaleria: [],
             galeriaAberta: false,
-            descricao: "",
-            enviarNotificacao: false,
         }
     }
 
@@ -84,7 +77,12 @@ export default class NovaReceita extends Network {
     }
 
     confirmarEnvio(){
-        console.log("Ir para tela de criar step");
+        let dados = {
+            foto: this.state.foto,
+            titulo: this.state.titulo,
+            descricao: this.state.descricao
+        }
+        this.props.navigation.navigate("EditarReceita", { dados });
     }
 
     criarBotoesExclusao(){
@@ -147,8 +145,7 @@ export default class NovaReceita extends Network {
         }
     }
 
-    render(){
-        
+    render(){        
         if (this.state.galeriaAberta){
             return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.setState({foto, galeriaAberta: false})} onClose={() => this.setState({galeriaAberta: false})}/>
         }
@@ -192,6 +189,7 @@ export default class NovaReceita extends Network {
                                 value={this.state.titulo}
                                 onSubmitEditing={() => this.segundoInput.focus()}
                                 autoCapitalize={"sentences"}
+                                blurOnSubmit={false}
                                 small={true}
                                 maxLength={255}
                                 returnKeyType={"next"}

@@ -46,7 +46,6 @@ export default class NovaPromocao extends Network {
             permissaoGaleria: false,
             fotosGaleria: [],
             galeriaAberta: false,
-            descricao: "",
             enviarNotificacao: false,
         }
     }
@@ -316,6 +315,7 @@ export default class NovaPromocao extends Network {
                                 value={this.state.titulo}
                                 onSubmitEditing={() => this.segundoInput.focus()}
                                 autoCapitalize={"sentences"}
+                                blurOnSubmit={false}
                                 small={true}
                                 maxLength={255}
                                 returnKeyType={"next"}
