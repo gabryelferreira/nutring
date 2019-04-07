@@ -47,6 +47,7 @@ export default class Feed extends Network {
 
     offset = 0;
     refreshing = false;
+    feedAleatorio = false;
 
     state = {
         carregando: false,
@@ -63,7 +64,7 @@ export default class Feed extends Network {
         },
         modalFotoVisible: false,
         semInternet: false,
-        itemSelecionado: {}
+        itemSelecionado: {},
     }
 
 
@@ -77,7 +78,6 @@ export default class Feed extends Network {
     }
 
     carregarDadosIniciais() {
-        console.log("to aqui nos dados iniciais!!")
         this.offset = 0;
         this.refreshing = true;
         this.setState({
@@ -99,7 +99,9 @@ export default class Feed extends Network {
             let result = await this.callMethod("getFeed", { offset: this.offset, limit: 10 })
             this.refreshing = false;
             if (result.success){
-                if (this.state.refreshing){
+                if (result.result.length > 0) this.feedAleatorio = false;
+                else this.feedAleatorio = true;
+                if (this.state.refreshing && !this.state.carregandoPrimeiraVez && !this.feedAleatorio){
                     await this.setState({
                         dados: []
                     })
@@ -109,9 +111,8 @@ export default class Feed extends Network {
                 })
                 if (result.result.length == 0 && this.offset == 0){
                     this.offset = 0;
-                    await this.setState({
-                        semMaisDados: true,
-                    }, await this.carregarUsuarios)
+                    this.feedAleatorio = true;
+                    await this.carregarFeedAleatorio();
                     
                 } else if (result.result.length == 0 && this.state.dados.length != 0){
                     await this.setState({
@@ -151,10 +152,65 @@ export default class Feed extends Network {
         
     }
 
+    async carregarFeedAleatorio(){
+        let result = await this.callMethod("getFeedAleatorio", { offset: this.offset, limit: 10 });
+        if (result.success){
+            if (this.state.refreshing){
+                await this.setState({
+                    dados: []
+                })
+            }
+            this.setState({
+                semInternet: false
+            })
+            if (result.result.length == 0 && this.offset == 0){
+                this.offset = 0;
+                this.setState({
+                    semMaisDados: false
+                })
+                
+            } else if (result.result.length == 0 && this.state.dados.length != 0){
+                await this.setState({
+                    semMaisDados: true,
+                    refreshing: false,
+                    avoidRender: false
+                })
+                    
+            } else {
+                let dados = [];
+                if (!this.state.refreshing){
+                    dados = this.state.dados;
+                }
+                for (var i = 0; i < result.result.length; i++){
+                    // result.result[i].conteudo = result.result[i].conteudo[0].url_conteudo;
+                    dados.push(result.result[i]);
+                }
+                if (result.result.length < 10){
+                    await this.setState({
+                        semMaisDados: true,
+                        refreshing: false,
+                    })
+                }
+                await this.setState({
+                    dados: dados,
+                    refreshing: false,
+                    carregandoPrimeiraVez: false,
+                    avoidRender: false
+                });
+            }
+        } else {
+            this.setState({
+                semInternet: true
+            })
+        }
+    }
+
     async pegarDados(){
-        console.log("to aqui no pegarDados()")
         if (this.state.carregandoPrimeiraVez) return null;
-        if (!this.state.carregando && !this.state.refreshing){
+        if (this.feedAleatorio){
+            this.offset = this.offset + 10;
+            await this.carregarFeedAleatorio();
+        } else if (!this.state.carregando && !this.state.refreshing){
             this.offset = this.offset + 10
             await this.carregarDados();
         }
@@ -242,12 +298,6 @@ export default class Feed extends Network {
     returnUsuarios(){
         if (this.state.usuarios.length > 0){
             return (
-                // <ScrollView contentContainerStyle={{flexGrow: 1}}>
-                
-                //     <View style={{flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 20}}>
-                //         {this.renderUsuarios()}
-                //     </View>
-                // </ScrollView>
                 <View style={{flex: 1}}>
                     
                     <FlatList
@@ -281,8 +331,6 @@ export default class Feed extends Network {
                 avoidBugFlatList: false
             })
         })
-        
-        console.log("dados = ", dados)
     }
 
     renderFeed(){
@@ -323,14 +371,14 @@ export default class Feed extends Network {
         //         </View>
         //     );
         // }
-        if ((this.state.semMaisDados || this.state.avoidRender) && this.state.dados.length == 0 && !this.state.carregandoPrimeiraVez){
-            return (
-                <View style={{flex: 1, flexDirection: 'column'}}>
+        // if ((this.state.semMaisDados || this.state.avoidRender) && this.state.dados.length == 0 && !this.state.carregandoPrimeiraVez){
+        //     return (
+        //         <View style={{flex: 1, flexDirection: 'column'}}>
                     
-                    {this.returnUsuarios()}
-                </View>
-            );
-        }
+        //             {this.returnUsuarios()}
+        //         </View>
+        //     );
+        // }
         return (
             
             <View>
@@ -348,7 +396,6 @@ export default class Feed extends Network {
     }
 
     abrirFotos(item){
-        console.log("item = ", item)
         let newItem = {};
         newItem["nome"] = item.nome;
         newItem["foto"] = item.foto;

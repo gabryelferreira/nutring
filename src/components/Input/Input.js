@@ -48,6 +48,7 @@ const Input = (props) => {
                     autoComplete={false}
                     editable={!props.disabled}
                     selectTextOnFocus={!props.disabled}
+                    placeholder={props.placeholder}
                     />
                     {renderHashtag()}
             </View>

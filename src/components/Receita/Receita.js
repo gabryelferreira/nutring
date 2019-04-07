@@ -15,14 +15,24 @@ import ModalPostagemViewer from '../ModalPostagemViewer/ModalPostagemViewer';
 
 const Receita = (props) => {
     return (
-        <View style={styles.container}>
-            <TouchableOpacity style={{flex: 1}} onPress={props.onPress}>
-                <Image resizeMethod="resize" style={styles.fotoReceita} source={{uri: props.receita.foto}}/>
-            </TouchableOpacity>
-            <TouchableOpacity>
-                <Text style={styles.tituloReceita}>{props.receita.nome}</Text>
-            </TouchableOpacity>
-            {/* <Text style={styles.avaliacaoReceita}></Text> */}
+        <View style={styles.flex}>
+            <View style={styles.borderBottom}>
+                <TouchableOpacity 
+                    style={[styles.dado, styles.flexRow, styles.justifySpaceBetween, styles.alignCenter]}>
+                    <View style={[styles.flexRow, styles.alignCenter, styles.dadosPrincipais]}>
+                        <View style={[styles.fotoReceita, styles.backgroundGray]}>
+                            <Image resizeMethod="resize" style={styles.fotoReceita} source={{uri: props.receita.foto}}/>
+                        </View>
+                        <View style={styles.textos}>
+                            <Text style={styles.titulo} numberOfLines={1}>{props.receita.titulo}</Text>
+                            <Text style={styles.descricao} numberOfLines={3}>{props.receita.descricao}</Text>
+                        </View>
+                    </View>
+                    <View style={{flex: .2, flexDirection: 'row',  justifyContent: 'flex-end'}}>
+                        <Icon name="chevron-right" solid size={16} color="#aaa"/>
+                    </View>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -32,11 +42,6 @@ export default Receita;
 
 
 const styles = {
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        alignItems: 'center',
-    },
     fotoReceita: {
         width: 80,
         height: 80,
@@ -47,5 +52,52 @@ const styles = {
         fontWeight: 'bold',
         color: '#000',
         fontSize: 14
-    }
+    },
+    flex: {
+        flex: 1
+    },
+    dado: {
+        paddingHorizontal: 20,
+        paddingVertical: 15,
+        flex: 1,
+        backgroundColor: '#fff',
+    },
+    borderBottom: {
+        borderBottomColor: '#ddd',
+        borderBottomWidth: .6,
+    },
+    dadosPrincipais: {
+        flex: 1
+    },
+    flexRow: {
+        flexDirection: 'row'
+    },
+    alignCenter: {
+        alignItems: 'center'
+    },
+    justifySpaceBetween: {
+        justifyContent: 'space-between'
+    },
+    fotoReceita: {
+        height: 60,
+        width: 60,
+        borderRadius: 60/2
+    },
+    textos: {
+        marginLeft: 15,
+        flex: 1
+    },
+    titulo: {
+        color: '#000',
+        fontWeight: 'bold',
+        fontSize: 18,
+        marginBottom: 3
+    },
+    descricao: {
+        color: '#000',
+        fontSize: 14,
+    },
+    backgroundGray: {
+        backgroundColor: '#eee'
+    },
 }

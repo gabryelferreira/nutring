@@ -22,6 +22,15 @@ export default class EditarPasso extends Network {
 
     static navigationOptions = ({navigation}) => ({
         title: navigation.getParam("dados", null) ? (navigation.getParam("tipo", null) == 'EDITAR_DADOS' ? 'Editar Receita' : 'Editar Passo') : 'Novo Passo',
+        headerRight: (
+            navigation.getParam("tipo", null) == 'EDITAR_PASSO' ? (
+                <TouchableOpacity onPress={navigation.getParam("onPress")} style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 20}}>
+                    <Icon name="trash-alt" solid color="000" size={18}/>
+                </TouchableOpacity>
+            ) : (
+                <View></View>
+            )
+        )
     });
 
     segundoInput;
@@ -213,6 +222,7 @@ export default class EditarPasso extends Network {
                     </View>
                     <View style={styles.container}>
                         <Input label={"Título"}
+                                placeholder={this.props.navigation.getParam("dados", null) ? (this.props.navigation.getParam("tipo", null) == 'EDITAR_DADOS' ? 'Escolha um título para sua receita' : 'Escolha um título para o passo') : 'Escolha um título para o passo'}
                                 icone={"comment"}
                                 onChangeText={(titulo) => this.setState({titulo})}
                                 value={this.state.titulo}
@@ -224,6 +234,7 @@ export default class EditarPasso extends Network {
                                 returnKeyType={"next"}
                             />
                         <Input label={"Descrição"}
+                                placeholder={this.props.navigation.getParam("dados", null) ? (this.props.navigation.getParam("tipo", null) == 'EDITAR_DADOS' ? 'Uma breve descrição sobre a receita' : 'Escreva uma breve descrição desse passo') : 'Escreva uma breve descrição desse passo'}
                                 icone={"comment"}
                                 inputRef={(input) => this.segundoInput = input}
                             onChangeText={(descricao) => this.setState({descricao})}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator, BackHandler } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { StackActions, NavigationActions } from 'react-navigation';
 
@@ -7,7 +7,7 @@ const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
 
-export default class Login extends Component {
+export default class Principal extends Component {
 
     static navigationOptions = {
         header: (
@@ -21,6 +21,20 @@ export default class Login extends Component {
             carregando: true
         }
         this.isUsuarioLogado();
+    }
+
+    componentDidMount() {
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+    
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    handleBackPress = () => {
+        // this.goBack();
+        BackHandler.exitApp()
+        return true;
     }
 
     async isUsuarioLogado(){

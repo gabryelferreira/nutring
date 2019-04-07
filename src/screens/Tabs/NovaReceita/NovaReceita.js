@@ -184,6 +184,7 @@ export default class NovaReceita extends Network {
                     </View>
                     <View style={styles.container}>
                         <Input label={"Título"}
+                                placeholder={"Escolha um título para sua receita"}
                                 icone={"comment"}
                                 onChangeText={(titulo) => this.setState({titulo})}
                                 value={this.state.titulo}
@@ -195,6 +196,7 @@ export default class NovaReceita extends Network {
                                 returnKeyType={"next"}
                             />
                         <Input label={"Descrição"}
+                                placeholder={"Uma breve descrição sobre a receita"}
                                 icone={"comment"}
                                 inputRef={(input) => this.segundoInput = input}
                             onChangeText={(descricao) => this.setState({descricao})}

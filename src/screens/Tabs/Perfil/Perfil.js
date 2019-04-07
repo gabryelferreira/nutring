@@ -339,19 +339,63 @@ export default class Perfil extends Network {
         return null;
     }
 
-    renderReceitas(){
-        return this.imagens.map(imagem => {
+    renderReceitas(receitas){
+        return receitas.map(receita => {
             return (
                 <View style={styles.receita}>
                         {/* <Icon name="plus" size={15} color="#000"/> */}
-                    <Image resizeMethod="resize" source={{uri: imagem}} style={styles.fotoReceita}/>
+                    <Image resizeMethod="resize" source={{uri: receita.foto}} style={styles.fotoReceita}/>
                 </View>
             );
         })
     }
+    
+    renderCriarReceita(){
+        if (this.state.user.sou_eu){
+            return (
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("NovaReceita")} style={styles.botaoCriarReceita}>
+                    <Text style={styles.textoCriarReceita}>Criar Receita</Text>
+                </TouchableOpacity>
+            );
+        }
+        return null;
+    }
+
+    renderViewReceitas(receitas){
+        if (receitas.length > 0){
+            return (
+                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { receitas, sou_eu: this.state.user.sou_eu })}>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                        <View style={styles.viewInfoReceitas}>
+                            <Text style={styles.tituloReceitas}>Receitas</Text>
+                            <Text style={styles.subTituloReceitas}>{receitas.length} {receitas.length == 1 ? 'prato' : 'pratos'}</Text>
+                        </View>
+                        <View style={styles.receitas}>
+                            
+                            {this.renderReceitas(receitas)}
+                        </View>
+                    </View>
+                    <Icon name="chevron-right" solid size={15} color="#000"/>
+                </TouchableOpacity>
+            );
+        } else if (this.state.user.sou_eu){
+            return (
+                <View style={styles.viewReceitas}>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                        <View style={styles.viewInfoReceitas}>
+                            <Text style={styles.tituloReceitas}>Receitas</Text>
+                            <Text style={styles.subTituloReceitas}>Você não possui receitas</Text>
+                        </View>
+                    </View>
+                    {this.renderCriarReceita()}
+                </View>
+            );
+        }
+        return null;
+    }
 
     renderInfoPerfil(){
-        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa, receitas } = this.state.user;
         return (
             <View style={styles.viewPerfil}>
                 <View style={styles.capaUsuario}>
@@ -395,19 +439,7 @@ export default class Perfil extends Network {
                     </View>
                 </View>
 
-                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { id_usuario })}>
-                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
-                        <View style={styles.viewInfoReceitas}>
-                            <Text style={styles.tituloReceitas}>Receitas</Text>
-                            <Text style={styles.subTituloReceitas}>17 pratos</Text>
-                        </View>
-                        <View style={styles.receitas}>
-                            
-                            {this.renderReceitas()}
-                        </View>
-                    </View>
-                    <Icon name="chevron-right" solid size={15} color="#000"/>
-                </TouchableOpacity>
+                {this.renderViewReceitas(receitas)}
 
                 <View style={styles.fotos}>
                     <View style={styles.tabsFotos}>
@@ -995,6 +1027,20 @@ const styles = {
         fontSize: 12,
         color: '#000',
         marginTop: 5
+    },
+    botaoCriarReceita: {
+        backgroundColor: '#28b657',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 3,
+        paddingHorizontal: 7,
+        borderRadius: 4
+    },
+    textoCriarReceita: {
+        fontSize: 12,
+        color: '#fff',
+        fontWeight: 'bold'
     },
     fotos: {
         flexDirection: 'column',

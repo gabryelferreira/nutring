@@ -1,5 +1,5 @@
 /** @format */
-import React, { Component } from 'react';
+import React from 'react';
 import { AppRegistry, View, Text, Animated, Easing, Platform } from 'react-native';
 import Login from './src/screens/Login/Login';
 import Principal from './src/screens/Principal/Principal';
@@ -22,7 +22,6 @@ import Configuracoes from './src/screens/Tabs/Configuracoes/Configuracoes';
 import Buscar from './src/screens/Tabs/Buscar/Buscar';
 import Receitas from './src/screens/Tabs/Receitas/Receitas';
 
-import AddButton from './src/components/AddButton/AddButton';
 import NutringAddButton from './src/components/AddButton/NutringAddButton';
 import Notificacoes from './src/screens/Tabs/Notificacoes/Notificacoes';
 import NovaPostagem from './src/screens/Tabs/NovaPostagem/NovaPostagem';
@@ -149,6 +148,9 @@ function addNewPage(_initialRouteName){
                     //   return StackViewStyleInterpolator.forFade(props);
                     // }
                     // if (Platform.OS === 'ios') {
+                    if (props.scene.route.routeName == 'Principal'){
+                        return StackViewStyleInterpolator.forFade(props);
+                    }
                       return StackViewStyleInterpolator.forHorizontal(props);
                     // }
               
@@ -172,9 +174,6 @@ const _Feed = addNewPage('Feed');
 const _Buscar = addNewPage('Buscar');
 const _Perfil = addNewPage('Perfil');
 const _Notificacoes = addNewPage('Notificacoes');
-const _BuscarEspecifico = addNewPage('BuscarEspecifico');
-const _Configuracoes = addNewPage('Configuracoes');
-const _NovaPostagem = addNewPage('NovaPostagem');
 
 const Tabs = createBottomTabNavigator({
     TabFeed: {
@@ -344,6 +343,9 @@ const AppNavigator = createStackNavigator({
                     return;
                 }
                 if (props.scene.route.routeName == 'EditarPasso'){
+                    return StackViewStyleInterpolator.forFade(props);
+                }
+                if (props.scene.route.routeName == 'Principal'){
                     return StackViewStyleInterpolator.forFade(props);
                 }
                 const last = props.scenes[props.scenes.length - 1];

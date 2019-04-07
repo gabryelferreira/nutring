@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, BackHandler } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -10,10 +10,10 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import FotoPerfil from '../../../components/FotoPerfil/FotoPerfil';
 import SemDadosPerfil from '../../../components/SemDadosPerfil/SemDadosPerfil';
 import Galeria from '../../../components/Galeria/Galeria';
-import RNFetchBlob from 'react-native-fetch-blob';
 import Input from '../../../components/Input/Input';
 import BotaoPequeno from '../../../components/Botoes/BotaoPequeno';
-import DraggableFlatList from 'react-native-draggable-flatlist'
+import DraggableFlatList from 'react-native-draggable-flatlist';
+import RNFetchBlob from 'react-native-fetch-blob';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -29,13 +29,15 @@ export default class EditarReceita extends Network {
             </TouchableOpacity>
         ) : (
             <View style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .3, marginRight: 20}}>
-                <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Publicando</Text>
+                <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Confirmando</Text>
                 <ActivityIndicator animating color="#28b657" size={12}/>
             </View>
         )
     });
 
     segundoInput;
+
+    receitaSalva = false;
 
     state = {
         // data: [...Array(20)].map((d, index) => ({
@@ -74,6 +76,27 @@ export default class EditarReceita extends Network {
         this.props.navigation.setParams({
             onPress: this.confirmar.bind(this)
         })
+        BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    componentWillUnmount() {
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+    }
+
+    handleBackPress = () => {
+        // this.goBack();
+        if (this.state.data.length > 0){
+            this.showModal("A receita será perdida", "Deseja sair sem salvar? Todos os dados serão perdidos.", this.criarBotoesVoltar());
+            return true;
+        }
+        return false;
+    }
+
+    criarBotoesVoltar(){
+        return [
+            {chave: "VOLTAR", texto: "Sair", color: '#DC143C', fontWeight: 'bold'},
+            {chave: "CANCELAR", texto: "Cancelar"}
+        ]
     }
 
     getModalClick(key){
@@ -85,21 +108,43 @@ export default class EditarReceita extends Network {
         if (key == "CONFIRMAR"){
             this.props.navigation.setParams({
                 loading: true
-            }, this.confirmarReceita)
+            })
+            this.confirmarReceita()
         }
-        if (this.state.promocaoFinalizada){
+        if (key == "VOLTAR"){
             this.props.navigation.goBack();
+        }
+        if (this.receitaSalva){
+            this.props.navigation.pop(2)
         }
     }
 
     async confirmarReceita(){
-        let dados = JSON.stringify(this.state.dados);
-        let passos = JSON.stringify(this.state.data);
+        let dados = this.state.dados;
+        let passos = this.state.data;
+        dados.base64 = await RNFetchBlob.fs.readFile(dados.foto, 'base64');
+        dados.base64 = `data:image/jpg;base64,${dados.base64}`;
+        for (var i = 0; i < passos.length; i++){
+            passos[i].base64 = await RNFetchBlob.fs.readFile(passos[i].foto, 'base64');
+            passos[i].base64 = `data:image/jpg;base64,${passos[i].base64}`;
+        }
+        dados = JSON.stringify(dados);
+        passos = JSON.stringify(passos);
         let result = await this.callMethod("confirmarReceita", { dados, passos });
-    }
-
-    async salvarReceita(){
-        
+        this.props.navigation.setParams({
+            loading: false
+        })
+        if (result.success){
+            if (result.result == "RECEITA_CRIADA"){
+                this.receitaSalva = true;
+                this.showModal("Receita criada", "Sua receita foi criada com sucesso e já está disponível em seu perfil.");
+            } else if (result.result == "RECEITA_SALVA"){
+                this.receitaSalva = true;
+                this.showModal("Receita salva", "Sua receita foi salva com sucesso!");
+            }
+        } else {
+            this.showModal("Ocorreu um erro", "Verifique sua internet e tente novamente.");
+        }
     }
 
     showModal(titulo, subTitulo, botoes){
@@ -173,12 +218,36 @@ export default class EditarReceita extends Network {
             })
         })
     }
+
+    renderFirstRow(){
+        if (this.state.data.length == 0){
+            return (
+                <View style={[styles.border, styles.flex]}>
+                    <TouchableOpacity
+                        onPress={() => this.abrirAdicionarPasso()}
+                        style={[styles.dado, styles.flexRow, styles.justifySpaceBetween, styles.alignCenter]}
+                    >
+                        <View style={[styles.flexRow, styles.alignCenter, styles.dadosPrincipais]}>
+                            <View style={[styles.fotoPasso, styles.backgroundAlmostBlack]}>
+                                <Icon name="plus" size={18} color="#fff" solid/>
+                            </View>
+                            <View style={[styles.textos, styles.flex]}>
+                                <Text style={styles.tituloPasso} numberOfLines={1}>Adicionar o primeiro passo</Text>
+                                <Text style={styles.descricao} numberOfLines={3}>Após já ter adicionado um passo, esse botão irá sumir e, para adicionar passos, clique em "Adicionar" à direita.</Text>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+    }
     
     renderItem = ({ item, index, move, moveEnd, isActive }) => {
 
         return (
-            <View style={styles.border}>
+            <View style={[styles.border, styles.flex]}>
                 <TouchableOpacity
+                    disabled={this.props.navigation.getParam("loading", false)}
                     onPress={() => this.abrirEditar(item, "EDITAR_PASSO")}
                     onLongPress={move}
                     onPressOut={moveEnd}
@@ -206,25 +275,6 @@ export default class EditarReceita extends Network {
                 </TouchableOpacity>
             </View>
         );
-
-        // return (
-        //   <TouchableOpacity
-        //     style={{ 
-        //       height: 100, 
-        //       backgroundColor: isActive ? 'blue' : item.backgroundColor,
-        //       alignItems: 'center', 
-        //       justifyContent: 'center' 
-        //     }}
-        //     onLongPress={move}
-        //     onPressOut={moveEnd}
-        //   >
-        //     <Text style={{ 
-        //       fontWeight: 'bold', 
-        //       color: 'white',
-        //       fontSize: 32,
-        //     }}>{item.label}</Text>
-        //   </TouchableOpacity>
-        // )
     }
 
     abrirAdicionarPasso(){
@@ -250,6 +300,7 @@ export default class EditarReceita extends Network {
     }
 
     abrirEditar(dados, tipo = ""){
+        if (this.props.navigation.getParam("loading", false)) return false;
         this.props.navigation.navigate("EditarPasso", {
             dados,
             tipo,
@@ -277,9 +328,11 @@ export default class EditarReceita extends Network {
 
     returnDadosReceita(){
         return (
-            <View>
+            <View style={styles.flex}>
                 <View style={styles.borderBottom}>
-                    <TouchableOpacity onPress={() => this.abrirEditar(this.state.dados, 'EDITAR_DADOS')} style={[styles.dado, styles.flexRow, styles.justifySpaceBetween, styles.alignCenter]}>
+                    <TouchableOpacity 
+                        disabled={this.props.navigation.getParam("loading", false)}    
+                        onPress={() => this.abrirEditar(this.state.dados, 'EDITAR_DADOS')} style={[styles.dado, styles.flexRow, styles.justifySpaceBetween, styles.alignCenter]}>
                         <View style={[styles.flexRow, styles.alignCenter, styles.dadosPrincipais]}>
                             <View style={[styles.fotoReceita, styles.backgroundGray]}>
                                 <Image resizeMethod="resize" style={styles.fotoReceita} source={{uri: this.state.dados.foto}}/>
@@ -295,14 +348,17 @@ export default class EditarReceita extends Network {
                     </TouchableOpacity>
                 </View>
             
-            <View style={styles.borderBottom}>
-                <View style={[styles.dado, styles.justifySpaceBetween, styles.alignCenter, styles.flexRow]}>
-                    <Text style={styles.labelPassos}>Passos</Text>
-                    <TouchableOpacity onPress={() => this.abrirAdicionarPasso()}>
-                        <Text style={styles.adicionar}>Adicionar</Text>
-                    </TouchableOpacity>
+                <View style={styles.borderBottom}>
+                    <View style={[styles.dado, styles.justifySpaceBetween, styles.alignCenter, styles.flexRow]}>
+                        <Text style={styles.labelPassos}>Passos</Text>
+                        <TouchableOpacity
+                            disabled={this.props.navigation.getParam("loading", false)}
+                            onPress={() => this.abrirAdicionarPasso()}>
+                            <Text style={styles.adicionar}>Adicionar</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
+                {this.renderFirstRow()}
 
             </View>
         );
@@ -334,6 +390,9 @@ export default class EditarReceita extends Network {
 }
 
 const styles = {
+    flex: {
+        flex: 1
+    },
     dado: {
         paddingHorizontal: 20,
         paddingVertical: 15,
@@ -363,7 +422,7 @@ const styles = {
         borderBottomWidth: .6,
     },
     dadosPrincipais: {
-        flex: .7
+        flex: 1
     },
     flexRow: {
         flexDirection: 'row'
@@ -380,7 +439,8 @@ const styles = {
         borderRadius: 60/2
     },
     textos: {
-        marginLeft: 20
+        marginLeft: 15,
+        flex: 1
     },
     titulo: {
         color: '#000',
@@ -406,10 +466,15 @@ const styles = {
     fotoPasso: {
         height: 45,
         width: 45,
-        borderRadius: 45/2
+        borderRadius: 45/2,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     backgroundGray: {
         backgroundColor: '#eee'
+    },
+    backgroundAlmostBlack: {
+        backgroundColor: '#333'
     },
     adicionar: {
         color: '#28b657',

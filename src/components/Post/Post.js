@@ -26,7 +26,9 @@ class Post extends Network {
             excluindo: false,
             hideShimmer: false,
             altura: 0,
-            carregandoImagem: true
+            carregandoImagem: true,
+            parandoDeSeguir: false,
+            seguindo: false
         }
         this.calcularHeight(this.props.data.conteudo);
     }
@@ -124,7 +126,96 @@ class Post extends Network {
             );
     }
 
-    returnDots(meu_post){
+    renderBotaoSeguir(is_seguindo, color = "#000"){
+        if (this.state.parandoDeSeguir || this.state.seguindo)
+            return this.renderBotaoCarregandoSeguindo(is_seguindo, color);
+        if (this.state.data.is_seguindo){
+            return (
+                <View style={[styles.justifyFlexEnd, styles.flexRow, styles.flex3, styles.alignCenter]}>
+                    <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
+                        <Text style={[styles.textoBotaoEditar, {color: color}]}>Seguindo</Text>
+                        <View style={{position: 'absolute', right: 10, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
+                            <Icon name="check" color="#28b657" size={13} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+        return (
+            <View style={[styles.justifyFlexEnd, styles.flexRow, styles.flex3, styles.alignCenter]}>
+                <TouchableOpacity style={styles.botaoEditar} onPress={() => this.seguir()}>
+                    <Text style={[styles.textoBotaoEditar, {color: color}]}>Seguir</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
+
+    renderBotaoCarregandoSeguindo(is_seguindo, color = "#000"){
+        if (is_seguindo){
+            return (
+                <View style={[styles.justifyFlexEnd, styles.flexRow, styles.flex3, styles.alignCenter]}>
+                    <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
+                        <Text style={[styles.textoBotaoEditar, {color: color}]}>Seguindo</Text>
+                        <View style={{position: 'absolute', right: 10, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
+                            <ActivityIndicator color="#ccc" size="small" />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+        if (this.state.parandoDeSeguir ||this.state.seguindo){
+            return (
+                <View style={[styles.justifyFlexEnd, styles.flexRow, styles.flex3, styles.alignCenter]}>
+                    <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
+                        <Text style={[styles.textoBotaoEditar, {color: color}]}>{this.state.parandoDeSeguir ? 'Seguir' : 'Seguindo'}</Text>
+                        <View style={{position: 'absolute', right: 10, top: 0, bottom: 0, justifyContent: 'center', alignItems: 'center'}}>
+                            <ActivityIndicator color="#ccc" size="small" />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            );
+        }
+    }
+
+    async pararDeSeguir(){
+        let id_seguido = this.state.data.id_usuario;
+        await this.setState({
+            parandoDeSeguir: true
+        })
+        let result = await this.callMethod("followUnfollow", { id_seguido });
+        if (result.success){
+            let user = this.state.data;
+            user.is_seguindo = false;
+            user.seguidores = user.seguidores - 1;
+            await this.setState({
+                user: user
+            })
+        }
+        await this.setState({
+            parandoDeSeguir: false
+        })
+    }
+
+    async seguir(){
+        let id_seguido = this.state.data.id_usuario;
+        await this.setState({
+            seguindo: true
+        })
+        let result = await this.callMethod("followUnfollow", { id_seguido });
+        if (result.success){
+            let user = this.state.data;
+            user.is_seguindo = true;
+            user.seguidores = user.seguidores + 1;
+            await this.setState({
+                user: user
+            })
+        }
+        await this.setState({
+            seguindo: false
+        })
+    }
+
+    returnDots(meu_post, is_seguindo){
         if (this.state.excluindo){
             return (
                 <View style={styles.viewInfoDots}>
@@ -139,7 +230,7 @@ class Post extends Network {
                 </TouchableOpacity>
             );
         }
-        return null;
+        return this.renderBotaoSeguir(is_seguindo);
     }
 
     abrirModalExclusao(){
@@ -249,18 +340,25 @@ class Post extends Network {
                     <View style={{flexDirection: 'column', flex: 1}}>
                         <View style={{flexDirection: 'row'}}>
                             <ShimmerPlaceHolder
-                                style={{flex: .5, height: 18, marginBottom: 5}}
+                                style={{flex: .7, height: 18, marginBottom: 5}}
                                 autoRun={true}
                                 visible={false}
                             ></ShimmerPlaceHolder>
                         </View>
                         <View style={{flexDirection: 'row'}}>
                             <ShimmerPlaceHolder
-                                style={{height: 13, flex: .3}}
+                                style={{height: 13, flex: .4}}
                                 autoRun={true}
                                 visible={false}
                             ></ShimmerPlaceHolder>
                         </View>
+                    </View>
+                    <View style={{width: 140, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', marginRight: 15}}>
+                        <ShimmerPlaceHolder
+                            style={{height: 18, width: 140}}
+                            autoRun={true}
+                            visible={false}
+                        ></ShimmerPlaceHolder>
                     </View>
                 </View>
                 <View style={{flexDirection: 'row', flex: 1, marginTop: 10}}>
@@ -278,7 +376,7 @@ class Post extends Network {
                             visible={false}
                         ></ShimmerPlaceHolder>
                         <ShimmerPlaceHolder
-                            style={{height: 19, flex: .85}}
+                            style={{height: 19, flex: .68}}
                             autoRun={true}
                             visible={false}
                         ></ShimmerPlaceHolder>
@@ -322,7 +420,7 @@ class Post extends Network {
 
     render(){
         let larguraImagem = imageWidth;
-        let { id_usuario, id_post, foto, is_restaurante, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios, meu_post, curtidores, comentaristas } = this.state.data;
+        let { id_usuario, id_post, foto, is_restaurante, nome, gostei, curtidas, descricao, conteudo, tempo_postado, nome_usuario_comentario, top_comment, comentarios, meu_post, curtidores, comentaristas, is_seguindo } = this.state.data;
         let { index } = this.props;
         if (this.props.shimmer){
             return this.renderShimmer();
@@ -340,7 +438,7 @@ class Post extends Network {
                 <View style={styles.viewInfoAll}>
                     <View style={styles.viewInfo}>
                         <View style={styles.fotoETexto}>
-                            <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 50, width: 50, borderRadius: 50/2, backgroundColor: '#000', marginHorizontal: 15}}>
+                            <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 50, width: 50, borderRadius: 50/2, backgroundColor: '#000', marginRight: 15}}>
                                 <Image resizeMethod="resize" style={{height: 50, width: 50, borderRadius: 50/2}} source={{uri: foto}}/>
                             </TouchableOpacity>
                             <View style={styles.viewInfoTexto}>
@@ -351,7 +449,7 @@ class Post extends Network {
                                 {this.returnTextoPostedAgo(tempo_postado)}
                             </View>
                         </View>
-                        {this.returnDots(meu_post)}
+                        {this.returnDots(meu_post, is_seguindo)}
                     </View>
                     <View style={styles.viewInfoEConteudo}>
                         
@@ -495,7 +593,8 @@ const styles = {
     },
     viewInfo: {
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        marginHorizontal: 15
     },
     viewInfoTexto: {
         flexDirection: 'column'
@@ -628,6 +727,34 @@ const styles = {
         color: '#444',
         fontSize: 16,
         marginLeft: 5
+    },
+    botaoEditar: {
+        marginTop: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 2,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 5,
+        flexDirection: 'row',
+        width: 140
+    },
+    textoBotaoEditar: {
+        color: '#000',
+        fontSize: 13,
+        fontWeight: 'bold'
+    },
+    justifyFlexEnd: {
+        justifyContent: 'flex-end',
+    },
+    flexRow: {
+        flexDirection: 'row'
+    },
+    alignCenter: {
+        alignItems: 'center'
+    },
+    flex3: {
+        flex: .3
     }
     
 }
