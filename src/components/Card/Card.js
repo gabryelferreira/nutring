@@ -26,7 +26,7 @@ const Card = ({onPress, imagem, nome, seguidores, curtidas}) => {
             </View>
             <View style={styles.container}>
                 <View style={styles.info}>
-                    <Text numberOfLines={1} style={styles.nome}>{nome} ddddd dddddd d</Text>
+                    <Text numberOfLines={1} style={styles.nome}>{nome}</Text>
                     <View style={styles.infoBaixo}>
                         {renderSeguidoresCurtidas()}
                     </View>
