@@ -340,7 +340,8 @@ export default class Perfil extends Network {
     }
 
     renderReceitas(receitas){
-        return receitas.map(receita => {
+        return receitas.map((receita, index) => {
+            if (index > 6) return null;
             return (
                 <View key={receita.id_receita} style={styles.receita}>
                         {/* <Icon name="plus" size={15} color="#000"/> */}
@@ -371,11 +372,12 @@ export default class Perfil extends Network {
                             <Text style={styles.subTituloReceitas}>{receitas.length} {receitas.length == 1 ? 'prato' : 'pratos'}</Text>
                         </View>
                         <View style={styles.receitas}>
-                            
                             {this.renderReceitas(receitas)}
                         </View>
                     </View>
-                    <Icon name="chevron-right" solid size={15} color="#000"/>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+                        <Icon name="chevron-right" solid size={15} color="#000"/>
+                    </View>
                 </TouchableOpacity>
             );
         } else if (this.state.user.sou_eu){
@@ -977,6 +979,7 @@ const styles = {
         color: '#222'
     },
     viewReceitas: {
+        flex: 1,
         paddingHorizontal: 20,
         paddingVertical: 10,
         flexDirection: 'row',
@@ -997,7 +1000,8 @@ const styles = {
         color: '#aaa',
     },
     receitas: {
-        flexDirection: 'row'
+        flex: 1,
+        flexDirection: 'row',
     },
     receita: {
         flexDirection: 'column',

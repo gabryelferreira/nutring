@@ -57,7 +57,7 @@ export default class Buscar extends Network {
     state = {
         loading: true,
         restaurantes: [],
-        pratosRestaurantes: [],
+        receitas: [],
         pratos: [],
         loadingPratos: false,
         semMaisPratos: false,
@@ -90,15 +90,15 @@ export default class Buscar extends Network {
         if (result.success){
             this.setState({
                 restaurantes: result.result
-            }, this.getTopPratosRestaurantes)
+            }, this.getUltimasReceitas)
         }
     }
 
-    async getTopPratosRestaurantes(){
-        let result = await this.callMethod("getTopPratosRestaurantes");
+    async getUltimasReceitas(){
+        let result = await this.callMethod("getUltimasReceitas");
         if (result.success){
         this.setState({
-            pratosRestaurantes: result.result
+            receitas: result.result
         }, this.getTopPratosClientes)
         }
     }
@@ -241,23 +241,23 @@ export default class Buscar extends Network {
         }
     }
 
-    renderTopPratosRestaurantes(){
-        return this.state.pratosRestaurantes.map((prato) => {
-            return <Card key={prato.id_post + "pratoRestaurante"} imagem={prato.foto} nome={prato.nome} curtidas={prato.curtidas} onPress={() => this.props.navigation.navigate("Postagem", { id_post: prato.id_post })}/>
+    renderTopReceitas(){
+        return this.state.receitas.map((receita) => {
+            return <Card key={receita.id_receita + "receita"} imagem={receita.foto} nome={receita.titulo} onPress={() => this.props.navigation.navigate("VerReceita", { id_receita: receita.id_receita })}/>
         })
     }
 
-    renderTopPratosRestaurantesView(){
-        if (this.state.restaurantes.length > 0){
+    renderTopReceitasView(){
+        if (this.state.receitas.length > 0){
             return (
                 <View>
                     <View style={[styles.item, styles.paddingHorizontal]}>
                         <View style={styles.flexRow}>
-                            <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Pratos</Text>
+                            <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Receitas</Text>
                         </View>
                     </View>
                     <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
-                        {this.renderTopPratosRestaurantes()}
+                        {this.renderTopReceitas()}
                     </ScrollView>
                 </View>
             );
@@ -311,7 +311,7 @@ export default class Buscar extends Network {
             {this.renderTopRestaurantesView()}
 
             
-            {this.renderTopPratosRestaurantesView()}
+            {this.renderTopReceitasView()}
             
 
             <Text style={[styles.titulo, styles.paddingHorizontal]}>Para você</Text>

@@ -8,14 +8,14 @@ const Card = ({onPress, imagem, nome, seguidores, curtidas}) => {
             let textoSeguindo = "Seguidores";
             if (seguidores == 1)
                 textoSeguindo = "Seguidor";
-            return <Text style={styles.qtdCurtidas}>{seguidores} <Text style={styles.textoCurtidas}>{textoSeguindo}</Text></Text>
+            return <Text numberOfLines={1} style={styles.qtdCurtidas}>{seguidores} <Text style={styles.textoCurtidas}>{textoSeguindo}</Text></Text>
         } else if (curtidas){
             let textoCurtida = "Curtidas";
             if (curtidas == 1)
                 textoCurtida = "Curtida";
-            return <Text style={styles.qtdCurtidas}>{curtidas} <Text style={styles.textoCurtidas}>{textoCurtida}</Text></Text>
+            return <Text numberOfLines={1} style={styles.qtdCurtidas}>{curtidas} <Text style={styles.textoCurtidas}>{textoCurtida}</Text></Text>
         }
-        return null
+        return null;
     }
 
     return (
@@ -26,7 +26,7 @@ const Card = ({onPress, imagem, nome, seguidores, curtidas}) => {
             </View>
             <View style={styles.container}>
                 <View style={styles.info}>
-                    <Text style={styles.nome}>{nome}</Text>
+                    <Text numberOfLines={1} style={styles.nome}>{nome} ddddd dddddd d</Text>
                     <View style={styles.infoBaixo}>
                         {renderSeguidoresCurtidas()}
                     </View>

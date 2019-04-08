@@ -33,6 +33,7 @@ export default class Receitas extends Network {
             carregandoInicial: true,
             receitas: [],
             refreshing: false,
+            loading: false
         }
     }
 
@@ -72,6 +73,9 @@ export default class Receitas extends Network {
     async getReceitas(){
         if (!this.carregando){
             this.carregando = true;
+            this.setState({
+                loading: true
+            })
             console.log("id_usuario perfil aqui eh " + this.id_usuario_perfil)
             let result = await this.callMethod("getReceitas", { id_usuario_perfil: this.id_usuario_perfil, offset: this.offset, limit: this.limit });
             this.setState({
@@ -101,12 +105,19 @@ export default class Receitas extends Network {
     }
 
     pegarDados(){
-        if (!this.semMaisDados){
+        if (!this.semMaisDados && !this.carregando){
             this.offset += this.limit;
             this.setState({
                 loading: true
             }, this.getReceitas);
         }
+    }
+
+    returnFooterComponent(){
+        if (this.state.receitas.length > 0 && this.state.loading){
+            return <ActivityIndicator color="#27ae60" size="large" style={{  marginVertical: 10 }}/>
+        }
+        return null;
     }
 
     render(){
@@ -131,7 +142,7 @@ export default class Receitas extends Network {
             onEndReached={() => this.pegarDados()}
             onEndReachedThreshold={0.5}
             // ListHeaderComponent={() => this.returnHeaderComponent()}
-            // ListFooterComponent={() => this.returnFooterComponent()}
+            ListFooterComponent={() => this.returnFooterComponent()}
             />
         );
     }

@@ -594,7 +594,8 @@ const styles = {
     viewInfo: {
         flex: 1,
         flexDirection: 'row',
-        marginHorizontal: 15
+        marginHorizontal: 15,
+        alignItems: 'center'
     },
     viewInfoTexto: {
         flexDirection: 'column'
@@ -729,7 +730,6 @@ const styles = {
         marginLeft: 5
     },
     botaoEditar: {
-        marginTop: 10,
         justifyContent: 'center',
         alignItems: 'center',
         paddingVertical: 2,
