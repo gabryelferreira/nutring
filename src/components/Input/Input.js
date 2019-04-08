@@ -94,5 +94,6 @@ const styles = {
     inputGrande: {
         flex: 1,
         paddingVertical: 5,
+        height: 50
     }
 }

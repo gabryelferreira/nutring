@@ -44,6 +44,7 @@ import Plano from './src/screens/Tabs/Configuracoes/MeuPlano/Plano/Plano';
 import NovaReceita from './src/screens/Tabs/NovaReceita/NovaReceita';
 import EditarReceita from './src/screens/Tabs/EditarReceita/EditarReceita';
 import EditarPasso from './src/screens/Tabs/EditarReceita/EditarPasso/EditarPasso';
+import VerReceita from './src/screens/Tabs/Receitas/VerReceita/VerReceita';
 
 const NavigationOptions = {
     headerStyle: {
@@ -117,6 +118,10 @@ const InsideTabs = {
     },
     Receitas: {
         screen: Receitas,
+        navigationOptions: NavigationOptions
+    },
+    VerReceita: {
+        screen: VerReceita,
         navigationOptions: NavigationOptions
     },
     MeuPlano: {

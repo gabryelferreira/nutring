@@ -24,8 +24,8 @@ export default class EditarPasso extends Network {
         title: navigation.getParam("dados", null) ? (navigation.getParam("tipo", null) == 'EDITAR_DADOS' ? 'Editar Receita' : 'Editar Passo') : 'Novo Passo',
         headerRight: (
             navigation.getParam("tipo", null) == 'EDITAR_PASSO' ? (
-                <TouchableOpacity onPress={navigation.getParam("onPress")} style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 20}}>
-                    <Icon name="trash-alt" solid color="000" size={18}/>
+                <TouchableOpacity onPress={navigation.getParam("onTrashClick")} style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', marginRight: 20}}>
+                    <Icon name="trash-alt" solid color="#000" size={18}/>
                 </TouchableOpacity>
             ) : (
                 <View></View>
@@ -51,6 +51,7 @@ export default class EditarPasso extends Network {
             descricao: "",
             foto: "",
             key: "",
+            fotoNoServidor: false,
             permissaoGaleria: false,
             fotosGaleria: [],
             galeriaAberta: false,
@@ -58,24 +59,44 @@ export default class EditarPasso extends Network {
                 foto: "",
                 titulo: "",
                 descricao: "",
-                key: ""
-            }
+                key: "",
+                fotoNoServidor: false,
+                id_receita: null
+            },
+            id_receita: null
         }
     }
 
     componentDidMount(){
+        this.props.navigation.setParams({
+            onTrashClick: this.abrirModalDeletar.bind(this)
+        })
         let dados = this.props.navigation.getParam("dados", {
             foto: "",
             titulo: "",
             descricao: "",
-            key: ""
+            key: "",
+            fotoNoServidor: false,
+            id_receita: null
         });
         this.setState({
             foto: dados.foto,
             titulo: dados.titulo,
             descricao: dados.descricao,
-            key: dados.key
+            key: dados.key,
+            fotoNoServidor: dados.fotoNoServidor,
+            id_receita: dados.id_receita
         })
+    }
+
+    componentWillUnmount() {
+        this.props.navigation.setParams({
+            onTrashClick: null,
+        })
+    }
+
+    abrirModalDeletar(){
+        this.showModal("Excluir passo", "Tem certeza que deseja excluir o passo?", this.criarBotoesExclusao())
     }
 
     getModalClick(key){
@@ -84,13 +105,17 @@ export default class EditarPasso extends Network {
                 visible: false
             }
         })
-        if (this.state.promocaoFinalizada){
+        if (key == "EXCLUIR"){
+            let dados = {
+                foto: this.state.foto,
+                titulo: this.state.titulo,
+                descricao: this.state.descricao,
+                key: this.state.key,
+                fotoNoServidor: this.state.fotoNoServidor
+            }
+            this.props.navigation.state.params.onDeletePasso(dados);
             this.props.navigation.goBack();
         }
-    }
-
-    async salvarReceita(){
-        
     }
 
     showModal(titulo, subTitulo, botoes){
@@ -109,7 +134,9 @@ export default class EditarPasso extends Network {
             foto: this.state.foto,
             titulo: this.state.titulo,
             descricao: this.state.descricao,
-            key: this.state.key
+            key: this.state.key,
+            fotoNoServidor: this.state.fotoNoServidor,
+            id_receita: this.state.id_receita
         }
         if (!dados.foto){
             this.showModal("Foto obrigatória", "Clique em alterar foto para selecionar uma foto da sua galeria.");
@@ -125,7 +152,7 @@ export default class EditarPasso extends Network {
 
     criarBotoesExclusao(){
         let botoes = [
-            {chave: "ENVIAR", texto: "Confirmar", color: '#28b657', fontWeight: 'bold'},
+            {chave: "EXCLUIR", texto: "Excluir", color: '#DC143C', fontWeight: 'bold'},
             {chave: "CANCELAR", texto: "Cancelar"},
         ]
         return botoes;
@@ -183,9 +210,13 @@ export default class EditarPasso extends Network {
         }
     }
 
+    alterarFoto(foto){
+        this.setState({foto, galeriaAberta: false, fotoNoServidor: false})
+    }
+
     render(){        
         if (this.state.galeriaAberta){
-            return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.setState({foto, galeriaAberta: false})} onClose={() => this.setState({galeriaAberta: false})}/>
+            return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.alterarFoto(foto)} onClose={() => this.setState({galeriaAberta: false})}/>
         }
         return (
             <View style={{flex: 1}}>
@@ -248,7 +279,7 @@ export default class EditarPasso extends Network {
                         />
                     </View>
                     <View style={styles.container}>
-                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                        <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
                             <BotaoPequeno disabled={this.state.disabled} texto={"Confirmar"} onPress={() => this.confirmar()} loading={this.state.loading}/>
                         </View>
                     </View>

@@ -33,6 +33,7 @@ export default class Principal extends Component {
 
     handleBackPress = () => {
         // this.goBack();
+        console.log("going back")
         BackHandler.exitApp()
         return true;
     }
@@ -61,6 +62,11 @@ export default class Principal extends Component {
 
     }
 
+    navigate(screen){
+        BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
+        this.props.navigation.navigate(screen);
+    }
+
     render(){
         if (this.state.carregando){
             return null;
@@ -71,10 +77,10 @@ export default class Principal extends Component {
                     <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>
                     {/* <Text style={{marginTop: 10}}>Você mais saudável</Text> */}
                     <View style={styles.botoes}>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Cadastro')} style={[styles.botao, styles.botaoVerde]}>
+                        <TouchableOpacity onPress={() => this.navigate('Cadastro')} style={[styles.botao, styles.botaoVerde]}>
                             <Text style={[styles.textoBranco, styles.textoBotao]}>Criar conta</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Login')} style={styles.botao}>
+                        <TouchableOpacity onPress={() => this.navigate('Login')} style={styles.botao}>
                             <Text style={[styles.textoVerde, styles.textoBotao]}>Entrar</Text>
                         </TouchableOpacity>
                     </View>

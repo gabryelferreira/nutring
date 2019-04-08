@@ -52,7 +52,8 @@ export default class EditarReceita extends Network {
             titulo: "",
             subTitulo: "",
             botoes: []
-        }
+        },
+        editando: false
     }
 
     // state = {
@@ -64,14 +65,23 @@ export default class EditarReceita extends Network {
     }
 
     componentDidMount(){
-        console.log("navvvv", this.props.navigation.getParam("dados", null));
         if (this.props.navigation.getParam("dados", null)){
-            console.log("temmm")
             this.setState({
                 dados: this.props.navigation.getParam("dados")
             })
         } else {
-            console.log("pegar dados receita");
+            let receita = (this.props.navigation.getParam("receita", null));
+            let dados = receita;
+            dados.fotoNoServidor = true;
+            let data = receita.passos;
+            for (var i = 0; i < data.length; i++){
+                data[i].key = `item-${i}`;
+                data[i].fotoNoServidor = true;
+            }
+            this.setState({
+                dados: receita,
+                data
+            }, this.arrumarFotos)
         }
         this.props.navigation.setParams({
             onPress: this.confirmar.bind(this)
@@ -109,24 +119,34 @@ export default class EditarReceita extends Network {
             this.props.navigation.setParams({
                 loading: true
             })
-            this.confirmarReceita()
+            this.confirmarReceita();
         }
         if (key == "VOLTAR"){
             this.props.navigation.goBack();
         }
         if (this.receitaSalva){
-            this.props.navigation.pop(2)
+            if (this.props.navigation.state.params.onGoBack){
+                console.log("tem caralhoooo")
+                this.props.navigation.state.params.onGoBack();
+                this.props.navigation.goBack();
+            } else {
+                this.props.navigation.pop(2);
+            }
         }
     }
 
     async confirmarReceita(){
         let dados = this.state.dados;
         let passos = this.state.data;
-        dados.base64 = await RNFetchBlob.fs.readFile(dados.foto, 'base64');
-        dados.base64 = `data:image/jpg;base64,${dados.base64}`;
+        if (!dados.fotoNoServidor){
+            dados.base64 = await RNFetchBlob.fs.readFile(dados.foto, 'base64');
+            dados.base64 = `data:image/jpg;base64,${dados.base64}`;
+        }
         for (var i = 0; i < passos.length; i++){
-            passos[i].base64 = await RNFetchBlob.fs.readFile(passos[i].foto, 'base64');
-            passos[i].base64 = `data:image/jpg;base64,${passos[i].base64}`;
+            if (!passos[i].fotoNoServidor){
+                passos[i].base64 = await RNFetchBlob.fs.readFile(passos[i].foto, 'base64');
+                passos[i].base64 = `data:image/jpg;base64,${passos[i].base64}`;
+            }
         }
         dados = JSON.stringify(dados);
         passos = JSON.stringify(passos);
@@ -289,7 +309,8 @@ export default class EditarReceita extends Network {
                 key: `item-${index}`,
                 foto: d.foto,
                 titulo: d.titulo,
-                descricao: d.descricao
+                descricao: d.descricao,
+                fotoNoServidor: d.fotoNoServidor
             }
         });
         dados.key = data.length;
@@ -299,12 +320,26 @@ export default class EditarReceita extends Network {
         })
     }
 
+    deletarPasso(passo){
+        let passos = this.state.data;
+        for (var i = passos.length - 1; i >= 0; i--){
+            if (passos[i].key == passo.key){
+                passos.splice(i, 1);
+                break;
+            }
+        }
+        this.setState({
+            data: passos
+        })
+    }
+
     abrirEditar(dados, tipo = ""){
         if (this.props.navigation.getParam("loading", false)) return false;
         this.props.navigation.navigate("EditarPasso", {
             dados,
             tipo,
-            onGoBack: (dados, tipo) => this.tratarDadosEdicao(dados, tipo)
+            onGoBack: (dados, tipo) => this.tratarDadosEdicao(dados, tipo),
+            onDeletePasso: (passo) => this.deletarPasso(passo)
         })
     }
 

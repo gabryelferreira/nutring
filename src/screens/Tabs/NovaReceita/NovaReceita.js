@@ -210,7 +210,7 @@ export default class NovaReceita extends Network {
                         />
                     </View>
                     <View style={styles.container}>
-                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                        <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
                             <BotaoPequeno disabled={this.state.disabled} texto={"Avançar"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
                         </View>
                     </View>

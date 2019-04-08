@@ -18,6 +18,7 @@ const Receita = (props) => {
         <View style={styles.flex}>
             <View style={styles.borderBottom}>
                 <TouchableOpacity 
+                    onPress={props.onPress}
                     style={[styles.dado, styles.flexRow, styles.justifySpaceBetween, styles.alignCenter]}>
                     <View style={[styles.flexRow, styles.alignCenter, styles.dadosPrincipais]}>
                         <View style={[styles.fotoReceita, styles.backgroundGray]}>

@@ -35,7 +35,7 @@ export default BotaoPequeno;
 
 const styles = {
     botao: {
-        paddingVertical: 5,
+        paddingVertical: 7,
         paddingHorizontal: 15,
         flexDirection: 'row',
         alignItems: 'center',

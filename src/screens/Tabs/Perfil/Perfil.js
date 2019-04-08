@@ -342,7 +342,7 @@ export default class Perfil extends Network {
     renderReceitas(receitas){
         return receitas.map(receita => {
             return (
-                <View style={styles.receita}>
+                <View key={receita.id_receita} style={styles.receita}>
                         {/* <Icon name="plus" size={15} color="#000"/> */}
                     <Image resizeMethod="resize" source={{uri: receita.foto}} style={styles.fotoReceita}/>
                 </View>
@@ -364,7 +364,7 @@ export default class Perfil extends Network {
     renderViewReceitas(receitas){
         if (receitas.length > 0){
             return (
-                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { receitas, sou_eu: this.state.user.sou_eu })}>
+                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { receitas, id_usuario_perfil: this.state.user.id_usuario })}>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
                         <View style={styles.viewInfoReceitas}>
                             <Text style={styles.tituloReceitas}>Receitas</Text>
