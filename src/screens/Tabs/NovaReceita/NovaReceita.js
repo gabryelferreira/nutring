@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -164,7 +164,7 @@ export default class NovaReceita extends Network {
                         {this.returnImagemPublicacao(this.state.foto)}
                         <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
                             <TouchableOpacity onPress={() => {
-                                    this.requisitarPermissaoGaleria()
+                                    Platform.OS === 'android' ? this.requisitarPermissaoGaleria() : this.abrirGaleria()
                                 }}
                                     style={{
                                     paddingHorizontal: 10, 
@@ -206,7 +206,7 @@ export default class NovaReceita extends Network {
                             multiline={true}
                             numberOfLines={5}
                             maxLength={255}
-                            returnKeyType={"none"}
+                            returnKeyType={"default"}
                         />
                     </View>
                     <View style={styles.container}>

@@ -113,7 +113,7 @@ export default class Notificacoes extends Network {
 
   returnFooterComponent(){
     if (!this.state.semMaisDados && !this.state.refreshing){
-        return <ActivityIndicator color="#27ae60" size="large" style={{ marginVertical: 20 }}/>
+        return <ActivityIndicator color="#777" size="large" style={{ marginVertical: 20 }}/>
     } return null;
   }
 
@@ -144,7 +144,7 @@ export default class Notificacoes extends Network {
     if (this.state.carregandoPrimeiraVez){
       return (
           <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-              <ActivityIndicator size="large" color="#28b657" />
+              <ActivityIndicator size="large" color="#777" />
           </View>
       );
     }

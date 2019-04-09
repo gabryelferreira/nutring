@@ -3,6 +3,7 @@ import { TouchableHighlight, View, Modal, ScrollView, Text, Image, TouchableOpac
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Camera from '../Camera/Camera';
 import Network from '../../network';
+import { SafeAreaView } from 'react-navigation';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -10,25 +11,27 @@ const imageWidth = dimensions.width;
 
 const Header = ({onCloseClick}) => {
     return (
-        <View style={{
-            elevation: 1,
-            shadowOpacity: 0,
-            height: 50,
-            paddingHorizontal: 20,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            left: 0, right: 0, top: 0,
-            zIndex: 9999,
-            borderBottomWidth: 1,
-            borderBottomColor: '#eee'
-        }}>
-            <View style={{position: 'relative', flex: 1, zIndex: 9999, flexDirection: 'row', alignItems: 'center', justifyContent: Platform.OS === 'ios' ? 'space-between' : 'flex-start'}}>
-                <Icon onPress={onCloseClick} name="times" color="#000" size={24}/>
-                <Text style={{color: '#000', fontWeight: 'bold', fontSize: 22, marginLeft: Platform.OS === 'ios' ? 0 : 30}}>Escolha</Text>
-                <Icon name="times" color="#fff" size={24}/>
+        <SafeAreaView style={{backgroundColor: '#fff'}}>
+            <View style={{
+                elevation: 1,
+                shadowOpacity: 0,
+                height: 50,
+                paddingHorizontal: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                left: 0, right: 0, top: 0,
+                zIndex: 9999,
+                borderBottomWidth: 1,
+                borderBottomColor: '#eee'
+            }}>
+                <View style={{position: 'relative', flex: 1, zIndex: 9999, flexDirection: 'row', alignItems: 'center', justifyContent: Platform.OS === 'ios' ? 'space-between' : 'flex-start'}}>
+                    <Icon onPress={onCloseClick} name="times" color="#000" size={24}/>
+                    <Text style={{color: '#000', fontWeight: 'bold', fontSize: 22, marginLeft: Platform.OS === 'ios' ? 0 : 30}}>Escolha</Text>
+                    <Icon name="times" color="#fff" size={24}/>
+                </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 class NutringAddButton extends Network {
@@ -145,59 +148,63 @@ class NutringAddButton extends Network {
             //     paddingHorizontal: 10,
             //     borderRadius: 80
             // }}>
-            <View>
+            <SafeAreaView>
+                <View>
 
-                <Modal 
-                visible={this.state.cameraVisible}
-                animationType="slide"
-                presentationStyle="fullScreen"
-                onRequestClose={() => {
-                    this.setState({cameraVisible: false})
-                }}
-                >
-                    <Camera onClose={() => this.setState({cameraVisible: false})}/>
-                </Modal>
-                
-                <Modal 
-                visible={this.state.visible}
-                animationType="slide"
-                presentationStyle="fullScreen"
-                onRequestClose={() => {
-                    this.setState({visible: false})
-                }}
-                >
-                    <Header onCloseClick={() => this.setState({visible: false})}/>
-                    <View style={{flex: 1}}>
-                        <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                    <Modal 
+                    visible={this.state.cameraVisible}
+                    animationType="slide"
+                    presentationStyle="fullScreen"
+                    onRequestClose={() => {
+                        this.setState({cameraVisible: false})
+                    }}
+                    >
+                        <SafeAreaView>
+                            <Camera onClose={() => this.setState({cameraVisible: false})}/>
+                        </SafeAreaView>
+                    </Modal>
+                    
+                    <Modal 
+                    visible={this.state.visible}
+                    animationType="slide"
+                    presentationStyle="fullScreen"
+                    onRequestClose={() => {
+                        this.setState({visible: false})
+                    }}
+                    >
+                        <Header onCloseClick={() => this.setState({visible: false})}/>
+                        <View style={{flex: 1}}>
+                            <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
 
-                            <View style={[styles.opcao, styles.borderBottom]}>
-                                <Image source={require('../../assets/imgs/tela-mais/prato1.png')} style={styles.foto}/>
-                                <View style={styles.textos}>
-                                    <Text style={styles.titulo}>Postar Prato</Text>
-                                    <Text style={styles.descricao}>Compartilhe seus <Text style={styles.bold}>pratos favoritos! </Text>
-                                    Poste fotos no <Text style={styles.bold}>seu feed.</Text> Podem ser fotos feitas por você, por algum amigo ou um prato lindo que você consumiu em um restaurante! ;)</Text>
-                                    <TouchableOpacity style={styles.botao} onPress={() => this.abrirCamera()}>
-                                        <Text style={styles.textoBotao}>POSTAR PRATO</Text>
-                                        <Icon name="chevron-right" solid size={14} color="#000" style={{fontWeight: 'bold'}}/>
-                                    </TouchableOpacity>
+                                <View style={[styles.opcao, styles.borderBottom]}>
+                                    <Image source={require('../../assets/imgs/tela-mais/prato1.png')} style={styles.foto}/>
+                                    <View style={styles.textos}>
+                                        <Text style={styles.titulo}>Postar Prato</Text>
+                                        <Text style={styles.descricao}>Compartilhe seus <Text style={styles.bold}>pratos favoritos! </Text>
+                                        Poste fotos no <Text style={styles.bold}>seu feed.</Text> Podem ser fotos feitas por você, por algum amigo ou um prato lindo que você consumiu em um restaurante! ;)</Text>
+                                        <TouchableOpacity style={styles.botao} onPress={() => this.abrirCamera()}>
+                                            <Text style={styles.textoBotao}>POSTAR PRATO</Text>
+                                            <Icon name="chevron-right" solid size={14} color="#000" style={{fontWeight: 'bold'}}/>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
 
-                            {this.renderReceitas()}
+                                {this.renderReceitas()}
 
-                            {this.renderPromocoes()}
+                                {this.renderPromocoes()}
 
-                        </ScrollView>
-                    </View>
-                </Modal>
-                    <View style={{
-                        alignItems: 'center',
-                    }}>
-                        <TouchableOpacity activeOpacity={1} onPress={() => this.setState({visible: true})} style={{width: imageWidth, flexDirection: 'row', justifyContent: 'center'}}>
-                            <Icon style={{paddingHorizontal: 25, paddingVertical: 10}} name="plus" size={22} color="#c7c7c7"/>
-                        </TouchableOpacity>
-                    </View>
-            </View>
+                            </ScrollView>
+                        </View>
+                    </Modal>
+                        <View style={{
+                            alignItems: 'center',
+                        }}>
+                            <TouchableOpacity activeOpacity={1} onPress={() => this.setState({visible: true})} style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                <Icon style={{paddingHorizontal: 25, paddingVertical: 10}} name="plus" size={22} color="#c7c7c7"/>
+                            </TouchableOpacity>
+                        </View>
+                </View>
+            </SafeAreaView>
         );
     }
 }

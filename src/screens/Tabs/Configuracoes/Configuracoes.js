@@ -110,7 +110,7 @@ export default class Configuracoes extends Network {
         // if (this.state.loading){
         //     return (
         //         <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-        //             <ActivityIndicator color="#27ae60" size="large"/>
+        //             <ActivityIndicator color="#777" size="large"/>
         //         </View>
         //     );
         // }

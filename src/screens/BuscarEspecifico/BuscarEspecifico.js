@@ -130,7 +130,7 @@ export default class BuscarEspecifico extends Network {
         if (this.state.loading){
             return (
                 <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'column', marginTop: 20}}>
-                    <ActivityIndicator color="#28b657" size="large" />
+                    <ActivityIndicator color="#777" size="large" />
                 </View>
             );
         } else if (this.state.usuarios.length == 0){

@@ -100,19 +100,19 @@ export default class Comentarios extends Network {
 
     returnFooterComponent(){
         if (!this.state.semMaisDados){
-            return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 20, marginBottom: 40 }}/>
+            return <ActivityIndicator color="#777" size="large" style={{ marginTop: 20, marginBottom: 40 }}/>
         } else return <View style={{marginBottom: 20}}></View>
     }
 
     returnLoader(index){
         if (index == this.state.dados.length-1 && !this.state.semMaisDados && !this.state.refreshing)
-            return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 15 }}/>
+            return <ActivityIndicator color="#777" size="large" style={{  marginTop: 15, marginBottom: 15 }}/>
         return;
     }
 
     returnLoaderInicial(){
         if (this.state.dados.length == 0 && !this.state.semMaisDados)
-            return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 30 }}/>
+            return <ActivityIndicator color="#777" size="large" style={{ marginTop: 30 }}/>
         return;
     }
 
@@ -201,7 +201,7 @@ export default class Comentarios extends Network {
             return (
                 <View style={{flex: 1}}>
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                        <ActivityIndicator size="large" color="#28b657" />
+                        <ActivityIndicator size="large" color="#777" />
                     </View>
                     {this.renderCaixaTexto()}
                 </View>

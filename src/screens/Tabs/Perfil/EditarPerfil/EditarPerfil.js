@@ -307,7 +307,7 @@ export default class EditarPerfil extends Network {
         if (this.state.carregandoDados)
             return (
                 <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator color="#27ae60" size="large"/>
+                    <ActivityIndicator color="#777" size="large"/>
                 </View>
             );
         return (

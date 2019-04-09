@@ -136,7 +136,7 @@ export default class EnviarNotificacao extends Network {
         if (this.state.carregandoInicial){
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657" />
+                    <ActivityIndicator size="large" color="#777" />
                 </View>
             );
         }

@@ -199,7 +199,7 @@ export default class Perfil extends Network {
 
     returnFooterComponent(){
         if (!this.state.semMaisDados && !this.state.refreshing){
-            return <ActivityIndicator color="#27ae60" size="large" style={{ marginVertical: 20 }}/>
+            return <ActivityIndicator color="#777" size="large" style={{ marginVertical: 20 }}/>
         } else if (!this.state.refreshing && this.state.semMaisDados && this.state.dados.length == 0){
             return (
                 <SemDadosPerfil icone={"utensils"} titulo={"Ainda não há pratos"} texto={this.getTextoSemFotos()} seta={false}/>
@@ -209,7 +209,7 @@ export default class Perfil extends Network {
 
     returnLoaderInicial(){
         if (this.state.refreshing)
-            return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 30 }}/>
+            return <ActivityIndicator color="#777" size="large" style={{ marginTop: 30 }}/>
         return;
     }
 
@@ -822,7 +822,7 @@ export default class Perfil extends Network {
         if (this.state.carregandoPrimeiraVez){
             return (
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657" />
+                    <ActivityIndicator size="large" color="#777" />
                 </View>
             );
         }

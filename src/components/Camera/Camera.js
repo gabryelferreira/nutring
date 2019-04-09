@@ -22,7 +22,7 @@ const Header = ({onCloseClick, onPress, loading}) => {
             return (
                 <View style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .3}}>
                     <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Publicando</Text>
-                    <ActivityIndicator animating color="#28b657" size={12}/>
+                    <ActivityIndicator animating color="#777" size={12}/>
                 </View>
             );
         return (

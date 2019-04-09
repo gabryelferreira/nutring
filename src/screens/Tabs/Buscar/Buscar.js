@@ -9,6 +9,7 @@ import FotoGrandeEsquerda from './FotosLayout/FotoGrandeEsquerda';
 import FotoGrandeDireita from './FotosLayout/FotoGrandeDireita';
 import FotoPequenaEsquerda from './FotosLayout/FotoPequenaEsquerda';
 import FotoPequenaDireita from './FotosLayout/FotoPequenaDireita';
+import { SafeAreaView } from 'react-navigation';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -19,16 +20,19 @@ export default class Buscar extends Network {
     static navigationOptions = ({ navigation }) => 
     ({
         header: (
-            <View style={{
-                borderBottom: 1,
-                borderColor: '#ddd',
-                elevation: 1,
-                shadowOpacity: 0,
-                height: 50,
-                overflow: 'hidden'
-            }}>
-                <SearchButton onPress={navigation.getParam('abrirModal')}/>
-            </View>
+            <SafeAreaView style={{backgroundColor: '#fff'}}>
+                <View style={{
+                    borderBottom: 1,
+                    borderColor: '#ddd',
+                    borderBottomWidth: 1,
+                    elevation: 1,
+                    shadowOpacity: 0,
+                    height: 50,
+                    overflow: 'hidden'
+                }}>
+                    <SearchButton onPress={navigation.getParam('abrirModal')}/>
+                </View>
+            </SafeAreaView>
         )
     });
 
@@ -220,7 +224,7 @@ export default class Buscar extends Network {
   
     renderTopRestaurantes(){
         return this.state.restaurantes.map((restaurante) => {
-            return <Card key={restaurante.id_usuario + "restaurante"} imagem={restaurante.foto} nome={restaurante.nome} seguidores={restaurante.seguidores} onPress={() => this.props.navigation.navigate("Perfil", { id_usuario_perfil: restaurante.id_usuario })}/>
+            return <Card key={restaurante.id_usuario + "restaurante"} imagem={restaurante.foto ? restaurante.foto : ''} nome={restaurante.nome} seguidores={restaurante.seguidores} onPress={() => this.props.navigation.navigate("Perfil", { id_usuario_perfil: restaurante.id_usuario })}/>
         })
     }
 
@@ -243,7 +247,7 @@ export default class Buscar extends Network {
 
     renderTopReceitas(){
         return this.state.receitas.map((receita) => {
-            return <Card key={receita.id_receita + "receita"} imagem={receita.foto} nome={receita.titulo} onPress={() => this.props.navigation.navigate("VerReceita", { id_receita: receita.id_receita })}/>
+            return <Card key={receita.id_receita + "receita"} imagem={receita.foto ? receita.foto : ''} nome={receita.titulo} onPress={() => this.props.navigation.navigate("VerReceita", { id_receita: receita.id_receita })}/>
         })
     }
 
@@ -275,7 +279,7 @@ export default class Buscar extends Network {
         if (!this.state.semMaisPratos){
             return (
                 <View style={{marginVertical: 10, alignItems: 'center', justifyContent: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657" />
+                    <ActivityIndicator size="large" color="#777" />
                 </View>
             );
         }
@@ -288,7 +292,7 @@ export default class Buscar extends Network {
         if (this.state.loading){
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657" />
+                    <ActivityIndicator size="large" color="#777" />
                 </View>
 
             );

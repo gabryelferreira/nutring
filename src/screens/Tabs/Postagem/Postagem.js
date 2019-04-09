@@ -62,7 +62,7 @@ export default class Postagem extends Network {
         if (this.state.loading){
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator color="#28b657" size="large" />
+                    <ActivityIndicator color="#777" size="large" />
                 </View>
             );
         }

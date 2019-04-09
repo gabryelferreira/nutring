@@ -115,7 +115,7 @@ export default class Receitas extends Network {
 
     returnFooterComponent(){
         if (this.state.receitas.length > 0 && this.state.loading){
-            return <ActivityIndicator color="#27ae60" size="large" style={{  marginVertical: 10 }}/>
+            return <ActivityIndicator color="#777" size="large" style={{  marginVertical: 10 }}/>
         }
         return null;
     }
@@ -124,7 +124,7 @@ export default class Receitas extends Network {
         if (this.state.carregandoInicial){
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657" />
+                    <ActivityIndicator size="large" color="#777" />
                 </View>
             );
         }

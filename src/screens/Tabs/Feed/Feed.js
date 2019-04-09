@@ -238,17 +238,17 @@ export default class Feed extends Network {
         if (this.state.carregandoPrimeiraVez) return null;
         if (campo == 'dados'){
             if (index == this.state.dados.length-1 && !this.state.semMaisDados && !this.refreshing)
-                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 0, marginBottom: 10 }}/>
+                return <ActivityIndicator color="#777" size="large" style={{  marginTop: 0, marginBottom: 10 }}/>
         }
         if (campo == 'usuarios')
             if (index == this.state.usuarios.length-1 && !this.state.semMaisUsuarios && !this.refreshing)
-                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 10 }}/>
+                return <ActivityIndicator color="#777" size="large" style={{  marginTop: 15, marginBottom: 10 }}/>
         return;
     }
 
     returnLoaderInicial(){
         if (this.state.dados.length == 0 && !this.state.semMaisDados){
-            return <ActivityIndicator color="#27ae60" size="large" style={{ marginTop: 30 }}/>
+            return <ActivityIndicator color="#777" size="large" style={{ marginTop: 30 }}/>
         }
         return;
     }
@@ -383,7 +383,7 @@ export default class Feed extends Network {
         // if (this.state.carregandoPrimeiraVez){
         //     return (
         //         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        //             <ActivityIndicator size="large" color="#28b657"/>
+        //             <ActivityIndicator size="large" color="#777"/>
         //         </View>
         //     );
         // }

@@ -151,7 +151,7 @@ export default class Promocao extends Network {
         if (this.state.carregandoPrimeiraVez){
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657" />
+                    <ActivityIndicator size="large" color="#777" />
                 </View>
             );
         }

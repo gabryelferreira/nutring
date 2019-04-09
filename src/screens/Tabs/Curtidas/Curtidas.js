@@ -64,7 +64,7 @@ export default class Curtidas extends Network {
 
     returnLoader(index, campo){
             if (index == this.state.curtidores.length-1 && !this.state.semMaisCurtidores)
-                return <ActivityIndicator color="#27ae60" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
+                return <ActivityIndicator color="#777" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
         return;
     }
 
@@ -81,7 +81,7 @@ export default class Curtidas extends Network {
         if (this.state.carregando && this.state.curtidores){
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#28b657" />
+                    <ActivityIndicator size="large" color="#777" />
                 </View>
             );
         }

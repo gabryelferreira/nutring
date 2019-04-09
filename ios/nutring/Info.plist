@@ -38,7 +38,13 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<string>Precisamos da sua permissão para usar a camera</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Precisamos da sua permissão para usar o microfone</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Precisamos da sua permissão para usar a galeria</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
