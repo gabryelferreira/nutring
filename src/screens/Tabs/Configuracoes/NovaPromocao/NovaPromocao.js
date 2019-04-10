@@ -238,7 +238,7 @@ export default class NovaPromocao extends Network {
                         autoCapitalize={"sentences"}
                         small={true}
                         maxLength={30}
-                        returnKeyType={"none"}
+                        returnKeyType={"default"}
                         disabled={true}
                         />
                     <Input label={"Descrição da notificação"}
@@ -330,7 +330,7 @@ export default class NovaPromocao extends Network {
                             multiline={true}
                             numberOfLines={5}
                             maxLength={255}
-                            returnKeyType={"none"}
+                            returnKeyType={"default"}
                         />
                     </View>
                     <Opcao icone={"rocketchat"} texto={"Enviar notificação?"} switchDisabled={!this.state.permissaoNotificacao || !this.state.planoNotificacao} toggle={true} toggleChange={() => this.setState({enviarNotificacao: !this.state.enviarNotificacao})} toggleValue={this.state.enviarNotificacao}/>

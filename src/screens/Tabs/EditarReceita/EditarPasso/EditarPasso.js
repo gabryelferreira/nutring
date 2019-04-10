@@ -275,7 +275,7 @@ export default class EditarPasso extends Network {
                             multiline={true}
                             numberOfLines={5}
                             maxLength={255}
-                            returnKeyType={"none"}
+                            returnKeyType={"default"}
                         />
                     </View>
                     <View style={styles.container}>

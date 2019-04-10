@@ -279,7 +279,7 @@ export default class EditarPerfil extends Network {
                                 multiline={true}
                                 numberOfLines={5}
                                 maxLength={255}
-                                returnKeyType={'none'}
+                                returnKeyType={'default'}
                         />
                     
                     </View>
@@ -343,7 +343,7 @@ export default class EditarPerfil extends Network {
                             multiline={true}
                             numberOfLines={5}
                             maxLength={255}
-                            returnKeyType={'none'}
+                            returnKeyType={'default'}
                         />
                         {this.renderCoresRestaurante()}
                         <View style={{marginVertical: 5, flex: .7}}>

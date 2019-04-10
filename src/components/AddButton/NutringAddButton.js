@@ -159,9 +159,7 @@ class NutringAddButton extends Network {
                         this.setState({cameraVisible: false})
                     }}
                     >
-                        <SafeAreaView>
                             <Camera onClose={() => this.setState({cameraVisible: false})}/>
-                        </SafeAreaView>
                     </Modal>
                     
                     <Modal 

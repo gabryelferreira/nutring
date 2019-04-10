@@ -178,7 +178,7 @@ export default class EnviarNotificacao extends Network {
                             autoCapitalize={"sentences"}
                             small={true}
                             maxLength={30}
-                            returnKeyType={"none"}
+                            returnKeyType={"default"}
                             disabled={true}
                             />
                         <Input label={"Descrição da notificação"}

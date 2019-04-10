@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, Text, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, ActivityIndicator, Platform } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -61,51 +61,51 @@ const Header = ({onCloseClick, onPress, loading}) => {
 }
 
 export default class Camera extends Network {
-    state = {
-        flash: 'off',
-        zoom: 0,
-        autoFocus: 'on',
-        depth: 0,
-        type: 'back',
-        whiteBalance: 'auto',
-        ratio: '16:9',
-        ratios: [],
-        photoId: 1,
-        showGallery: false,
-        photos: [],
-        faces: [],
-        recordOptions: {
-        mute: false,
-        maxDuration: 5,
-        quality: RNCamera.Constants.VideoQuality["288p"],
-        },
-        isRecording: false,
-        foto: "",
-        fotoTirada: "",
-        uploading: false,
-        contador: 4,
-        lastTap: null,
-        descricao: "",
-        modal: {
-            visible: false,
-            titulo: "",
-            subTitulo: "",
-        },
-        loading: false,
-        fotoPublica: true,
-        fotoPostada: false,
-
-        //ABRIR GALERIA DE FOTOS DO USUÁRIO
-        galeriaAberta: false,
-        fotosGaleria: [],
-        permissaoGaleria: false,
-        ultimaFotoGaleria: "https://cdn0.iconfinder.com/data/icons/Android-R2-png/512/Gallery-Android-R.png"
-    };
+    
 
     constructor(props){
         super(props);
-        // this.animated = new Animated.Value(0);
-        this.requisitarPermissaoCamera();
+        this.state = {
+            flash: 'off',
+            zoom: 0,
+            autoFocus: 'on',
+            depth: 0,
+            type: 'back',
+            whiteBalance: 'auto',
+            ratio: '16:9',
+            ratios: [],
+            photoId: 1,
+            showGallery: false,
+            photos: [],
+            faces: [],
+            recordOptions: {
+            mute: false,
+            maxDuration: 5,
+            quality: RNCamera.Constants.VideoQuality["288p"],
+            },
+            isRecording: false,
+            foto: "",
+            fotoTirada: "",
+            uploading: false,
+            contador: 4,
+            lastTap: null,
+            descricao: "",
+            modal: {
+                visible: false,
+                titulo: "",
+                subTitulo: "",
+            },
+            loading: false,
+            fotoPublica: true,
+            fotoPostada: false,
+    
+            //ABRIR GALERIA DE FOTOS DO USUÁRIO
+            galeriaAberta: false,
+            fotosGaleria: [],
+            permissaoGaleria: Platform.OS === 'ios' ? true : false,
+            ultimaFotoGaleria: "https://cdn0.iconfinder.com/data/icons/Android-R2-png/512/Gallery-Android-R.png"
+        };
+        if (Platform.OS === 'android') this.requisitarPermissaoCamera();
     }
 
     async getUltimaFotoGaleria(){
@@ -142,7 +142,9 @@ export default class Camera extends Network {
           );
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             console.log('You can use the camera');
-            this.requisitarPermissaoGaleria();
+            this.setState({
+                permissaoGaleria: true
+            })
           } else {
             console.log('Camera permission denied');
             this.props.onClose();
@@ -331,7 +333,7 @@ export default class Camera extends Network {
                     <Header onPress={() => this.salvarPublicacao()} loading={this.state.loading} onCloseClick={() => this.setState({fotoTirada: ""})}/>
                     <ScrollView  contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                         <TouchableHighlight>
-                            <Image resizeMethod="resize" source={{uri: this.state.fotoTirada}} style={{height: 250, width: imageWidth}}/>
+                            <Image resizeMethod="resize" source={{uri: this.state.fotoTirada ? this.state.fotoTirada : ''}} style={{height: 250, width: imageWidth}}/>
                         </TouchableHighlight>
                         {/* <TouchableHighlight>
                             <Opcao icone={"lock"} texto={"Foto pública"} toggle={true} toggleChange={() => this.setFotoPublica()} toggleValue={this.state.fotoPublica}/>
@@ -346,7 +348,7 @@ export default class Camera extends Network {
                                 small={true}
                                 numberOfLines={5}
                                 maxLength={500}
-                                returnKeyType={"none"}
+                                returnKeyType={"default"}
                             />
                             <TouchableHighlight style={{marginVertical: 5, flex: .7}}>
                                 <Text style={{fontSize: 11, color: '#000'}}>A foto ficará disponível para todos os seus seguidores.</Text>

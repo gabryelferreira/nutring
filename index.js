@@ -54,6 +54,7 @@ const NavigationOptions = {
         shadowOpacity: 0,
         height: 50,
     },
+    headerBackTitle: null
 }
 
 const InsideTabs = {
@@ -138,7 +139,7 @@ function addNewPage(_initialRouteName){
     return createStackNavigator(
         InsideTabs, {
             initialRouteName: _initialRouteName,
-            transitionConfig : () => (Platform.OS === 'android' ? {
+            transitionConfig : () => (Platform.OS === 'ios' ? {
                 
                 screenInterpolator: props => {
                     // Transitioning to search screen (navigate)
@@ -333,7 +334,7 @@ const AppNavigator = createStackNavigator({
     }
 }, {
     initialRouteName: 'Principal',
-    transitionConfig : () => (Platform.OS === 'android' ? {
+    transitionConfig : () => (Platform.OS === 'ios' ? {
                 
         screenInterpolator: props => {
             // Transitioning to search screen (navigate)
