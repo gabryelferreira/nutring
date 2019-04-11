@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, BackHandler } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, BackHandler, Platform } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -29,8 +29,8 @@ export default class EditarReceita extends Network {
             </TouchableOpacity>
         ) : (
             <View style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .3, marginRight: 20}}>
-                <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Confirmando</Text>
-                <ActivityIndicator animating color="#777" size={12}/>
+                {/* <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Confirmando</Text> */}
+                <ActivityIndicator animating color="#777" size="small"/>
             </View>
         )
     });

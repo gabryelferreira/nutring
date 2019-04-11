@@ -680,6 +680,7 @@ export default class Perfil extends Network {
             refreshing: true,
             galeriaAberta: false,
         })
+        // if (Platform.OS === 'ios') foto = foto.replace('assets-library:', '');
         RNFetchBlob.fs.readFile(foto, 'base64')
         .then(async (data) => {
             let url = `data:image/jpg;base64,${data}`;
