@@ -665,7 +665,7 @@ export default class Perfil extends Network {
         console.log("clicando no " + key)
         if (key == "ALTERAR"){
             this.tipoFoto = "fotoPerfil";
-            this.requisitarPermissaoGaleria();
+            Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria();
         } else if (key == "VER_FOTO"){
             this.setState({
                 modalFotoVisible: true

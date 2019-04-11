@@ -48,9 +48,16 @@ PODS:
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
+  - React (0.11.0):
+    - React/Core (= 0.11.0)
+  - React/Core (0.11.0)
+  - RNFirebase (5.2.1):
+    - Firebase/Core
+    - React
 
 DEPENDENCIES:
   - Firebase/Core
+  - RNFirebase (from `../node_modules/react-native-firebase/ios`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -61,6 +68,11 @@ SPEC REPOS:
     - GoogleAppMeasurement
     - GoogleUtilities
     - nanopb
+    - React
+
+EXTERNAL SOURCES:
+  RNFirebase:
+    :path: "../node_modules/react-native-firebase/ios"
 
 SPEC CHECKSUMS:
   Firebase: 749a8ff4962f9d8c79dda1966de20f6f77583d67
@@ -70,7 +82,9 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: 621f3bc6211d5ba548debe01fafad30cf5ab6859
   GoogleUtilities: 111a012f4c3a29c9e7c954c082fafd6ee3c999c0
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  React: ab1a2e21deb34965c38328d5ec40cc7d12c6050a
+  RNFirebase: 24ed56149251c99f6cb7d44100cade4b953fbd08
 
-PODFILE CHECKSUM: 5c55e847fadd763f3bc7bf26fda8e77ac7bf3aa6
+PODFILE CHECKSUM: f7ab6f6747ba77f695c8805389787e63dee62ddd
 
 COCOAPODS: 1.6.1
