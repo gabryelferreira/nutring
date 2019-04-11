@@ -22,7 +22,7 @@ const Header = ({onCloseClick, onPress, loading}) => {
             return (
                 <View style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .3}}>
                     <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Publicando</Text>
-                    <ActivityIndicator animating color="#777" size={12}/>
+                    <ActivityIndicator animating color="#777" size="small"/>
                 </View>
             );
         return (
@@ -202,8 +202,10 @@ export default class Camera extends Network {
             const options = { quality: 0.28, forceUpOrientation: true, fixOrientation: true };
             const data = await this.camera.takePictureAsync(options);
             console.log("data = ", data);
+            let filename = data.uri;
+            if (Platform.OS === 'ios') filename = filename.replace('file:', '')
             this.setState({
-                fotoTirada: data.uri,
+                fotoTirada: filename,
                 uploading: false
             });
         } else {
@@ -366,7 +368,7 @@ export default class Camera extends Network {
         }
         return (
             <View style={{flex: 1, backgroundColor: '#000', justifyContent: 'space-between'}}>
-                <View style={{flex: .4,justifyContent: 'flex-start'}}>
+                <View style={{flex: .4,justifyContent: 'flex-start', zIndex: 9999}}>
                     <View style={styles.botoesCima}>
                         <View style={[styles.viewBotao, styles.alignEsquerda]}>
                             <TouchableOpacity disabled={this.state.uploading}
@@ -393,7 +395,7 @@ export default class Camera extends Network {
                     justifyContent: 'center',
                     
                 }}>
-                    <View style={{height: imageWidth/1.5, overflow: 'hidden'}}>
+                    <View style={{height: imageWidth/1.5, width: imageWidth, overflow: 'hidden'}}>
                         <RNCamera
                             ref={ref => {
                             this.camera = ref;
@@ -412,7 +414,7 @@ export default class Camera extends Network {
                     </View>
                 
                 </View>
-                <View style={{flex: .4,justifyContent: 'flex-end', marginTop: 20}}>
+                <View style={{flex: .4,justifyContent: 'flex-end', marginTop: 20, zIndex: 9999}}>
                     <View style={styles.botoes}>
                         <View style={[styles.viewBotao, styles.alignEsquerda]}>
                             <TouchableOpacity disabled={this.state.uploading}

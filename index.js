@@ -52,9 +52,9 @@ const NavigationOptions = {
         borderColor: '#ddd',
         elevation: 1,
         shadowOpacity: 0,
-        height: 50,
+        height: 50
     },
-    headerBackTitle: null
+    headerBackTitle: "top bb"
 }
 
 const InsideTabs = {
@@ -68,6 +68,7 @@ const InsideTabs = {
     },
     Perfil: {
         screen: Perfil,
+        navigation: NavigationOptions
     },
     Configuracoes: {
         screen: Configuracoes,
@@ -281,7 +282,11 @@ const AppNavigator = createStackNavigator({
         navigationOptions: {
             header: (
                 <View></View>
-            )
+            ),
+            headerBackTitle: null,
+            headerBackTitleStyle: {
+                color: '#000'
+            }
         }
     },
     Comentarios: {

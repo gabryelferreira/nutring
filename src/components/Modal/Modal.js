@@ -91,9 +91,6 @@ const styles = {
         alignSelf: 'stretch',
         flexDirection: 'column',
         backgroundColor: '#fff',
-        shadowOffset:{  width: 10,  height: 10,  },
-        shadowColor: 'black',
-        shadowOpacity: 1.0,
         borderRadius: 5,
     },
     paddingHorizontal: {

@@ -10,7 +10,7 @@ const BotaoPequeno = ({texto, textoLoading, onPress, loading, disabled}) => {
             return (
                 <View style={[styles.botao, {opacity: .2}]}>
                     <Text style={styles.textoBotao}>{textoLoading}</Text>
-                    <ActivityIndicator animating color="#000" size={13}/>
+                    <ActivityIndicator animating color="#000" size="small"/>
                 </View>
             );
         }

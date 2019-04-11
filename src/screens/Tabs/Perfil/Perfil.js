@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -473,7 +473,7 @@ export default class Perfil extends Network {
             return (
                 <TouchableOpacity onPress={() => {
                     this.tipoFoto = "capaPerfil"
-                    this.requisitarPermissaoGaleria()
+                    Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria()
                 }}
                     style={{
                     paddingHorizontal: 10, 

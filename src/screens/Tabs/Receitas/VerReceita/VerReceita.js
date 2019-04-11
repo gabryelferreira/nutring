@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Modal } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Modal, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 import Network from '../../../../network';
@@ -23,7 +23,7 @@ export default class VerReceita extends Network {
                     {navigation.getParam("excluindo", false) ? (
                         <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .3}}>
                             <Text style={{fontSize: 16, color: '#DC143C', fontWeight: 'bold', marginRight: 5}}>Excluindo</Text>
-                            <ActivityIndicator animating color="#DC143C" size={12}/>
+                            <ActivityIndicator animating color="#DC143C" size="small"/>
                         </View>
                     ) : (
                         <TouchableOpacity onPress={navigation.getParam("onDotsClick")} style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
@@ -347,7 +347,9 @@ export default class VerReceita extends Network {
                         this.fecharModalPassos()
                     }}
                 >
+                <SafeAreaView style={{flex: 1}}>
                     {this.renderPassosReceita()}
+                </SafeAreaView>
                         
                 </Modal>
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, Image, Dimensions, Modal, Platform, Text } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { SafeAreaView } from 'react-navigation';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -71,12 +72,14 @@ const Galeria = ({fotos, onPress, onClose}) => {
             presentationStyle="fullScreen"
             onRequestClose={onClose}
             >
-            <Header onCloseClick={onClose}/>       
-            <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                    {returnFotos()}
-                </View>
-            </ScrollView>
+            <SafeAreaView style={{flex: 1}}>
+                <Header onCloseClick={onClose}/>       
+                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                    <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                        {returnFotos()}
+                    </View>
+                </ScrollView>
+            </SafeAreaView>
         </Modal>
     );
 }
