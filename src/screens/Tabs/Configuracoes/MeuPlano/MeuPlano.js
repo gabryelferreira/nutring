@@ -561,7 +561,8 @@ const styles = {
         width: 90,
         height: 90,
         borderRadius: 90/2,
-        marginRight: 30
+        marginRight: 30,
+        zIndex: 999
     },
     tituloPlano: {
         color: '#fff',

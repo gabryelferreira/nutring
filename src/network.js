@@ -26,7 +26,7 @@ export default class Network extends Component {
         options.body = urlencode(data);
 
         console.log("function = " + _function)
-        console.log("body = ", options.body);
+        // console.log("body = ", options.body);
         try {
             let result = await fetch(this.url + _function, options);
             result = await result.json();

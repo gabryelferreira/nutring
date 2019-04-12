@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, Image, PermissionsAndroid, CameraRoll } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, Image, PermissionsAndroid, CameraRoll, Platform } from 'react-native';
 import Network from '../../../../network';
 import Opcao from '../../../../components/Opcao/Opcao';
 import Input from '../../../../components/Input/Input'
@@ -289,7 +289,7 @@ export default class NovaPromocao extends Network {
                         {this.returnImagemPublicacao(this.state.foto)}
                         <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
                             <TouchableOpacity onPress={() => {
-                                    this.requisitarPermissaoGaleria()
+                                    Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria()
                                 }}
                                     style={{
                                     paddingHorizontal: 10, 

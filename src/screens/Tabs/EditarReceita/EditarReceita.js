@@ -150,6 +150,8 @@ export default class EditarReceita extends Network {
         }
         dados = JSON.stringify(dados);
         passos = JSON.stringify(passos);
+        // console.log("dados = ", dados);
+        // console.log("passos = ", passos);
         let result = await this.callMethod("confirmarReceita", { dados, passos });
         this.props.navigation.setParams({
             loading: false
