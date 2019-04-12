@@ -7,7 +7,7 @@ target 'nutring' do
 
   # Pods for nutring
   pod 'Firebase/Core'
-  pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
+  pod 'Firebase/Messaging'
 
   target 'nutringTests' do
     inherit! :search_paths
