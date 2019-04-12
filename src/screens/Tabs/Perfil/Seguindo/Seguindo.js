@@ -20,7 +20,7 @@ export default class Seguidores extends Network {
             limit: 30,
             semMaisSeguindo: false,
             id_usuario_perfil: this.props.navigation.getParam("id_usuario_perfil", "0"),
-            carregandoInicial: false
+            carregandoInicial: true
         }
     }
 
@@ -58,7 +58,7 @@ export default class Seguidores extends Network {
             await this.setState({
                 offset: this.state.offset + this.state.limit
             });
-            await this.carregarDados();
+            await this.getSeguindo();
         }
     }
 
@@ -78,7 +78,7 @@ export default class Seguidores extends Network {
     }
 
     render(){
-        if (this.state.carregando && this.state.seguindo){
+        if (this.state.carregando && this.state.carregandoInicial){
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                     <ActivityIndicator size="large" color="#777" />
