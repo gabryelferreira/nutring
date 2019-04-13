@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, NativeModules, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import Network from '../../../../../network';
 import Opcao from '../../../../../components/Opcao/Opcao';
 import Input from '../../../../../components/Input/Input'
 import Sugestoes from '../../../../../components/Sugestoes/Sugestoes';
 import BotaoPequeno from '../../../../../components/Botoes/BotaoPequeno';
 import Modalzin from '../../../../../components/Modal/Modal';
+
+const HEADER_HEIGHT = 50;
 
 export default class AlterarSenha extends Network {
 
@@ -28,8 +31,17 @@ export default class AlterarSenha extends Network {
                 titulo: "",
                 subTitulo: ""
             },
-            loading: false
+            loading: false,
+            statusBarHeight: 20
         }
+    }
+
+    componentDidMount(){
+        StatusBarManager.getHeight(statusBar => {
+            this.setState({
+                statusBarHeight: statusBar.height
+            });
+        });
     }
 
     getModalClick(){
@@ -102,7 +114,7 @@ export default class AlterarSenha extends Network {
                     onClick={() => this.getModalClick()}
                     onClose={() => this.getModalClick()}
                 />
-                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={64}>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={this.state.statusBarHeight + HEADER_HEIGHT}>
                     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}  keyboardShouldPersistTaps={"handled"}>
                         <View style={styles.container}>
                             <Input label={"Senha atual"} icone={"lock"}

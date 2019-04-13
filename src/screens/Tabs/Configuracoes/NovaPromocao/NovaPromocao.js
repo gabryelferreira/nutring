@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, Image, PermissionsAndroid, CameraRoll, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, NativeModules, ScrollView, ActivityIndicator, Dimensions, Image, PermissionsAndroid, CameraRoll, Platform, KeyboardAvoidingView } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import Network from '../../../../network';
 import Opcao from '../../../../components/Opcao/Opcao';
 import Input from '../../../../components/Input/Input'
@@ -13,6 +14,8 @@ import RNFetchBlob from 'react-native-fetch-blob';
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
+
+const HEADER_HEIGHT = 50;
 
 export default class NovaPromocao extends Network {
 
@@ -47,10 +50,16 @@ export default class NovaPromocao extends Network {
             fotosGaleria: [],
             galeriaAberta: false,
             enviarNotificacao: false,
+            statusBarHeight: 20
         }
     }
 
     componentDidMount(){
+        StatusBarManager.getHeight(statusBar => {
+            this.setState({
+                statusBarHeight: statusBar.height
+            });
+        });
         this.getNomeUsuarioById();
     }
 
@@ -284,67 +293,69 @@ export default class NovaPromocao extends Network {
                     onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                    <View style={styles.imagem}>
-                        {this.returnImagemPublicacao(this.state.foto)}
-                        <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                            <TouchableOpacity onPress={() => {
-                                    Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria()
-                                }}
-                                    style={{
-                                    paddingHorizontal: 10, 
-                                    paddingVertical: 3, 
-                                    justifyContent: 'center', 
-                                    alignItems: 'center', 
-                                    borderWidth: 1, 
-                                    borderColor: '#eee',
-                                    backgroundColor: 'rgba(0, 0, 0, .3)',
-                                    marginRight: 10,
-                                    marginBottom: 10,
-                                    borderRadius: 20
-                                }}>
-                                    <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar foto</Text>
-                                </TouchableOpacity>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={this.state.statusBarHeight + HEADER_HEIGHT}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                        <View style={styles.imagem}>
+                            {this.returnImagemPublicacao(this.state.foto)}
+                            <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+                                <TouchableOpacity onPress={() => {
+                                        Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria()
+                                    }}
+                                        style={{
+                                        paddingHorizontal: 10, 
+                                        paddingVertical: 3, 
+                                        justifyContent: 'center', 
+                                        alignItems: 'center', 
+                                        borderWidth: 1, 
+                                        borderColor: '#eee',
+                                        backgroundColor: 'rgba(0, 0, 0, .3)',
+                                        marginRight: 10,
+                                        marginBottom: 10,
+                                        borderRadius: 20
+                                    }}>
+                                        <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar foto</Text>
+                                    </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                    <Opcao icone={"bolt"} texto={"Promoção Relâmpago"} toggle={true} toggleChange={() => this.setState({promocaoRelampago: !this.state.promocaoRelampago})} toggleValue={this.state.promocaoRelampago}/>
-                    <View style={styles.container}>
-                        <Input label={"Título"}
-                                icone={"comment"}
-                                onChangeText={(titulo) => this.setState({titulo})}
-                                value={this.state.titulo}
-                                onSubmitEditing={() => this.segundoInput.focus()}
+                        <Opcao icone={"bolt"} texto={"Promoção Relâmpago"} toggle={true} toggleChange={() => this.setState({promocaoRelampago: !this.state.promocaoRelampago})} toggleValue={this.state.promocaoRelampago}/>
+                        <View style={styles.container}>
+                            <Input label={"Título"}
+                                    icone={"comment"}
+                                    onChangeText={(titulo) => this.setState({titulo})}
+                                    value={this.state.titulo}
+                                    onSubmitEditing={() => this.segundoInput.focus()}
+                                    autoCapitalize={"sentences"}
+                                    blurOnSubmit={false}
+                                    small={true}
+                                    maxLength={255}
+                                    returnKeyType={"next"}
+                                />
+                            <Input label={"Descrição"}
+                                    icone={"comment"}
+                                    inputRef={(input) => this.segundoInput = input}
+                                onChangeText={(descricao) => this.setState({descricao})}
+                                value={this.state.descricao}
                                 autoCapitalize={"sentences"}
-                                blurOnSubmit={false}
                                 small={true}
+                                multiline={true}
+                                numberOfLines={5}
                                 maxLength={255}
-                                returnKeyType={"next"}
+                                returnKeyType={"default"}
                             />
-                        <Input label={"Descrição"}
-                                icone={"comment"}
-                                inputRef={(input) => this.segundoInput = input}
-                            onChangeText={(descricao) => this.setState({descricao})}
-                            value={this.state.descricao}
-                            autoCapitalize={"sentences"}
-                            small={true}
-                            multiline={true}
-                            numberOfLines={5}
-                            maxLength={255}
-                            returnKeyType={"default"}
-                        />
-                    </View>
-                    <Opcao icone={"rocketchat"} texto={"Enviar notificação?"} switchDisabled={!this.state.permissaoNotificacao || !this.state.planoNotificacao} toggle={true} toggleChange={() => this.setState({enviarNotificacao: !this.state.enviarNotificacao})} toggleValue={this.state.enviarNotificacao}/>
-                    <View style={styles.container}>
-                        {this.renderPermissaoNotificacao()}
-                        <View style={{marginVertical: 5, flex: .7}}>
-                            {this.renderEnviarNotificacao()}
-                            
                         </View>
-                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <BotaoPequeno disabled={this.state.disabled} texto={"Cadastrar"} textoLoading={"Cadastrando"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
+                        <Opcao icone={"rocketchat"} texto={"Enviar notificação?"} switchDisabled={!this.state.permissaoNotificacao || !this.state.planoNotificacao} toggle={true} toggleChange={() => this.setState({enviarNotificacao: !this.state.enviarNotificacao})} toggleValue={this.state.enviarNotificacao}/>
+                        <View style={styles.container}>
+                            {this.renderPermissaoNotificacao()}
+                            <View style={{marginVertical: 5, flex: .7}}>
+                                {this.renderEnviarNotificacao()}
+                                
+                            </View>
+                            <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                                <BotaoPequeno disabled={this.state.disabled} texto={"Cadastrar"} textoLoading={"Cadastrando"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
+                            </View>
                         </View>
-                    </View>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         );
     }

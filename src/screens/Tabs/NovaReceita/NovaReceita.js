@@ -17,7 +17,7 @@ import BotaoPequeno from '../../../components/Botoes/BotaoPequeno';
 import DraggableFlatList from 'react-native-draggable-flatlist';
 import { SafeAreaView } from 'react-navigation';
 
-const headerHeight = 51;
+const HEADER_HEIGHT = 50;
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -48,14 +48,14 @@ export default class NovaReceita extends Network {
             permissaoGaleria: false,
             fotosGaleria: [],
             galeriaAberta: false,
-            statusBarHeight: 0
+            statusBarHeight: 20
         }
     }
 
     componentDidMount(){
-        StatusBarManager.getHeight(({statusBarHeight}) => {
+        StatusBarManager.getHeight(statusBar => {
             this.setState({
-                statusBarHeight
+                statusBarHeight: statusBar.height
             });
         });
     }
@@ -160,7 +160,7 @@ export default class NovaReceita extends Network {
             return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.setState({foto, galeriaAberta: false})} onClose={() => this.setState({galeriaAberta: false})}/>
         }
         return (
-            <SafeAreaView style={{flex: 1}}>
+            <View style={{flex: 1}}>
                 <Modalzin 
                     titulo={this.state.modal.titulo} 
                     subTitulo={this.state.modal.subTitulo} 
@@ -169,7 +169,7 @@ export default class NovaReceita extends Network {
                     onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
-                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding"   keyboardVerticalOffset={64}>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding"   keyboardVerticalOffset={this.state.statusBarHeight + HEADER_HEIGHT}>
                     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                         <View style={styles.imagem}>
                             {this.returnImagemPublicacao(this.state.foto)}
@@ -227,7 +227,7 @@ export default class NovaReceita extends Network {
                         </View>
                     </ScrollView>
                 </KeyboardAvoidingView>
-            </SafeAreaView>
+            </View>
         );
     }
 

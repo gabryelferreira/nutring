@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, NativeModules, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform, KeyboardAvoidingView } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../../components/Loader/Loader';
@@ -14,6 +15,8 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import Input from '../../../../components/Input/Input';
 import BotaoPequeno from '../../../../components/Botoes/BotaoPequeno';
 import DraggableFlatList from 'react-native-draggable-flatlist'
+
+const HEADER_HEIGHT = 50;
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;

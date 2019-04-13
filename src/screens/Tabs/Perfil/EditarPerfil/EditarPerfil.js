@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, NativeModules, ScrollView, ActivityIndicator, Modal, KeyboardAvoidingView, Platform } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import Network from '../../../../network';
 import Opcao from '../../../../components/Opcao/Opcao';
 import Input from '../../../../components/Input/Input'
@@ -10,6 +11,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import Label from '../../../../components/Label/Label';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 
+const HEADER_HEIGHT = 50;
 
 export default class EditarPerfil extends Network {
 
@@ -43,11 +45,17 @@ export default class EditarPerfil extends Network {
             cor_texto: "",
             nome: "",
             sobre: "",
-            horarios_funcionamento: []
+            horarios_funcionamento: [],
+            statusBarHeight: 20
         }
     }
 
     componentDidMount(){
+        StatusBarManager.getHeight(statusBar => {
+            this.setState({
+                statusBarHeight: statusBar.height
+            });
+        });
         this.setState({
             user: this.props.navigation.getParam("user", {})
         }, this.setDados)
@@ -320,45 +328,47 @@ export default class EditarPerfil extends Network {
                     onClick={(chave) => this.getModalClick(chave)}
                     onClose={() => this.getModalClick()}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                    <View style={styles.container}>
-                        <Input label={"Nome *"}
-                            icone={"user"}
-                            onChangeText={(nome) => this.setState({nome})}
-                            value={this.state.nome}
-                            autoCapitalize={"words"}
-                            onSubmitEditing={() => this.segundoInput.focus()}
-                            small={true}
-                            blurOnSubmit={false}
-                            maxLength={60}
-                            returnKeyType={'next'}
-                        />
-                        <Input label={"Descrição"}
-                            icone={"comment"}
-                            inputRef={(input) => this.segundoInput = input}
-                            onChangeText={(descricao) => this.setState({descricao})}
-                            value={this.state.descricao}
-                            autoCapitalize={"sentences"}
-                            small={true}
-                            multiline={true}
-                            numberOfLines={5}
-                            maxLength={255}
-                            returnKeyType={'default'}
-                        />
-                        {this.renderCoresRestaurante()}
-                        <View style={{marginVertical: 5, flex: .7}}>
-                            <Text style={{fontSize: 11, color: '#000'}}>A descrição ficará visível para quem acessar seu perfil.</Text>
-                            {/* <Text style={{fontSize: 11, color: '#000'}}>Pode ficar tranquilo ;)</Text> */}
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={this.state.statusBarHeight + HEADER_HEIGHT}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                        <View style={styles.container}>
+                            <Input label={"Nome *"}
+                                icone={"user"}
+                                onChangeText={(nome) => this.setState({nome})}
+                                value={this.state.nome}
+                                autoCapitalize={"words"}
+                                onSubmitEditing={() => this.segundoInput.focus()}
+                                small={true}
+                                blurOnSubmit={false}
+                                maxLength={60}
+                                returnKeyType={'next'}
+                            />
+                            <Input label={"Descrição"}
+                                icone={"comment"}
+                                inputRef={(input) => this.segundoInput = input}
+                                onChangeText={(descricao) => this.setState({descricao})}
+                                value={this.state.descricao}
+                                autoCapitalize={"sentences"}
+                                small={true}
+                                multiline={true}
+                                numberOfLines={5}
+                                maxLength={255}
+                                returnKeyType={'default'}
+                            />
+                            {this.renderCoresRestaurante()}
+                            <View style={{marginVertical: 5, flex: .7}}>
+                                <Text style={{fontSize: 11, color: '#000'}}>A descrição ficará visível para quem acessar seu perfil.</Text>
+                                {/* <Text style={{fontSize: 11, color: '#000'}}>Pode ficar tranquilo ;)</Text> */}
+                            </View>
+                            
                         </View>
-                        
-                    </View>
-                    {this.renderInformacoesRestaurante()}
-                    <View style={styles.container}>
-                        <View style={{marginBottom: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <BotaoPequeno texto={"Confirmar"} textoLoading={"Confirmando"} onPress={() => this.editarPerfil()} loading={this.state.loading}/>
+                        {this.renderInformacoesRestaurante()}
+                        <View style={styles.container}>
+                            <View style={{marginBottom: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                                <BotaoPequeno texto={"Confirmar"} textoLoading={"Confirmando"} onPress={() => this.editarPerfil()} loading={this.state.loading}/>
+                            </View>
                         </View>
-                    </View>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         );
     }

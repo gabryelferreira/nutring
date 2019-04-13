@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, Image, PermissionsAndroid, CameraRoll } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, Image, PermissionsAndroid, CameraRoll, Platform, KeyboardAvoidingView, NativeModules } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import Network from '../../../../network';
 import Opcao from '../../../../components/Opcao/Opcao';
 import Input from '../../../../components/Input/Input'
@@ -14,6 +15,8 @@ import SemDados from '../../../../components/SemDados/SemDados';
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;
+
+const HEADER_HEIGHT = 50;
 
 export default class EnviarNotificacao extends Network {
 
@@ -41,11 +44,17 @@ export default class EnviarNotificacao extends Network {
             seguidores: 0,
             disabled: true,
             carregandoInicial: true,
-            semConexao: false
+            semConexao: false,
+            statusBarHeight: 20
         }
     }
 
     componentDidMount(){
+        StatusBarManager.getHeight(statusBar => {
+            this.setState({
+                statusBarHeight: statusBar.height
+            });
+        });
         this.getNomeUsuarioById();
     }
 
@@ -169,38 +178,40 @@ export default class EnviarNotificacao extends Network {
                     onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                    <View style={styles.container}>
-                        <Input label={"Título da notificação"}
-                            icone={"comment"}
-                            onChangeText={(tituloNotificacao) => this.setState({tituloNotificacao})}
-                            value={this.state.tituloNotificacao}
-                            autoCapitalize={"sentences"}
-                            small={true}
-                            maxLength={30}
-                            returnKeyType={"default"}
-                            disabled={true}
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={this.state.statusBarHeight + HEADER_HEIGHT}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                        <View style={styles.container}>
+                            <Input label={"Título da notificação"}
+                                icone={"comment"}
+                                onChangeText={(tituloNotificacao) => this.setState({tituloNotificacao})}
+                                value={this.state.tituloNotificacao}
+                                autoCapitalize={"sentences"}
+                                small={true}
+                                maxLength={30}
+                                returnKeyType={"default"}
+                                disabled={true}
+                                />
+                            <Input label={"Descrição da notificação"}
+                                icone={"comment"}
+                                onChangeText={(descricaoNotificacao) => this.setState({descricaoNotificacao})}
+                                value={this.state.descricaoNotificacao}
+                                onSubmitEditing={() => this.confirmarEnvio()}
+                                autoCapitalize={"sentences"}
+                                small={true}
+                                multiline={true}
+                                numberOfLines={5}
+                                maxLength={100}
+                                returnKeyType={"send"}
                             />
-                        <Input label={"Descrição da notificação"}
-                            icone={"comment"}
-                            onChangeText={(descricaoNotificacao) => this.setState({descricaoNotificacao})}
-                            value={this.state.descricaoNotificacao}
-                            onSubmitEditing={() => this.confirmarEnvio()}
-                            autoCapitalize={"sentences"}
-                            small={true}
-                            multiline={true}
-                            numberOfLines={5}
-                            maxLength={100}
-                            returnKeyType={"send"}
-                        />
-                        <View style={{marginVertical: 5, flex: .7}}>
-                            <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
+                            <View style={{marginVertical: 5, flex: .7}}>
+                                <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
+                            </View>
+                            <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                                <BotaoPequeno disabled={this.state.disabled} texto={"Enviar"} textoLoading={"Enviando"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
+                            </View>
                         </View>
-                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <BotaoPequeno disabled={this.state.disabled} texto={"Enviar"} textoLoading={"Enviando"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
-                        </View>
-                    </View>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         );
     }

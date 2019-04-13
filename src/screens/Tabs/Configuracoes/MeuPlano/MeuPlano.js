@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, WebView, Image, Modal } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator, Dimensions, WebView, Image, Modal, SafeAreaView } from 'react-native';
 import Network from '../../../../network';
 import BotaoPequeno from '../../../../components/Botoes/BotaoPequeno';
 import Modalzin from '../../../../components/Modal/Modal';
@@ -197,7 +197,7 @@ export default class MeuPlano extends Network {
     renderIconeForward(id_plano){
         if (this.state.assinando){
             if (this.state.planoAssinando && this.state.planoAssinando.id_plano == id_plano){
-                return <ActivityIndicator animating color="#fff" size={14}/>
+                return <ActivityIndicator animating color="#fff" size="small"/>
             }
             return <Icon name="chevron-right" solid size={14} color="#fff" style={{fontWeight: 'bold'}}/>
         }
@@ -207,7 +207,7 @@ export default class MeuPlano extends Network {
     renderIconeForwardModal(id_plano){
         if (this.state.assinando){
             if (this.state.planoAssinando && this.state.planoAssinando.id_plano == id_plano){
-                return <ActivityIndicator animating color="#fff" size={16}/>
+                return <ActivityIndicator animating color="#fff" size="small"/>
             }
             return <Icon name="chevron-right" solid size={16} color="#fff" style={{fontWeight: 'bold'}}/>
         }
@@ -344,7 +344,7 @@ export default class MeuPlano extends Network {
     renderModal(){
         if (this.state.planoAssinando){
             return (
-                <View style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, .94)'}}>
+                <SafeAreaView style={{flex: 1, backgroundColor: 'rgba(0, 0, 0, .94)'}}>
                     <View style={styles.modalHeader}>
                         <TouchableOpacity onPress={() => this.setState({modalAberto: false})} style={styles.botaoFecharModal}>
                             <Icon name="times" color="#fff" size={24}/>
@@ -374,7 +374,7 @@ export default class MeuPlano extends Network {
                             {this.renderObsPlano(this.state.planoAssinando)}
                         </View>
                     </ScrollView>
-                </View>
+                </SafeAreaView>
             );
         }
         return null;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, NativeModules, Text, Alert, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, ActivityIndicator, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, TouchableOpacity, NativeModules, Text, Alert, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, ActivityIndicator, Platform, KeyboardAvoidingView, SafeAreaView } from 'react-native';
 const { StatusBarManager } = NativeModules;
 import { RNCamera } from 'react-native-camera';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -24,7 +24,7 @@ const Header = ({onCloseClick, onPress, loading}) => {
         if (loading)
             return (
                 <View style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', opacity: .3}}>
-                    <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Publicando</Text>
+                    {/* <Text style={{fontSize: 16, color: '#28b657', fontWeight: 'bold', marginRight: 5}}>Publicando</Text> */}
                     <ActivityIndicator animating color="#777" size="small"/>
                 </View>
             );
@@ -113,11 +113,11 @@ export default class Camera extends Network {
     }
 
     componentDidMount(){
-        // StatusBarManager.getHeight(({statusBarHeight}) => {
-        //     this.setState({
-        //         statusBarHeight
-        //     });
-        // });
+        StatusBarManager.getHeight(statusBar => {
+            this.setState({
+                statusBarHeight: statusBar.height
+            });
+        });
     }
 
     async getUltimaFotoGaleria(){
@@ -294,6 +294,7 @@ export default class Camera extends Network {
         })
         if (this.state.fotoPostada){
             this.props.onClose();
+            this.props.onClose;
         }
     }
 
@@ -336,7 +337,7 @@ export default class Camera extends Network {
     render(){
         if (this.state.fotoTirada){
             return (
-                <View style={{flex: 1}}>
+                <SafeAreaView style={{flex: 1}}>
                     <Modalzin 
                         titulo={this.state.modal.titulo} 
                         subTitulo={this.state.modal.subTitulo} 
@@ -344,8 +345,8 @@ export default class Camera extends Network {
                         onClick={(key) => this.getModalClick(key)}
                         onClose={() => this.getModalClick()}
                     />
-                    <Header onPress={() => this.salvarPublicacao()} loading={this.state.loading} onCloseClick={() => this.setState({fotoTirada: ""})}/>
-                    <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={keyboardHeight}>
+                    <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={0}>
+                        <Header onPress={() => this.salvarPublicacao()} loading={this.state.loading} onCloseClick={() => this.setState({fotoTirada: ""})}/>
                         <ScrollView  contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                             <TouchableHighlight>
                                 <Image resizeMethod="resize" source={{uri: this.state.fotoTirada ? this.state.fotoTirada : ''}} style={{height: 250, width: imageWidth}}/>
@@ -374,14 +375,14 @@ export default class Camera extends Network {
                             </View>
                         </ScrollView>
                     </KeyboardAvoidingView>
-                </View>
+                </SafeAreaView>
             );
         }
         if (this.state.galeriaAberta){
             return this.renderGaleria();
         }
         return (
-            <View style={{flex: 1, backgroundColor: '#000', justifyContent: 'space-between'}}>
+            <SafeAreaView style={{flex: 1, backgroundColor: '#000', justifyContent: 'space-between'}}>
                 <View style={{flex: .4,justifyContent: 'flex-start', zIndex: 9999}}>
                     <View style={styles.botoesCima}>
                         <View style={[styles.viewBotao, styles.alignEsquerda]}>
@@ -454,7 +455,7 @@ export default class Camera extends Network {
                         </View>
                     </View>
                 </View>
-            </View>
+            </SafeAreaView>
         );
     }
 }
