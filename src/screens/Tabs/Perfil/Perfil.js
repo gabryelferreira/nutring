@@ -28,6 +28,7 @@ export default class Perfil extends Network {
 
     static navigationOptions = ({navigation}) => ({
         title: navigation.getParam('nome', ''),
+        headerBackTitle: "",
         headerRight: (
             <TouchableOpacity onPress={() => {
                 navigation.navigate("Configuracoes");
@@ -36,9 +37,12 @@ export default class Perfil extends Network {
             </TouchableOpacity>
         ),
         headerTintColor: navigation.getParam('cor_texto', '#000'),
+        headerBackTitleStyle: {
+            color: navigation.getParam('cor_fundo', '#fff'),
+        },
         headerStyle: {
             backgroundColor: navigation.getParam('cor_fundo', '#fff'),
-            borderBottom: 1,
+            borderBottom: 0,
             borderColor: '#ddd',
             elevation: 1,
             shadowOpacity: 0,
@@ -199,18 +203,12 @@ export default class Perfil extends Network {
 
     returnFooterComponent(){
         if (!this.state.semMaisDados && !this.state.refreshing){
-            return <ActivityIndicator color="#777" size="large" style={{ marginVertical: 20 }}/>
+            return <ActivityIndicator color="#777" size="small" style={{ marginVertical: 20 }}/>
         } else if (!this.state.refreshing && this.state.semMaisDados && this.state.dados.length == 0){
             return (
                 <SemDadosPerfil icone={"utensils"} titulo={"Ainda não há pratos"} texto={this.getTextoSemFotos()} seta={false}/>
             );
         } return null;
-    }
-
-    returnLoaderInicial(){
-        if (this.state.refreshing)
-            return <ActivityIndicator color="#777" size="large" style={{ marginTop: 30 }}/>
-        return;
     }
 
     editarPerfil(){
@@ -345,7 +343,7 @@ export default class Perfil extends Network {
             return (
                 <View key={receita.id_receita} style={styles.receita}>
                         {/* <Icon name="plus" size={15} color="#000"/> */}
-                    <Image resizeMethod="resize" source={{uri: receita.foto}} style={styles.fotoReceita}/>
+                    <Image resizeMethod="resize" source={{uri: receita.foto ? receita.foto : ""}} style={styles.fotoReceita}/>
                 </View>
             );
         })
@@ -404,11 +402,11 @@ export default class Perfil extends Network {
                     <View style={[styles.capaUsuario, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2, alignItems: 'flex-end'}]}>
                         {this.renderBotaoAlterarCapa(sou_eu)}
                     </View>
-                    <Image resizeMethod="resize" source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
+                    <Image resizeMethod="resize" source={{uri: capa ? capa : null}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
                 </View>
                 <View style={styles.viewInfo}>
                     <TouchableOpacity style={styles.viewFoto} onPress={() => this.validarAlteracaoFoto()}>
-                        <Image resizeMethod="resize" style={styles.foto} source={{uri: foto}}/>
+                        <Image resizeMethod="resize" style={styles.foto} source={{uri: foto ? foto : ""}}/>
                         {this.renderCamerazinha(sou_eu)}
                     </TouchableOpacity>
                     <Text style={styles.nome}>{nome}</Text>
@@ -505,7 +503,7 @@ export default class Perfil extends Network {
                     <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2, alignItems: 'flex-end'}]}>
                         {this.renderBotaoAlterarCapa(sou_eu)}
                     </View>
-                    <Image resizeMethod="resize" source={{uri: capa}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
+                    <Image resizeMethod="resize" source={{uri: capa ? capa : ""}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
                 </View>
 
                 {/*começo do perfil*/}
@@ -514,7 +512,7 @@ export default class Perfil extends Network {
                     <View style={styles.viewInfoContato}>
                         <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: true})} style={styles.infoContato}><Icon name="info" size={18} solid color="#fff"/></TouchableOpacity>
                         <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2, overflow: 'hidden'}} onPress={() => {this.tipoFoto = "fotoPerfil"; this.validarAlteracaoFoto()}}>
-                            <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto}}/>
+                            <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto ? foto : ""}}/>
                             {this.renderCamerazinha(sou_eu)}
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => Linking.openURL(`tel:${ddd}${telefone}`)} style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></TouchableOpacity>
@@ -799,7 +797,7 @@ export default class Perfil extends Network {
                                 </View>
                             </View>
                             <View style={styles.viewFotoRestauranteInfo}>
-                                <Image resizeMethod="resize" source={{uri: this.state.user.foto}} style={styles.imagemRestauranteInfo}/>
+                                <Image resizeMethod="resize" source={{uri: this.state.user.foto ? this.state.user.foto : ""}} style={styles.imagemRestauranteInfo}/>
                             </View>
                             <View style={styles.botaoFecharInfoRestaurante}>
                                 <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})}>
@@ -1136,17 +1134,24 @@ const styles = {
         paddingBottom: 10,
         width: imageWidth/10 * 9,
         borderWidth: 1,
-        elevation: 5
+        elevation: 5,
+        shadowOffset:{  width: .5,  height: .5,  },
+        shadowColor: 'black',
+        shadowOpacity: .2,
         
     },
     barraDescricaoRestaurante: {
         flexDirection: 'row',
+        flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         paddingHorizontal: 30,
         paddingVertical: 5,
         borderBottomWidth: 1,
         elevation: 5,
+        shadowOffset:{  width: 1,  height: 1,  },
+        shadowColor: 'black',
+        shadowOpacity: 1.0,
     },
     descricaoRestaurante: {
         color: '#fff',

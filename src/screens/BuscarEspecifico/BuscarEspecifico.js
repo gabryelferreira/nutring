@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image, Button, Modal, ActivityIndicator } from 'react-native';
+import { View, TouchableOpacity, Text, Image, Button, Modal, ActivityIndicator, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../network';
 import SearchBar from '../../components/SearchBar/SearchBar';
@@ -11,23 +11,33 @@ import Item from '../../components/Item/Item';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
 
+const Header = ({navigation}) => {
+    return (
+        <SafeAreaView style={{backgroundColor: '#fff'}}>
+            <View style={{
+                elevation: 1,
+                shadowOpacity: 0,
+                height: 50,
+                paddingHorizontal: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                left: 0, right: 0, top: 0,
+                zIndex: 9999,
+                borderBottomWidth: 1,
+                borderBottomColor: '#eee'
+            }}>
+                <SearchBar navigation={navigation} onChangeText={navigation.getParam('procurar')}/>
+            </View>
+        </SafeAreaView>
+    );
+}
+
 export default class BuscarEspecifico extends Network {
 
     static navigationOptions = ({ navigation }) => ({
         header: (
-            <View>
-                <View style={{
-                    borderBottom: 1,
-                    borderColor: '#ddd',
-                    elevation: 1,
-                    shadowOpacity: 0,
-                    height: 50,
-                    overflow: 'hidden',
-                    justifyContent: 'center'
-                }}>
-                    <SearchBar navigation={navigation} onChangeText={navigation.getParam('procurar')}/>
-                </View>
-            </View>
+            <View></View>
         )
     });
 
@@ -145,11 +155,13 @@ export default class BuscarEspecifico extends Network {
 
   render() {
     return (
-    <View style={{flex: 1}}>
+    <SafeAreaView style={{flex: 1}}>
+
+        <Header navigation={this.props.navigation}/>
         <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
             {this.renderDados()}
         </ScrollView>
-    </View>
+    </SafeAreaView>
     );
   }
 

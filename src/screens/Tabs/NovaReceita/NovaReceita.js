@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform } from 'react-native';
+import { View, Text, Image, NativeModules, Alert, StatusBar, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform, KeyboardAvoidingView } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -13,7 +14,10 @@ import Galeria from '../../../components/Galeria/Galeria';
 import RNFetchBlob from 'react-native-fetch-blob';
 import Input from '../../../components/Input/Input';
 import BotaoPequeno from '../../../components/Botoes/BotaoPequeno';
-import DraggableFlatList from 'react-native-draggable-flatlist'
+import DraggableFlatList from 'react-native-draggable-flatlist';
+import { SafeAreaView } from 'react-navigation';
+
+const headerHeight = 51;
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -44,10 +48,16 @@ export default class NovaReceita extends Network {
             permissaoGaleria: false,
             fotosGaleria: [],
             galeriaAberta: false,
+            statusBarHeight: 0
         }
     }
 
     componentDidMount(){
+        StatusBarManager.getHeight(({statusBarHeight}) => {
+            this.setState({
+                statusBarHeight
+            });
+        });
     }
 
     getModalClick(key){
@@ -150,7 +160,7 @@ export default class NovaReceita extends Network {
             return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.setState({foto, galeriaAberta: false})} onClose={() => this.setState({galeriaAberta: false})}/>
         }
         return (
-            <View style={{flex: 1}}>
+            <SafeAreaView style={{flex: 1}}>
                 <Modalzin 
                     titulo={this.state.modal.titulo} 
                     subTitulo={this.state.modal.subTitulo} 
@@ -159,63 +169,65 @@ export default class NovaReceita extends Network {
                     onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                    <View style={styles.imagem}>
-                        {this.returnImagemPublicacao(this.state.foto)}
-                        <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                            <TouchableOpacity onPress={() => {
-                                    Platform.OS === 'android' ? this.requisitarPermissaoGaleria() : this.abrirGaleria()
-                                }}
-                                    style={{
-                                    paddingHorizontal: 10, 
-                                    paddingVertical: 3, 
-                                    justifyContent: 'center', 
-                                    alignItems: 'center', 
-                                    borderWidth: 1, 
-                                    borderColor: '#eee',
-                                    backgroundColor: 'rgba(0, 0, 0, .3)',
-                                    marginRight: 10,
-                                    marginBottom: 10,
-                                    borderRadius: 20
-                                }}>
-                                    <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar foto</Text>
-                                </TouchableOpacity>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding"   keyboardVerticalOffset={64}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                        <View style={styles.imagem}>
+                            {this.returnImagemPublicacao(this.state.foto)}
+                            <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+                                <TouchableOpacity onPress={() => {
+                                        Platform.OS === 'android' ? this.requisitarPermissaoGaleria() : this.abrirGaleria()
+                                    }}
+                                        style={{
+                                        paddingHorizontal: 10, 
+                                        paddingVertical: 3, 
+                                        justifyContent: 'center', 
+                                        alignItems: 'center', 
+                                        borderWidth: 1, 
+                                        borderColor: '#eee',
+                                        backgroundColor: 'rgba(0, 0, 0, .3)',
+                                        marginRight: 10,
+                                        marginBottom: 10,
+                                        borderRadius: 20
+                                    }}>
+                                        <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar foto</Text>
+                                    </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                    <View style={styles.container}>
-                        <Input label={"Título"}
-                                placeholder={"Escolha um título para sua receita"}
-                                icone={"comment"}
-                                onChangeText={(titulo) => this.setState({titulo})}
-                                value={this.state.titulo}
-                                onSubmitEditing={() => this.segundoInput.focus()}
+                        <View style={styles.container}>
+                            <Input label={"Título"}
+                                    placeholder={"Escolha um título para sua receita"}
+                                    icone={"comment"}
+                                    onChangeText={(titulo) => this.setState({titulo})}
+                                    value={this.state.titulo}
+                                    onSubmitEditing={() => this.segundoInput.focus()}
+                                    autoCapitalize={"sentences"}
+                                    blurOnSubmit={false}
+                                    small={true}
+                                    maxLength={255}
+                                    returnKeyType={"next"}
+                                />
+                            <Input label={"Descrição"}
+                                    placeholder={"Uma breve descrição sobre a receita"}
+                                    icone={"comment"}
+                                    inputRef={(input) => this.segundoInput = input}
+                                onChangeText={(descricao) => this.setState({descricao})}
+                                value={this.state.descricao}
                                 autoCapitalize={"sentences"}
-                                blurOnSubmit={false}
                                 small={true}
+                                multiline={true}
+                                numberOfLines={5}
                                 maxLength={255}
-                                returnKeyType={"next"}
+                                returnKeyType={"default"}
                             />
-                        <Input label={"Descrição"}
-                                placeholder={"Uma breve descrição sobre a receita"}
-                                icone={"comment"}
-                                inputRef={(input) => this.segundoInput = input}
-                            onChangeText={(descricao) => this.setState({descricao})}
-                            value={this.state.descricao}
-                            autoCapitalize={"sentences"}
-                            small={true}
-                            multiline={true}
-                            numberOfLines={5}
-                            maxLength={255}
-                            returnKeyType={"default"}
-                        />
-                    </View>
-                    <View style={styles.container}>
-                        <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <BotaoPequeno disabled={this.state.disabled} texto={"Avançar"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
                         </View>
-                    </View>
-                </ScrollView>
-            </View>
+                        <View style={styles.container}>
+                            <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
+                                <BotaoPequeno disabled={this.state.disabled} texto={"Avançar"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>
+                            </View>
+                        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
         );
     }
 

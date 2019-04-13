@@ -238,11 +238,11 @@ export default class Feed extends Network {
         if (this.state.carregandoPrimeiraVez) return null;
         if (campo == 'dados'){
             if (index == this.state.dados.length-1 && !this.state.semMaisDados && !this.refreshing)
-                return <ActivityIndicator color="#777" size="large" style={{  marginTop: 0, marginBottom: 10 }}/>
+                return <ActivityIndicator color="#777" size="small" style={{  marginTop: 0, marginBottom: 10 }}/>
         }
         if (campo == 'usuarios')
             if (index == this.state.usuarios.length-1 && !this.state.semMaisUsuarios && !this.refreshing)
-                return <ActivityIndicator color="#777" size="large" style={{  marginTop: 15, marginBottom: 10 }}/>
+                return <ActivityIndicator color="#777" size="small" style={{  marginTop: 15, marginBottom: 10 }}/>
         return;
     }
 

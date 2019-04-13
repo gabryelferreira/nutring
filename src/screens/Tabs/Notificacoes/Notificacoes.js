@@ -18,6 +18,7 @@ export default class Notificacoes extends Network {
 
   static navigationOptions = () => ({
       title: 'Notificações',
+      headerBackTitle: ""
   });
 
   state = {
@@ -113,7 +114,7 @@ export default class Notificacoes extends Network {
 
   returnFooterComponent(){
     if (!this.state.semMaisDados && !this.state.refreshing){
-        return <ActivityIndicator color="#777" size="large" style={{ marginVertical: 20 }}/>
+        return <ActivityIndicator color="#777" size="small" style={{ marginVertical: 20 }}/>
     } return null;
   }
 

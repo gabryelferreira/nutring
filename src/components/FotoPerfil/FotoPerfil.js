@@ -30,13 +30,17 @@ export default class FotoPerfil extends Network {
         if (index % 3 == 0){
             return (
                 <TouchableOpacity style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', marginBottom: 2}} onPress={this.props.onPress}>
-                    <Image resizeMethod="resize" source={{uri: url_conteudo}} style={{flex: 1, height: undefined, width: undefined}}/>
+                    <View style={{flex: 1, backgroundColor: '#eee'}}>
+                        <Image resizeMethod="resize" source={{uri: url_conteudo}} style={{flex: 1, height: undefined, width: undefined}}/>
+                    </View>
                 </TouchableOpacity>
             );
         }
         return (
             <TouchableOpacity style={{width: imageWidth / 3, height: imageWidth / 3, flexWrap: 'wrap', paddingLeft: 2, marginBottom: 2}} onPress={this.props.onPress}>
-                <Image resizeMethod="resize" source={{uri: url_conteudo}} style={{flex: 1, height: undefined, width: undefined}}/>
+                <View style={{flex: 1, backgroundColor: '#eee'}}>
+                    <Image resizeMethod="resize" source={{uri: url_conteudo}} style={{flex: 1, height: undefined, width: undefined}}/>
+                </View>
             </TouchableOpacity>
         );
     }

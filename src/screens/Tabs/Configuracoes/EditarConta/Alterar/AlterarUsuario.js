@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
 import Network from '../../../../../network';
 import Opcao from '../../../../../components/Opcao/Opcao';
 import Input from '../../../../../components/Input/Input'
@@ -100,36 +100,38 @@ export default class AlterarUsuario extends Network {
                     onClick={() => this.getModalClick()}
                     onClose={() => this.getModalClick()}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                    <View style={styles.container}>
-                        <Input label={"Usuário atual"} icone={"user-circle"}
-                            onChangeText={(usuarioAtual) => this.setState({usuarioAtual})}
-                            value={this.state.usuarioAtual}
-                            returnKeyType={'next'}
-                            onSubmitEditing={() => this.segundoInput.focus()}
-                            blurOnSubmit={false}
-                            autoCapitalize={"none"}
-                            small={true}
-                            maxLength={30}
-                        />
-                        <Input label={"Novo usuário"} 
-                                inputRef={(input) => {this.segundoInput = input}}
-                                icone={"user-circle"}
-                            onChangeText={(usuarioNovo) => this.setState({usuarioNovo})}
-                            value={this.state.usuarioNovo}
-                            onSubmitEditing={() => this.alterarUsuario()}
-                            autoCapitalize={"none"}
-                            small={true}
-                            maxLength={30}
-                        />
-                        <View style={{marginVertical: 5, flex: .7}}>
-                            <Text style={{fontSize: 11, color: '#000'}}>O usuário é usado para ser marcado em publicações.</Text>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={64}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                        <View style={styles.container}>
+                            <Input label={"Usuário atual"} icone={"user-circle"}
+                                onChangeText={(usuarioAtual) => this.setState({usuarioAtual})}
+                                value={this.state.usuarioAtual}
+                                returnKeyType={'next'}
+                                onSubmitEditing={() => this.segundoInput.focus()}
+                                blurOnSubmit={false}
+                                autoCapitalize={"none"}
+                                small={true}
+                                maxLength={30}
+                            />
+                            <Input label={"Novo usuário"} 
+                                    inputRef={(input) => {this.segundoInput = input}}
+                                    icone={"user-circle"}
+                                onChangeText={(usuarioNovo) => this.setState({usuarioNovo})}
+                                value={this.state.usuarioNovo}
+                                onSubmitEditing={() => this.alterarUsuario()}
+                                autoCapitalize={"none"}
+                                small={true}
+                                maxLength={30}
+                            />
+                            <View style={{marginVertical: 5, flex: .7}}>
+                                <Text style={{fontSize: 11, color: '#000'}}>O usuário é usado para ser marcado em publicações.</Text>
+                            </View>
+                            <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                                <BotaoPequeno texto={"Alterar"} textoLoading={"Alterando"} onPress={() => this.alterarUsuario()} loading={this.state.loading}/>
+                            </View>
                         </View>
-                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <BotaoPequeno texto={"Alterar"} textoLoading={"Alterando"} onPress={() => this.alterarUsuario()} loading={this.state.loading}/>
-                        </View>
-                    </View>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         );
     }

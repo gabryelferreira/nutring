@@ -98,7 +98,7 @@ export default class Item extends Network {
         }
         else if (this.props.fotoPost)
         {
-            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, backgroundColor: '#000'}} source={{uri: this.props.fotoPost}}/>
+            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, backgroundColor: '#eee'}} source={{uri: this.props.fotoPost}}/>
         } 
         else if (this.props.tipo == "SEGUIU")
         {
@@ -109,7 +109,7 @@ export default class Item extends Network {
 
     renderFoto = () => {
         if (this.props.foto){
-            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, borderRadius: 45/2, backgroundColor: '#000'}} source={{uri: this.props.foto}}/>
+            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, borderRadius: 45/2, backgroundColor: '#eee'}} source={{uri: this.props.foto}}/>
         }
         return null;
     }

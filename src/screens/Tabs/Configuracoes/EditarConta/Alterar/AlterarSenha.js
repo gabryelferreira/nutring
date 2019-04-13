@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
 import Network from '../../../../../network';
 import Opcao from '../../../../../components/Opcao/Opcao';
 import Input from '../../../../../components/Input/Input'
@@ -102,44 +102,46 @@ export default class AlterarSenha extends Network {
                     onClick={() => this.getModalClick()}
                     onClose={() => this.getModalClick()}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}  keyboardShouldPersistTaps={"handled"}>
-                    <View style={styles.container}>
-                        <Input label={"Senha atual"} icone={"lock"}
-                            onChangeText={(senhaAtual) => this.setState({senhaAtual})}
-                            value={this.state.senhaAtual}
-                            returnKeyType={'next'}
-                            onSubmitEditing={() => this.segundoInput.focus()}
-                            blurOnSubmit={false}
-                            autoCapitalize={"none"}
-                            secureTextEntry={true}
-                            small={true}
-                        />
-                        <Input label={"Nova senha"} 
-                                inputRef={(input) => {this.segundoInput = input}}
-                                icone={"lock"}
-                            onChangeText={(novaSenha) => this.setState({novaSenha})}
-                            value={this.state.novaSenha}
-                            onSubmitEditing={() => this.terceiroInput.focus()}
-                            autoCapitalize={"none"}
-                            blurOnSubmit={false}
-                            secureTextEntry={true}
-                            small={true}
-                        />
-                        <Input label={"Confirme a nova senha"} 
-                                inputRef={(input) => {this.terceiroInput = input}}
-                                icone={"lock"}
-                            onChangeText={(repetirSenha) => this.setState({repetirSenha})}
-                            value={this.state.repetirSenha}
-                            onSubmitEditing={() => this.alterarSenha()}
-                            autoCapitalize={"none"}
-                            secureTextEntry={true}
-                            small={true}
-                        />
-                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <BotaoPequeno texto={"Alterar"} textoLoading={"Alterando"} onPress={() => this.alterarSenha()} loading={this.state.loading}/>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={64}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}  keyboardShouldPersistTaps={"handled"}>
+                        <View style={styles.container}>
+                            <Input label={"Senha atual"} icone={"lock"}
+                                onChangeText={(senhaAtual) => this.setState({senhaAtual})}
+                                value={this.state.senhaAtual}
+                                returnKeyType={'next'}
+                                onSubmitEditing={() => this.segundoInput.focus()}
+                                blurOnSubmit={false}
+                                autoCapitalize={"none"}
+                                secureTextEntry={true}
+                                small={true}
+                            />
+                            <Input label={"Nova senha"} 
+                                    inputRef={(input) => {this.segundoInput = input}}
+                                    icone={"lock"}
+                                onChangeText={(novaSenha) => this.setState({novaSenha})}
+                                value={this.state.novaSenha}
+                                onSubmitEditing={() => this.terceiroInput.focus()}
+                                autoCapitalize={"none"}
+                                blurOnSubmit={false}
+                                secureTextEntry={true}
+                                small={true}
+                            />
+                            <Input label={"Confirme a nova senha"} 
+                                    inputRef={(input) => {this.terceiroInput = input}}
+                                    icone={"lock"}
+                                onChangeText={(repetirSenha) => this.setState({repetirSenha})}
+                                value={this.state.repetirSenha}
+                                onSubmitEditing={() => this.alterarSenha()}
+                                autoCapitalize={"none"}
+                                secureTextEntry={true}
+                                small={true}
+                            />
+                            <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                                <BotaoPequeno texto={"Alterar"} textoLoading={"Alterando"} onPress={() => this.alterarSenha()} loading={this.state.loading}/>
+                            </View>
                         </View>
-                    </View>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         );
     }

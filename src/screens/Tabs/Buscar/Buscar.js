@@ -279,7 +279,7 @@ export default class Buscar extends Network {
         if (!this.state.semMaisPratos){
             return (
                 <View style={{marginVertical: 10, alignItems: 'center', justifyContent: 'center'}}>
-                    <ActivityIndicator size="large" color="#777" />
+                    <ActivityIndicator size="small" color="#777" />
                 </View>
             );
         }

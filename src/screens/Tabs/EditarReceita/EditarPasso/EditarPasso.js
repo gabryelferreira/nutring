@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform, KeyboardAvoidingView } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../../components/Loader/Loader';
@@ -228,62 +228,64 @@ export default class EditarPasso extends Network {
                     onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                    <View style={styles.imagem}>
-                        {this.returnImagemPublicacao(this.state.foto)}
-                        <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                            <TouchableOpacity onPress={() => {
-                                    Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria()
-                                }}
-                                    style={{
-                                    paddingHorizontal: 10, 
-                                    paddingVertical: 3, 
-                                    justifyContent: 'center', 
-                                    alignItems: 'center', 
-                                    borderWidth: 1, 
-                                    borderColor: '#eee',
-                                    backgroundColor: 'rgba(0, 0, 0, .3)',
-                                    marginRight: 10,
-                                    marginBottom: 10,
-                                    borderRadius: 20
-                                }}>
-                                    <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar foto</Text>
-                                </TouchableOpacity>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={64}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                        <View style={styles.imagem}>
+                            {this.returnImagemPublicacao(this.state.foto)}
+                            <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 9999, backgroundColor: 'rgba(0, 0, 0, .1)', flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'flex-end'}}>
+                                <TouchableOpacity onPress={() => {
+                                        Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria()
+                                    }}
+                                        style={{
+                                        paddingHorizontal: 10, 
+                                        paddingVertical: 3, 
+                                        justifyContent: 'center', 
+                                        alignItems: 'center', 
+                                        borderWidth: 1, 
+                                        borderColor: '#eee',
+                                        backgroundColor: 'rgba(0, 0, 0, .3)',
+                                        marginRight: 10,
+                                        marginBottom: 10,
+                                        borderRadius: 20
+                                    }}>
+                                        <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar foto</Text>
+                                    </TouchableOpacity>
+                            </View>
                         </View>
-                    </View>
-                    <View style={styles.container}>
-                        <Input label={"Título"}
-                                placeholder={this.props.navigation.getParam("dados", null) ? (this.props.navigation.getParam("tipo", null) == 'EDITAR_DADOS' ? 'Escolha um título para sua receita' : 'Escolha um título para o passo') : 'Escolha um título para o passo'}
-                                icone={"comment"}
-                                onChangeText={(titulo) => this.setState({titulo})}
-                                value={this.state.titulo}
-                                onSubmitEditing={() => this.segundoInput.focus()}
+                        <View style={styles.container}>
+                            <Input label={"Título"}
+                                    placeholder={this.props.navigation.getParam("dados", null) ? (this.props.navigation.getParam("tipo", null) == 'EDITAR_DADOS' ? 'Escolha um título para sua receita' : 'Escolha um título para o passo') : 'Escolha um título para o passo'}
+                                    icone={"comment"}
+                                    onChangeText={(titulo) => this.setState({titulo})}
+                                    value={this.state.titulo}
+                                    onSubmitEditing={() => this.segundoInput.focus()}
+                                    autoCapitalize={"sentences"}
+                                    blurOnSubmit={false}
+                                    small={true}
+                                    maxLength={255}
+                                    returnKeyType={"next"}
+                                />
+                            <Input label={"Descrição"}
+                                    placeholder={this.props.navigation.getParam("dados", null) ? (this.props.navigation.getParam("tipo", null) == 'EDITAR_DADOS' ? 'Uma breve descrição sobre a receita' : 'Escreva uma breve descrição desse passo') : 'Escreva uma breve descrição desse passo'}
+                                    icone={"comment"}
+                                    inputRef={(input) => this.segundoInput = input}
+                                onChangeText={(descricao) => this.setState({descricao})}
+                                value={this.state.descricao}
                                 autoCapitalize={"sentences"}
-                                blurOnSubmit={false}
                                 small={true}
+                                multiline={true}
+                                numberOfLines={5}
                                 maxLength={255}
-                                returnKeyType={"next"}
+                                returnKeyType={"default"}
                             />
-                        <Input label={"Descrição"}
-                                placeholder={this.props.navigation.getParam("dados", null) ? (this.props.navigation.getParam("tipo", null) == 'EDITAR_DADOS' ? 'Uma breve descrição sobre a receita' : 'Escreva uma breve descrição desse passo') : 'Escreva uma breve descrição desse passo'}
-                                icone={"comment"}
-                                inputRef={(input) => this.segundoInput = input}
-                            onChangeText={(descricao) => this.setState({descricao})}
-                            value={this.state.descricao}
-                            autoCapitalize={"sentences"}
-                            small={true}
-                            multiline={true}
-                            numberOfLines={5}
-                            maxLength={255}
-                            returnKeyType={"default"}
-                        />
-                    </View>
-                    <View style={styles.container}>
-                        <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <BotaoPequeno disabled={this.state.disabled} texto={"Confirmar"} onPress={() => this.confirmar()} loading={this.state.loading}/>
                         </View>
-                    </View>
-                </ScrollView>
+                        <View style={styles.container}>
+                            <View style={{flexDirection: 'column', alignItems: 'flex-start'}}>
+                                <BotaoPequeno disabled={this.state.disabled} texto={"Confirmar"} onPress={() => this.confirmar()} loading={this.state.loading}/>
+                            </View>
+                        </View>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         );
     }

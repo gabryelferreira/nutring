@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
 import Network from '../../../../../network';
 import Opcao from '../../../../../components/Opcao/Opcao';
 import Input from '../../../../../components/Input/Input'
@@ -100,37 +100,39 @@ export default class AlterarEmail extends Network {
                     onClick={() => this.getModalClick()}
                     onClose={() => this.getModalClick()}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                    <View style={styles.container}>
-                        <Input label={"Email atual"} icone={"envelope"}
-                            onChangeText={(emailAtual) => this.setState({emailAtual})}
-                            value={this.state.emailAtual}
-                            returnKeyType={'next'}
-                            onSubmitEditing={() => this.segundoInput.focus()}
-                            blurOnSubmit={false}
-                            autoCapitalize={"none"}
-                            small={true}
-                            maxLength={100}
-                        />
-                        <Input label={"Novo email"} 
-                                inputRef={(input) => {this.segundoInput = input}}
-                                icone={"envelope"}
-                            onChangeText={(emailNovo) => this.setState({emailNovo})}
-                            value={this.state.emailNovo}
-                            onSubmitEditing={() => this.alterarEmail()}
-                            autoCapitalize={"none"}
-                            small={true}
-                            maxLength={100}
-                        />
-                        <View style={{marginVertical: 5, flex: .7}}>
-                            <Text style={{fontSize: 11, color: '#000'}}>Seu email não será mostrado em seu perfil do Nutring.</Text>
-                            <Text style={{fontSize: 11, color: '#000'}}>Pode ficar tranquilo ;)</Text>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={64}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                        <View style={styles.container}>
+                            <Input label={"Email atual"} icone={"envelope"}
+                                onChangeText={(emailAtual) => this.setState({emailAtual})}
+                                value={this.state.emailAtual}
+                                returnKeyType={'next'}
+                                onSubmitEditing={() => this.segundoInput.focus()}
+                                blurOnSubmit={false}
+                                autoCapitalize={"none"}
+                                small={true}
+                                maxLength={100}
+                            />
+                            <Input label={"Novo email"} 
+                                    inputRef={(input) => {this.segundoInput = input}}
+                                    icone={"envelope"}
+                                onChangeText={(emailNovo) => this.setState({emailNovo})}
+                                value={this.state.emailNovo}
+                                onSubmitEditing={() => this.alterarEmail()}
+                                autoCapitalize={"none"}
+                                small={true}
+                                maxLength={100}
+                            />
+                            <View style={{marginVertical: 5, flex: .7}}>
+                                <Text style={{fontSize: 11, color: '#000'}}>Seu email não será mostrado em seu perfil do Nutring.</Text>
+                                <Text style={{fontSize: 11, color: '#000'}}>Pode ficar tranquilo ;)</Text>
+                            </View>
+                            <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
+                                <BotaoPequeno texto={"Confirmar"} textoLoading={"Alterando"} onPress={() => this.alterarEmail()} loading={this.state.loading}/>
+                            </View>
                         </View>
-                        <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
-                            <BotaoPequeno texto={"Confirmar"} textoLoading={"Alterando"} onPress={() => this.alterarEmail()} loading={this.state.loading}/>
-                        </View>
-                    </View>
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
             </View>
         );
     }

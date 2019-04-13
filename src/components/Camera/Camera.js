@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, ActivityIndicator, Platform } from 'react-native';
+import { View, TouchableOpacity, Text, Alert, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, ActivityIndicator, Platform, KeyboardAvoidingView } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -10,6 +10,10 @@ import Modalzin from '../Modal/Modal';
 import Opcao from '../Opcao/Opcao';
 import RNFetchBlob from 'react-native-fetch-blob';
 import Galeria from '../Galeria/Galeria';
+
+const statusBarHeight = StatusBar.currentHeight;
+const headerHeight = 40;
+const keyboardHeight = parseInt(statusBarHeight) + headerHeight;
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -36,7 +40,7 @@ const Header = ({onCloseClick, onPress, loading}) => {
         <View style={{
             elevation: 1,
             shadowOpacity: 0,
-            height: 40,
+            height: headerHeight,
             paddingHorizontal: 10,
             flexDirection: 'row',
             alignItems: 'center',
@@ -47,7 +51,7 @@ const Header = ({onCloseClick, onPress, loading}) => {
         }}>
             <View style={{position: 'relative', flex:1, zIndex: 9999, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                 <View style={{flexDirection: 'row', justifyContent: 'flex-start', flex: .3, alignItems: 'center'}}>
-                    <Icon onPress={onCloseClick} name="arrow-left" color="#000" size={20}/>
+                    <Icon onPress={onCloseClick} name="chevron-left" color="#000" size={20}/>
                 </View>
                 <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: .4}}>
                     <Text style={{color: '#000', fontWeight: 'bold', fontSize: 18}}>Postar Foto</Text>
@@ -106,6 +110,7 @@ export default class Camera extends Network {
             ultimaFotoGaleria: "https://cdn0.iconfinder.com/data/icons/Android-R2-png/512/Gallery-Android-R.png"
         };
         if (Platform.OS === 'android') this.requisitarPermissaoCamera();
+        Alert.alert(keyboardHeight);
     }
 
     async getUltimaFotoGaleria(){
@@ -333,33 +338,35 @@ export default class Camera extends Network {
                         onClose={() => this.getModalClick()}
                     />
                     <Header onPress={() => this.salvarPublicacao()} loading={this.state.loading} onCloseClick={() => this.setState({fotoTirada: ""})}/>
-                    <ScrollView  contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                        <TouchableHighlight>
-                            <Image resizeMethod="resize" source={{uri: this.state.fotoTirada ? this.state.fotoTirada : ''}} style={{height: 250, width: imageWidth}}/>
-                        </TouchableHighlight>
-                        {/* <TouchableHighlight>
-                            <Opcao icone={"lock"} texto={"Foto pública"} toggle={true} toggleChange={() => this.setFotoPublica()} toggleValue={this.state.fotoPublica}/>
-                        </TouchableHighlight> */}
-                        <View style={{paddingVertical: 5, paddingHorizontal: 20}}>
-                            <Input label={"Descrição"}
-                                icone={"comment"}
-                                onChangeText={(descricao) => this.setState({descricao})}
-                                value={this.state.descricao}
-                                autoCapitalize={"sentences"}
-                                multiline={true}
-                                small={true}
-                                numberOfLines={5}
-                                maxLength={500}
-                                returnKeyType={"default"}
-                            />
-                            <TouchableHighlight style={{marginVertical: 5, flex: .7}}>
-                                <Text style={{fontSize: 11, color: '#000'}}>A foto ficará disponível para todos os seus seguidores.</Text>
+                    <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={keyboardHeight}>
+                        <ScrollView  contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                            <TouchableHighlight>
+                                <Image resizeMethod="resize" source={{uri: this.state.fotoTirada ? this.state.fotoTirada : ''}} style={{height: 250, width: imageWidth}}/>
                             </TouchableHighlight>
-                            {/* <TouchableHighlight style={{marginVertical: 10}}>
-                                <BotaoPequeno texto={"Publicar"}  loading={this.state.loading}/>
+                            {/* <TouchableHighlight>
+                                <Opcao icone={"lock"} texto={"Foto pública"} toggle={true} toggleChange={() => this.setFotoPublica()} toggleValue={this.state.fotoPublica}/>
                             </TouchableHighlight> */}
-                        </View>
-                    </ScrollView>
+                            <View style={{paddingVertical: 5, paddingHorizontal: 20}}>
+                                <Input label={"Descrição"}
+                                    icone={"comment"}
+                                    onChangeText={(descricao) => this.setState({descricao})}
+                                    value={this.state.descricao}
+                                    autoCapitalize={"sentences"}
+                                    multiline={true}
+                                    small={true}
+                                    numberOfLines={5}
+                                    maxLength={500}
+                                    returnKeyType={"default"}
+                                />
+                                <TouchableHighlight style={{marginVertical: 5, flex: .7}}>
+                                    <Text style={{fontSize: 11, color: '#000'}}>A foto ficará disponível para todos os seus seguidores.</Text>
+                                </TouchableHighlight>
+                                {/* <TouchableHighlight style={{marginVertical: 10}}>
+                                    <BotaoPequeno texto={"Publicar"}  loading={this.state.loading}/>
+                                </TouchableHighlight> */}
+                            </View>
+                        </ScrollView>
+                    </KeyboardAvoidingView>
                 </View>
             );
         }

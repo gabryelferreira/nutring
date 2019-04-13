@@ -64,7 +64,7 @@ export default class Seguidores extends Network {
 
     returnLoader(index, campo){
             if (index == this.state.seguidores.length-1 && !this.state.semMaisSeguidores)
-                return <ActivityIndicator color="#777" size="large" style={{  marginTop: 15, marginBottom: 35 }}/>
+                return <ActivityIndicator color="#777" size="small" style={{  marginTop: 15, marginBottom: 35 }}/>
         return;
     }
 

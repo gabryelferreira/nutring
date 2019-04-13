@@ -54,7 +54,11 @@ const NavigationOptions = {
         shadowOpacity: 0,
         height: 50
     },
-    headerBackTitle: "top bb"
+    headerBackTitle: "",
+    headerTintColor: '#000',
+    headerBackTitleStyle: {
+        color: 'white',
+    },
 }
 
 const InsideTabs = {

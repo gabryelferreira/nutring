@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, KeyboardAvoidingView } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../components/Loader/Loader';
@@ -150,61 +150,63 @@ export default class Login extends Network {
                     onClose={() => this.setState({modal: {visible: false}})}
                     botoes={this.state.modal.botoes}
                 />
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={64}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
 
-                    {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.botaoVoltar}>
-                        <Icon name="chevron-left" solid color="#28b657" size={22}/>
-                    </TouchableOpacity> */}
+                        {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.botaoVoltar}>
+                            <Icon name="chevron-left" solid color="#28b657" size={22}/>
+                        </TouchableOpacity> */}
 
-                    <View style={styles.viewLogin}>
-                        <View style={{alignItems: 'center', justifyContent: 'flex-end', flex: .5}}>
-                            <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>
-                            {/* <Text style={{marginTop: 10}}>Você mais saudável</Text> */}
-                        </View>
-                    {/* <View style={styles.botoesOpcao}>
-                        <TouchableOpacity style={[styles.botaoOpcao, styles.botaoVerde]}>
-                            <Text style={[styles.textoBranco, styles.textoBotaoOpcao]}>Pessoa</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.mudarOpcao()} style={styles.botaoOpcao}>
-                            <Text style={[styles.textoVerde, styles.textoBotaoOpcao]}>Restaurante</Text>
-                        </TouchableOpacity>
-                    </View> */}
-                        <View style={styles.container}>
-                            <TextInput 
-                            placeholder="Usuário ou email" 
-                            placeholderTextColor="rgb(153, 153, 153)" 
-                            style={styles.input}
-                            onChangeText={(email) => this.setState({email})}
-                            value={this.state.email}
-                            returnKeyType={"next"}
-                            onSubmitEditing={() => this.segundoInput.focus()}
-                            blurOnSubmit={false}
-                            autoCapitalize = 'none'
-                            />
-                            <TextInput 
-                            ref={(input) => this.segundoInput = input}
-                            placeholder="Senha" 
-                            placeholderTextColor="rgb(153, 153, 153)" 
-                            style={styles.input}
-                            value={this.state.senha}
-                            onChangeText={(senha) => this.setState({senha})}
-                            onSubmitEditing={() => this.login()}
-                            secureTextEntry={true}
-                            autoCapitalize = 'none'
-                            />
-                            <TouchableOpacity onPress={() => this.login()} style={styles.botao}>
-                                {this.renderTextoBotao()}
+                        <View style={styles.viewLogin}>
+                            <View style={{alignItems: 'center', justifyContent: 'flex-end', flex: .5}}>
+                                <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>
+                                {/* <Text style={{marginTop: 10}}>Você mais saudável</Text> */}
+                            </View>
+                        {/* <View style={styles.botoesOpcao}>
+                            <TouchableOpacity style={[styles.botaoOpcao, styles.botaoVerde]}>
+                                <Text style={[styles.textoBranco, styles.textoBotaoOpcao]}>Pessoa</Text>
                             </TouchableOpacity>
-                            <View style={{marginTop: 20, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
-                                <Text style={styles.textoProblema}>Problemas no acesso? </Text>
-                                <TouchableOpacity onPress={() => this.abrirEsqueciSenha()}>
-                                    <Text style={styles.textoProblemaLink}>Clique aqui.</Text>
+                            <TouchableOpacity onPress={() => this.mudarOpcao()} style={styles.botaoOpcao}>
+                                <Text style={[styles.textoVerde, styles.textoBotaoOpcao]}>Restaurante</Text>
+                            </TouchableOpacity>
+                        </View> */}
+                            <View style={styles.container}>
+                                <TextInput 
+                                placeholder="Usuário ou email" 
+                                placeholderTextColor="rgb(153, 153, 153)" 
+                                style={styles.input}
+                                onChangeText={(email) => this.setState({email})}
+                                value={this.state.email}
+                                returnKeyType={"next"}
+                                onSubmitEditing={() => this.segundoInput.focus()}
+                                blurOnSubmit={false}
+                                autoCapitalize = 'none'
+                                />
+                                <TextInput 
+                                ref={(input) => this.segundoInput = input}
+                                placeholder="Senha" 
+                                placeholderTextColor="rgb(153, 153, 153)" 
+                                style={styles.input}
+                                value={this.state.senha}
+                                onChangeText={(senha) => this.setState({senha})}
+                                onSubmitEditing={() => this.login()}
+                                secureTextEntry={true}
+                                autoCapitalize = 'none'
+                                />
+                                <TouchableOpacity onPress={() => this.login()} style={styles.botao}>
+                                    {this.renderTextoBotao()}
                                 </TouchableOpacity>
+                                <View style={{marginTop: 20, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
+                                    <Text style={styles.textoProblema}>Problemas no acesso? </Text>
+                                    <TouchableOpacity onPress={() => this.abrirEsqueciSenha()}>
+                                        <Text style={styles.textoProblemaLink}>Clique aqui.</Text>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
-                    </View>
 
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
                 {/* <View style={{position: 'absolute', left: 0, bottom: 0, flex: 1, zIndex: -1}}>
                     <AutoHeightImage source={require('../../assets/imgs/fundo.png')} width={imageWidth}/>
                 </View> */}

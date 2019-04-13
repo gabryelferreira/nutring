@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, Picker } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, Picker, KeyboardAvoidingView, SafeAreaView } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../components/Loader/Loader';
@@ -643,7 +643,7 @@ export default class Cadastro extends Network {
 
     render(){
         return (      
-            <View style={{flex: 1}}>
+            <SafeAreaView style={{flex: 1}}>
                 <Modalzin 
                     titulo={this.state.modal.title} 
                     subTitulo={this.state.modal.subTitle} 
@@ -652,33 +652,35 @@ export default class Cadastro extends Network {
                     onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
-                <ScrollView keyboardShouldPersistTaps={"handled"}>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={0}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
 
-                    <View style={styles.viewCadastro}>
+                        <View style={styles.viewCadastro}>
 
-                        {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.botaoVoltar}>
-                            <Icon name="chevron-left" solid color="#28b657" size={22}/>
-                        </TouchableOpacity> */}
+                            {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.botaoVoltar}>
+                                <Icon name="chevron-left" solid color="#28b657" size={22}/>
+                            </TouchableOpacity> */}
 
-                        <View style={{alignItems: 'center'}}>
-                            <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>
+                            <View style={{alignItems: 'center'}}>
+                                <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>
+                            </View>
+                            <TouchableOpacity style={[this.state.opcao == "PESSOA" ? styles.botoesOpcao : [styles.botoesOpcao, styles.botoesOpcaoVerde]]}>
+                                <TouchableOpacity style={[this.state.opcao == "PESSOA" ? [styles.botaoOpcao, styles.botaoVerde] : [styles.botaoOpcao, styles.botaoBranco]]} onPress={() => this.mudarOpcao("PESSOA")}>
+                                    <Text style={[this.state.opcao == "PESSOA" ? [styles.textoBranco, styles.textoBotaoOpcao] : [styles.textoVerde, styles.textoBotaoOpcao]]}>Pessoa</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[this.state.opcao == "RESTAURANTE" ? [styles.botaoOpcao, styles.botaoVerde] : styles.botaoOpcao]} onPress={() => this.mudarOpcao("RESTAURANTE")}>
+                                    <Text style={[this.state.opcao == "RESTAURANTE" ? [styles.textoBranco, styles.textoBotaoOpcao] : [styles.textoVerde, styles.textoBotaoOpcao]]}>Restaurante</Text>
+                                </TouchableOpacity>
+                            </TouchableOpacity>
+                            {this.renderCadastro()}
                         </View>
-                        <TouchableOpacity style={[this.state.opcao == "PESSOA" ? styles.botoesOpcao : [styles.botoesOpcao, styles.botoesOpcaoVerde]]}>
-                            <TouchableOpacity style={[this.state.opcao == "PESSOA" ? [styles.botaoOpcao, styles.botaoVerde] : [styles.botaoOpcao, styles.botaoBranco]]} onPress={() => this.mudarOpcao("PESSOA")}>
-                                <Text style={[this.state.opcao == "PESSOA" ? [styles.textoBranco, styles.textoBotaoOpcao] : [styles.textoVerde, styles.textoBotaoOpcao]]}>Pessoa</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={[this.state.opcao == "RESTAURANTE" ? [styles.botaoOpcao, styles.botaoVerde] : styles.botaoOpcao]} onPress={() => this.mudarOpcao("RESTAURANTE")}>
-                                <Text style={[this.state.opcao == "RESTAURANTE" ? [styles.textoBranco, styles.textoBotaoOpcao] : [styles.textoVerde, styles.textoBotaoOpcao]]}>Restaurante</Text>
-                            </TouchableOpacity>
-                        </TouchableOpacity>
-                        {this.renderCadastro()}
-                    </View>
 
-                </ScrollView>
+                    </ScrollView>
+                </KeyboardAvoidingView>
                 {/* <View style={{position: 'absolute', left: 0, bottom: 0, flex: 1, zIndex: -1}}>
                     <AutoHeightImage source={require('../../assets/imgs/fundo.png')} width={imageWidth}/>
                 </View> */}
-            </View>
+            </SafeAreaView>
         );
     }
 }
