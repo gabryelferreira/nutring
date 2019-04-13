@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Alert, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, ActivityIndicator, Platform, KeyboardAvoidingView } from 'react-native';
+import { View, TouchableOpacity, NativeModules, Text, Alert, StatusBar, Image, Animated, Dimensions, TouchableHighlight, CameraRoll, PermissionsAndroid, ActivityIndicator, Platform, KeyboardAvoidingView } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import { RNCamera } from 'react-native-camera';
 import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -11,9 +12,7 @@ import Opcao from '../Opcao/Opcao';
 import RNFetchBlob from 'react-native-fetch-blob';
 import Galeria from '../Galeria/Galeria';
 
-const statusBarHeight = StatusBar.currentHeight;
 const headerHeight = 40;
-const keyboardHeight = parseInt(statusBarHeight) + headerHeight;
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -107,10 +106,18 @@ export default class Camera extends Network {
             galeriaAberta: false,
             fotosGaleria: [],
             permissaoGaleria: Platform.OS === 'ios' ? true : false,
-            ultimaFotoGaleria: "https://cdn0.iconfinder.com/data/icons/Android-R2-png/512/Gallery-Android-R.png"
+            ultimaFotoGaleria: "https://cdn0.iconfinder.com/data/icons/Android-R2-png/512/Gallery-Android-R.png",
+            statusBarHeight: 20
         };
         if (Platform.OS === 'android') this.requisitarPermissaoCamera();
-        Alert.alert(keyboardHeight);
+    }
+
+    componentDidMount(){
+        // StatusBarManager.getHeight(({statusBarHeight}) => {
+        //     this.setState({
+        //         statusBarHeight
+        //     });
+        // });
     }
 
     async getUltimaFotoGaleria(){
@@ -338,7 +345,7 @@ export default class Camera extends Network {
                         onClose={() => this.getModalClick()}
                     />
                     <Header onPress={() => this.salvarPublicacao()} loading={this.state.loading} onCloseClick={() => this.setState({fotoTirada: ""})}/>
-                    <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={keyboardHeight}>
+                    <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={keyboardHeight}>
                         <ScrollView  contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                             <TouchableHighlight>
                                 <Image resizeMethod="resize" source={{uri: this.state.fotoTirada ? this.state.fotoTirada : ''}} style={{height: 250, width: imageWidth}}/>
