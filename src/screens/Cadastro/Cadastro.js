@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, Picker, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, Picker, KeyboardAvoidingView, SafeAreaView, Platform } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../components/Loader/Loader';
@@ -652,7 +652,7 @@ export default class Cadastro extends Network {
                     onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
-                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled   keyboardVerticalOffset={0}>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.os === 'ios' ? true : false}   keyboardVerticalOffset={0}>
                     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
 
                         <View style={styles.viewCadastro}>
