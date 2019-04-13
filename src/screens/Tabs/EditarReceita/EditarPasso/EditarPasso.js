@@ -66,11 +66,17 @@ export default class EditarPasso extends Network {
                 fotoNoServidor: false,
                 id_receita: null
             },
-            id_receita: null
+            id_receita: null,
+            statusBarHeight: 20
         }
     }
 
     componentDidMount(){
+        StatusBarManager.getHeight(statusBar => {
+            this.setState({
+                statusBarHeight: statusBar.height
+            });
+        });
         this.props.navigation.setParams({
             onTrashClick: this.abrirModalDeletar.bind(this)
         })
@@ -231,7 +237,7 @@ export default class EditarPasso extends Network {
                     onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
-                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={64}>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={this.state.statusBarHeight + HEADER_HEIGHT}>
                     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                         <View style={styles.imagem}>
                             {this.returnImagemPublicacao(this.state.foto)}

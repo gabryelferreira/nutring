@@ -138,35 +138,35 @@ export default class EditarReceita extends Network {
     async confirmarReceita(){
         let dados = this.state.dados;
         let passos = this.state.data;
-        if (!dados.fotoNoServidor){
-            dados.base64 = await RNFetchBlob.fs.readFile(dados.foto, 'base64');
-            dados.base64 = `data:image/jpg;base64,${dados.base64}`;
-        }
-        for (var i = 0; i < passos.length; i++){
-            if (!passos[i].fotoNoServidor){
-                passos[i].base64 = await RNFetchBlob.fs.readFile(passos[i].foto, 'base64');
-                passos[i].base64 = `data:image/jpg;base64,${passos[i].base64}`;
-            }
-        }
+        // if (!dados.fotoNoServidor){
+        //     dados.base64 = await RNFetchBlob.fs.readFile(dados.foto, 'base64');
+        //     dados.base64 = `data:image/jpg;base64,${dados.base64}`;
+        // }
+        // for (var i = 0; i < passos.length; i++){
+        //     if (!passos[i].fotoNoServidor){
+        //         passos[i].base64 = await RNFetchBlob.fs.readFile(passos[i].foto, 'base64');
+        //         passos[i].base64 = `data:image/jpg;base64,${passos[i].base64}`;
+        //     }
+        // }
         dados = JSON.stringify(dados);
         passos = JSON.stringify(passos);
-        // console.log("dados = ", dados);
-        // console.log("passos = ", passos);
-        let result = await this.callMethod("confirmarReceita", { dados, passos });
-        this.props.navigation.setParams({
-            loading: false
-        })
-        if (result.success){
-            if (result.result == "RECEITA_CRIADA"){
-                this.receitaSalva = true;
-                this.showModal("Receita criada", "Sua receita foi criada com sucesso e já está disponível em seu perfil.");
-            } else if (result.result == "RECEITA_SALVA"){
-                this.receitaSalva = true;
-                this.showModal("Receita salva", "Sua receita foi salva com sucesso!");
-            }
-        } else {
-            this.showModal("Ocorreu um erro", "Verifique sua internet e tente novamente.");
-        }
+        console.log("dados = ", dados);
+        console.log("passos = ", passos);
+        // let result = await this.callMethod("confirmarReceita", { dados, passos });
+        // this.props.navigation.setParams({
+        //     loading: false
+        // })
+        // if (result.success){
+        //     if (result.result == "RECEITA_CRIADA"){
+        //         this.receitaSalva = true;
+        //         this.showModal("Receita criada", "Sua receita foi criada com sucesso e já está disponível em seu perfil.");
+        //     } else if (result.result == "RECEITA_SALVA"){
+        //         this.receitaSalva = true;
+        //         this.showModal("Receita salva", "Sua receita foi salva com sucesso!");
+        //     }
+        // } else {
+        //     this.showModal("Ocorreu um erro", "Verifique sua internet e tente novamente.");
+        // }
     }
 
     showModal(titulo, subTitulo, botoes){

@@ -300,7 +300,8 @@ export default class Camera extends Network {
 
     abrirGaleria(){
         CameraRoll.getPhotos({
-            first: 100
+            first: 100,
+            groupTypes: 'All'
         })
         // .then(r => this.setState({ photos: r.edges }))
         .then(r => {
