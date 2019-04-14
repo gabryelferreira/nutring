@@ -5,7 +5,7 @@ export default function urlencode(data){
         url = url + key + "=" + data[key].toString() + "&";
     }
     url = url.slice(0, url.length - 1);
-    console.log("url = " + url)
+    // console.log("url = " + url)
     return url;
 }
 

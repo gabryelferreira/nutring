@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, BackHandler, Platform } from 'react-native';
+import { View, Text, Image, Dimensions, Alert, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, BackHandler, Platform } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -136,37 +136,51 @@ export default class EditarReceita extends Network {
     }
 
     async confirmarReceita(){
-        let dados = this.state.dados;
-        let passos = this.state.data;
-        // if (!dados.fotoNoServidor){
-        //     dados.base64 = await RNFetchBlob.fs.readFile(dados.foto, 'base64');
-        //     dados.base64 = `data:image/jpg;base64,${dados.base64}`;
-        // }
-        // for (var i = 0; i < passos.length; i++){
-        //     if (!passos[i].fotoNoServidor){
-        //         passos[i].base64 = await RNFetchBlob.fs.readFile(passos[i].foto, 'base64');
-        //         passos[i].base64 = `data:image/jpg;base64,${passos[i].base64}`;
-        //     }
-        // }
+        let dados = {};
+        dados.id_receita = this.state.dados.id_receita;
+        dados.titulo = this.state.dados.titulo;
+        dados.descricao = this.state.dados.descricao;
+        dados.foto = this.state.dados.foto;
+        dados.fotoNoServidor = this.state.dados.fotoNoServidor;
+        let passos = [];
+        for (let i = 0; i < this.state.data.length; i++){
+            passos.push({
+                titulo: this.state.data[i].titulo,
+                descricao: this.state.data[i].descricao,
+                foto: this.state.data[i].foto,
+                fotoNoServidor: this.state.data[i].fotoNoServidor
+            })
+        }
+        if (!dados.fotoNoServidor){
+            dados.base64 = await RNFetchBlob.fs.readFile(dados.foto, 'base64');
+            dados.base64 = `data:image/jpg;base64,${dados.base64}`;
+            delete dados.foto;
+        }
+        for (var i = 0; i < passos.length; i++){
+            if (!passos[i].fotoNoServidor){
+                passos[i].base64 = await RNFetchBlob.fs.readFile(passos[i].foto, 'base64');
+                passos[i].base64 = `data:image/jpg;base64,${passos[i].base64}`;
+                delete passos[i].foto;
+            }
+        }
         dados = JSON.stringify(dados);
         passos = JSON.stringify(passos);
-        console.log("dados = ", dados);
-        console.log("passos = ", passos);
-        // let result = await this.callMethod("confirmarReceita", { dados, passos });
-        // this.props.navigation.setParams({
-        //     loading: false
-        // })
-        // if (result.success){
-        //     if (result.result == "RECEITA_CRIADA"){
-        //         this.receitaSalva = true;
-        //         this.showModal("Receita criada", "Sua receita foi criada com sucesso e já está disponível em seu perfil.");
-        //     } else if (result.result == "RECEITA_SALVA"){
-        //         this.receitaSalva = true;
-        //         this.showModal("Receita salva", "Sua receita foi salva com sucesso!");
-        //     }
-        // } else {
-        //     this.showModal("Ocorreu um erro", "Verifique sua internet e tente novamente.");
-        // }
+        let result = await this.callMethod("confirmarReceita", { dados, passos });
+        // Alert.alert(result.result);
+        this.props.navigation.setParams({
+            loading: false
+        });
+        if (result.success){
+            if (result.result == "RECEITA_CRIADA"){
+                this.receitaSalva = true;
+                this.showModal("Receita criada", "Sua receita foi criada com sucesso e já está disponível em seu perfil.");
+            } else if (result.result == "RECEITA_SALVA"){
+                this.receitaSalva = true;
+                this.showModal("Receita salva", "Sua receita foi salva com sucesso!");
+            }
+        } else {
+            this.showModal("Ocorreu um erro", "Verifique sua internet e tente novamente.");
+        }
     }
 
     showModal(titulo, subTitulo, botoes){
