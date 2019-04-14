@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, NativeModules, Text, Image, Button, Modal, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, TouchableOpacity, NativeModules, Text, Image, Button, Modal, ActivityIndicator, SafeAreaView, Platform } from 'react-native';
 const { StatusBarManager } = NativeModules;
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../network';
@@ -81,11 +81,13 @@ export default class BuscarEspecifico extends Network {
     }
 
     componentDidMount() {
-        StatusBarManager.getHeight(statusBar => {
-            this.setState({
-                statusBarHeight: statusBar.height
+        if (Platform.OS === 'ios'){
+            StatusBarManager.getHeight(statusBar => {
+                this.setState({
+                    statusBarHeight: statusBar.height
+                });
             });
-        });
+        }
         this.getUsuariosPesquisados();
     }
 

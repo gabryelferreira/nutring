@@ -35,11 +35,13 @@ export default class AlterarEmail extends Network {
     }
 
     componentDidMount(){
-        StatusBarManager.getHeight(statusBar => {
-            this.setState({
-                statusBarHeight: statusBar.height
+        if (Platform.OS === 'ios'){
+            StatusBarManager.getHeight(statusBar => {
+                this.setState({
+                    statusBarHeight: statusBar.height
+                });
             });
-        });
+        }
     }
 
     getModalClick(){

@@ -72,11 +72,13 @@ export default class EditarPasso extends Network {
     }
 
     componentDidMount(){
-        StatusBarManager.getHeight(statusBar => {
-            this.setState({
-                statusBarHeight: statusBar.height
+        if (Platform.OS === 'ios'){
+            StatusBarManager.getHeight(statusBar => {
+                this.setState({
+                    statusBarHeight: statusBar.height
+                });
             });
-        });
+        }
         this.props.navigation.setParams({
             onTrashClick: this.abrirModalDeletar.bind(this)
         })

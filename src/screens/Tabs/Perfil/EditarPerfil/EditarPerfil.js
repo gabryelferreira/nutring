@@ -51,11 +51,13 @@ export default class EditarPerfil extends Network {
     }
 
     componentDidMount(){
-        StatusBarManager.getHeight(statusBar => {
-            this.setState({
-                statusBarHeight: statusBar.height
+        if (Platform.OS === 'ios'){
+            StatusBarManager.getHeight(statusBar => {
+                this.setState({
+                    statusBarHeight: statusBar.height
+                });
             });
-        });
+        }
         this.setState({
             user: this.props.navigation.getParam("user", {})
         }, this.setDados)
