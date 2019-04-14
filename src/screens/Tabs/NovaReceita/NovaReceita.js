@@ -171,7 +171,7 @@ export default class NovaReceita extends Network {
                     onClose={() => this.getModalClick()}
                     botoes={this.state.modal.botoes}
                 />
-                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding"   keyboardVerticalOffset={this.state.statusBarHeight + HEADER_HEIGHT}>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}  keyboardVerticalOffset={this.state.statusBarHeight + HEADER_HEIGHT}>
                     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
                         <View style={styles.imagem}>
                             {this.returnImagemPublicacao(this.state.foto)}
