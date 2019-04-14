@@ -22,7 +22,8 @@ export default class PerfilComponent extends Network {
     constructor(props){
         super(props);
         this.state = {
-            user: this.props.data
+            user: this.props.data,
+            infoRestauranteVisible: false
         }
     }
 
@@ -177,8 +178,14 @@ export default class PerfilComponent extends Network {
     }
 
     render(){
-        if (this.state.user.is_restaurante)
-            return this.renderInfoPerfilRestaurante();
+        if (this.state.user.is_restaurante){
+            return (
+                <View>
+                    {this.renderInfoPerfilRestaurante()}
+                    {this.renderModalRestaurante()}
+                </View>
+            );
+        }
         
         // return this.renderInfoPerfil();
         return <View></View>;
@@ -273,7 +280,7 @@ export default class PerfilComponent extends Network {
                 <View style={styles.viewInfoRestaurante}>
                 
                     <View style={styles.viewInfoContato}>
-                        <TouchableOpacity onPress={this.props.onOpenInfo} style={styles.infoContato}><Icon name="info" size={18} solid color="#fff"/></TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: true})} style={styles.infoContato}><Icon name="info" size={18} solid color="#fff"/></TouchableOpacity>
                         <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2, overflow: 'hidden'}} onPress={() => {this.tipoFoto = "fotoPerfil"; this.validarAlteracaoFoto()}}>
                             <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto ? foto : ""}}/>
                             {this.renderCamerazinha(sou_eu)}
@@ -341,7 +348,89 @@ export default class PerfilComponent extends Network {
         );
     }
 
-    
+    renderBolinha(status_funcionamento){
+        if (!this.state.user.tem_horario) return null;
+        if (status_funcionamento == 'ABERTO'){
+            return <View style={[styles.bola, styles.bolaVerde]}></View>
+        } else if (status_funcionamento == 'FECHOU' || status_funcionamento == 'NAO_ABRIU'){
+            return <View style={[styles.bola, styles.bolaVermelha]}></View>
+        } else return null;
+
+    }
+
+    renderStatusFuncionamento(status_funcionamento){
+        if (!this.state.user.tem_horario) return null;
+        if (status_funcionamento == 'ABERTO'){
+            return <Text style={[styles.textoStatus, styles.textoAberto]}>Aberto</Text>
+        } else if (status_funcionamento == 'FECHOU' || status_funcionamento == 'NAO_ABRIU'){
+            return <Text style={[styles.textoStatus, styles.textoFechado]}>Fechado</Text>
+        } else return null;
+    }
+
+    renderTextoHorario(status_funcionamento){
+        if (!this.state.user.tem_horario) return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
+        if (status_funcionamento == 'ABERTO'){
+            return <Text style={styles.horarioRestaurante}>Fecha às {this.state.user.horario_fechamento}</Text>
+        } else if (status_funcionamento == 'FECHOU'){
+            return <Text style={styles.horarioRestaurante}>Fechou às {this.state.user.horario_fechamento}</Text>
+        } else if (status_funcionamento == 'NAO_ABRIU'){
+            return <Text style={styles.horarioRestaurante}>Abre às {this.state.user.horario_abertura}</Text>
+        } else {
+            return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
+        }
+    }
+
+    renderModalRestaurante(){
+        if (this.state.user.is_restaurante){
+            return (
+                <Modal
+                    
+                  animationType="slide"
+                    transparent={true}
+                    visible={this.state.infoRestauranteVisible}
+                    onRequestClose={() => {
+                        this.setState({infoRestauranteVisible: false})
+                    }}
+                    >
+                    <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})} style={{flex: 1}}>
+                    
+                    </TouchableOpacity>
+                    <View style={styles.informacoesRestaurante}>
+                        <View style={[styles.row, styles.paddingInfoRestaurante, styles.headerInfoRestaurante]}>
+                            <View style={[styles.column, {flex: 1}]}>
+                                <View style={[styles.row, styles.alignCenter]}>
+                                    <Text style={styles.tituloHeaderRestaurante}>{this.state.user.nome}</Text>
+                                    {this.renderBolinha(this.state.user.status_funcionamento)}
+                                    {this.renderStatusFuncionamento(this.state.user.status_funcionamento)}
+                                </View>
+                                <View style={[styles.row, styles.alignCenter, {marginTop: 10}]}>
+                                    <Icon name="clock" size={15} color="#222" solid/>
+                                    {this.renderTextoHorario(this.state.user.status_funcionamento)}
+                                </View>
+                                <View style={[styles.row, styles.alignCenter, {marginTop: 5}]}>
+                                    <Icon name="map-marker-alt" size={15} color="#222" solid/>
+                                    <Text style={styles.enderecoRestaurante}>{this.state.user.endereco.logradouro}{this.state.user.endereco.numero ? ',' : ''} {this.state.user.endereco.numero}</Text>
+                                </View>
+                            </View>
+                            <View style={styles.viewFotoRestauranteInfo}>
+                                <Image resizeMethod="resize" source={{uri: this.state.user.foto ? this.state.user.foto : ""}} style={styles.imagemRestauranteInfo}/>
+                            </View>
+                            <View style={styles.botaoFecharInfoRestaurante}>
+                                <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})}>
+                                    <Icon name="times" color="#222" size={24}/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                        <View style={[styles.column, styles.paddingInfoRestaurante, styles.viewSobreRestaurante]}>
+                            <Text style={styles.tituloSobreRestaurante}>Sobre</Text>
+                            <Text style={styles.sobreRestaurante}>{this.state.user.sobre}</Text>
+                        </View>
+                    </View>
+                </Modal>
+            );
+        }
+        return null;
+    }
 
 }
 
