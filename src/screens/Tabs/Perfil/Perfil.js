@@ -12,6 +12,7 @@ import SemDadosPerfil from '../../../components/SemDadosPerfil/SemDadosPerfil';
 import Galeria from '../../../components/Galeria/Galeria';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ModalPostagemViewer from '../../../components/ModalPostagemViewer/ModalPostagemViewer';
+import PerfilComponent from '../../../components/PerfilComponent/PerfilComponent';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -190,7 +191,14 @@ export default class Perfil extends Network {
 
     returnHeaderComponent(){
         if (this.state.user.is_restaurante)
-            return this.renderInfoPerfilRestaurante();
+            return <PerfilComponent
+                        data={this.state.user}
+                        navigation={this.props.navigation}
+                        onOpenInfo={() => this.setState({infoRestauranteVisible: true})}
+                        abrirGaleriaCapa={() => {
+                            this.tipoFoto = "capaPerfil";
+                            Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria();
+                        }}/>;
         
         return this.renderInfoPerfil();
     }
@@ -458,40 +466,6 @@ export default class Perfil extends Network {
         );
     }
 
-    renderDescricaoRestaurante(color = '#000'){
-        if (this.state.user.descricao){
-            return <Text style={[styles.descricaoRestaurante, {color: color}]}>{this.state.user.descricao}</Text>;
-        }
-        return <Text style={[styles.descricaoRestaurante, {color: color}]}>Conheça o {this.state.user.nome}!</Text>;
-    }
-
-    renderBotaoAlterarCapa(sou_eu){
-        if (sou_eu){
-            console.log("aqui sou eu sim")
-            return (
-                <TouchableOpacity onPress={() => {
-                    this.tipoFoto = "capaPerfil"
-                    Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria()
-                }}
-                    style={{
-                    paddingHorizontal: 10, 
-                    paddingVertical: 3, 
-                    justifyContent: 'center', 
-                    alignItems: 'center', 
-                    borderWidth: 1, 
-                    borderColor: '#eee',
-                    backgroundColor: 'rgba(0, 0, 0, .3)',
-                    marginRight: 10,
-                    marginTop: 10,
-                    borderRadius: 20
-                }}>
-                    <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar capa</Text>
-                </TouchableOpacity>
-            );
-        }
-        return null;
-    }
-
     renderInfoPerfilRestaurante(){
         let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa, telefone, ddd } = this.state.user;
         let background = cor_fundo ? '#' + cor_fundo : '#fff';
@@ -576,6 +550,40 @@ export default class Perfil extends Network {
                 </View>
             </View>
         );
+    }
+
+    renderDescricaoRestaurante(color = '#000'){
+        if (this.state.user.descricao){
+            return <Text style={[styles.descricaoRestaurante, {color: color}]}>{this.state.user.descricao}</Text>;
+        }
+        return <Text style={[styles.descricaoRestaurante, {color: color}]}>Conheça o {this.state.user.nome}!</Text>;
+    }
+
+    renderBotaoAlterarCapa(sou_eu){
+        if (sou_eu){
+            console.log("aqui sou eu sim")
+            return (
+                <TouchableOpacity onPress={() => {
+                    this.tipoFoto = "capaPerfil"
+                    Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria()
+                }}
+                    style={{
+                    paddingHorizontal: 10, 
+                    paddingVertical: 3, 
+                    justifyContent: 'center', 
+                    alignItems: 'center', 
+                    borderWidth: 1, 
+                    borderColor: '#eee',
+                    backgroundColor: 'rgba(0, 0, 0, .3)',
+                    marginRight: 10,
+                    marginTop: 10,
+                    borderRadius: 20
+                }}>
+                    <Text style={{fontSize: 10, color: '#eee', fontWeight: 'bold'}}>Alterar capa</Text>
+                </TouchableOpacity>
+            );
+        }
+        return null;
     }
 
     returnFotos(){
