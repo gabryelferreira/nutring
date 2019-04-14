@@ -32,7 +32,7 @@ export default class BuscarEspecifico extends Network {
         usuarios: [],
         offset: [],
         limit: [],
-        statusBarHeight: 20
+        statusBarHeight: Platform.OS === 'ios' ? 20 : 0
     }
 
     constructor(props){
