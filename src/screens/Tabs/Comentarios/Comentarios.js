@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList } from 'react-native';
+import { View, Text, Image, Dimensions, NativeModules, Platform, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -38,11 +39,18 @@ export default class Comentarios extends Network {
         },
         id_post: this.props.navigation.getParam('id_post', '-1'),
         comentario: "",
-        comentando: false
+        comentando: false,
+        statusBarHeight: Platform.OS === 'ios' ? 20 : 0
     }
 
     componentDidMount(){
-        console.log("to no didmount bb")
+        if (Platform.OS === 'ios'){
+            StatusBarManager.getHeight(statusBar => {
+                this.setState({
+                    statusBarHeight: statusBar.height
+                })
+            })    
+        }
         this.carregarDadosIniciais();
     }
 
