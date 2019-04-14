@@ -45,6 +45,7 @@ import NovaReceita from './src/screens/Tabs/NovaReceita/NovaReceita';
 import EditarReceita from './src/screens/Tabs/EditarReceita/EditarReceita';
 import EditarPasso from './src/screens/Tabs/EditarReceita/EditarPasso/EditarPasso';
 import VerReceita from './src/screens/Tabs/Receitas/VerReceita/VerReceita';
+require('./src/assets/imgs/tela-mais/prato2.png');
 
 const NavigationOptions = {
     headerStyle: {

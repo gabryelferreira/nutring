@@ -51,6 +51,8 @@ export default class Perfil extends Network {
         }
     });
 
+    user = {};
+
     constructor(props){
         super(props);
         this.state = {
@@ -129,14 +131,13 @@ export default class Perfil extends Network {
                 this.props.navigation.setParams({
                     cor_texto: "#000"
                 })
+            this.user = result.result
             this.setState({
                 user: result.result,
-                refreshing: false
+                refreshing: false,
+                carregandoPrimeiraVez: false
             }, this.carregarFotosIniciais)
         }
-        this.setState({
-            carregandoPrimeiraVez: false
-        })
     }
 
     async carregarFotosIniciais() {
@@ -174,14 +175,12 @@ export default class Perfil extends Network {
                     await this.setState({
                         dados: dados,
                         offset: this.state.offset + 18
-                    }, function() {
-                        console.log("TODOS OS DADOS = ", this.state.dados)
                     });
                 }
             }
         }
         await this.setState({
-            refreshing: false
+            refreshing: false,
         })
     }
 
@@ -190,21 +189,23 @@ export default class Perfil extends Network {
     }
 
     returnHeaderComponent(){
-        if (this.state.user.is_restaurante)
-            return <PerfilComponent
-                        data={this.state.user}
-                        navigation={this.props.navigation}
-                        onOpenInfo={() => this.setState({infoRestauranteVisible: true})}
-                        abrirGaleriaCapa={() => {
-                            this.tipoFoto = "capaPerfil";
-                            Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria();
-                        }}/>;
-        
-        return this.renderInfoPerfil();
+        return <PerfilComponent
+                    data={this.user}
+                    navigation={this.props.navigation}
+                    onOpenInfo={() => this.setState({infoRestauranteVisible: true})}
+                    abrirGaleriaCapa={() => {
+                        this.tipoFoto = "capaPerfil";
+                        Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria();
+                    }}
+                    abrirGaleriaFoto={() => {
+                        this.tipoFoto = "fotoPerfil";
+                        Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria();
+                    }}
+                    />;        
     }
 
     getTextoSemFotos(){
-        if (this.state.user.sou_eu)
+        if (this.user.sou_eu)
             return "Que tal publicar um hoje? ;)";
         return "Esse usuário não possui publicações"
     }
@@ -222,7 +223,7 @@ export default class Perfil extends Network {
     editarPerfil(){
         this.props.navigation.navigate("EditarPerfil", {
             onGoBack: () => this.getPerfil(),
-            user: this.state.user
+            user: this.user
           });
     }
 
@@ -233,7 +234,7 @@ export default class Perfil extends Network {
         })
         let result = await this.callMethod("followUnfollow", { id_seguido });
         if (result.success){
-            let user = this.state.user;
+            let user = this.user;
             user.is_seguindo = true;
             user.seguidores = user.seguidores + 1;
             await this.setState({
@@ -252,7 +253,7 @@ export default class Perfil extends Network {
         })
         let result = await this.callMethod("followUnfollow", { id_seguido });
         if (result.success){
-            let user = this.state.user;
+            let user = this.user;
             user.is_seguindo = false;
             user.seguidores = user.seguidores - 1;
             await this.setState({
@@ -267,14 +268,14 @@ export default class Perfil extends Network {
     renderBotaoSeguir(color = "#000"){
         if (this.state.parandoDeSeguir || this.state.seguindo)
             return this.renderBotaoCarregandoSeguindo(color);
-        if (this.state.user.sou_eu){
+        if (this.user.sou_eu){
             return (
                 <TouchableOpacity style={styles.botaoEditar} onPress={() => this.editarPerfil()}>
                     <Text style={[styles.textoBotaoEditar, {color: color}]}>Editar Perfil</Text>
                 </TouchableOpacity>
             );
         }
-        if (this.state.user.is_seguindo){
+        if (this.user.is_seguindo){
             return (
                 <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
                     <Text style={[styles.textoBotaoEditar, {color: color}]}>Seguindo</Text>
@@ -315,11 +316,11 @@ export default class Perfil extends Network {
     }
 
     renderLocalizacao(){
-        if (this.state.user.endereco && this.state.user.endereco.cidade && this.state.user.endereco.estado){
+        if (this.user.endereco && this.user.endereco.cidade && this.user.endereco.estado){
             return (
                 <View style={{flexDirection: 'row', marginTop: 5}}>
                     <Icon name="map-marker-alt" color="#fff" size={14} style={{marginRight: 5}}/>
-                    <Text style={styles.localizacao}>{this.state.user.endereco.cidade} - {this.state.user.endereco.estado}</Text>
+                    <Text style={styles.localizacao}>{this.user.endereco.cidade} - {this.user.endereco.estado}</Text>
                 </View>
             );
         }
@@ -327,8 +328,8 @@ export default class Perfil extends Network {
     }
 
     renderDescricao(){
-        if (this.state.user.descricao){
-            return <Text style={styles.descricao}>{this.state.user.descricao}</Text>;
+        if (this.user.descricao){
+            return <Text style={styles.descricao}>{this.user.descricao}</Text>;
         }
         return null;
     }
@@ -358,7 +359,7 @@ export default class Perfil extends Network {
     }
     
     renderCriarReceita(){
-        if (this.state.user.sou_eu){
+        if (this.user.sou_eu){
             return (
                 <TouchableOpacity onPress={() => this.props.navigation.navigate("NovaReceita")} style={styles.botaoCriarReceita}>
                     <Text style={styles.textoCriarReceita}>Criar Receita</Text>
@@ -371,7 +372,7 @@ export default class Perfil extends Network {
     renderViewReceitas(receitas){
         if (receitas.length > 0){
             return (
-                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { receitas, id_usuario_perfil: this.state.user.id_usuario })}>
+                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { receitas, id_usuario_perfil: this.user.id_usuario })}>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
                         <View style={styles.viewInfoReceitas}>
                             <Text style={styles.tituloReceitas}>Receitas</Text>
@@ -386,7 +387,7 @@ export default class Perfil extends Network {
                     </View>
                 </TouchableOpacity>
             );
-        } else if (this.state.user.sou_eu){
+        } else if (this.user.sou_eu){
             return (
                 <View style={styles.viewReceitas}>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
@@ -403,7 +404,7 @@ export default class Perfil extends Network {
     }
 
     renderInfoPerfil(){
-        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa, receitas } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa, receitas } = this.user;
         return (
             <View style={styles.viewPerfil}>
                 <View style={styles.capaUsuario}>
@@ -467,7 +468,7 @@ export default class Perfil extends Network {
     }
 
     renderInfoPerfilRestaurante(){
-        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa, telefone, ddd } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa, telefone, ddd } = this.user;
         let background = cor_fundo ? '#' + cor_fundo : '#fff';
         let color = cor_texto ? '#' + cor_texto : '#000';
         return (
@@ -553,10 +554,10 @@ export default class Perfil extends Network {
     }
 
     renderDescricaoRestaurante(color = '#000'){
-        if (this.state.user.descricao){
-            return <Text style={[styles.descricaoRestaurante, {color: color}]}>{this.state.user.descricao}</Text>;
+        if (this.user.descricao){
+            return <Text style={[styles.descricaoRestaurante, {color: color}]}>{this.user.descricao}</Text>;
         }
-        return <Text style={[styles.descricaoRestaurante, {color: color}]}>Conheça o {this.state.user.nome}!</Text>;
+        return <Text style={[styles.descricaoRestaurante, {color: color}]}>Conheça o {this.user.nome}!</Text>;
     }
 
     renderBotaoAlterarCapa(sou_eu){
@@ -720,7 +721,7 @@ export default class Perfil extends Network {
     }
 
     validarAlteracaoFoto(){
-        if (this.state.user.sou_eu){
+        if (this.user.sou_eu){
             this.setState({
                 modal: {
                     visible: true,
@@ -741,7 +742,7 @@ export default class Perfil extends Network {
     }
 
     renderBolinha(status_funcionamento){
-        if (!this.state.user.tem_horario) return null;
+        if (!this.user.tem_horario) return null;
         if (status_funcionamento == 'ABERTO'){
             return <View style={[styles.bola, styles.bolaVerde]}></View>
         } else if (status_funcionamento == 'FECHOU' || status_funcionamento == 'NAO_ABRIU'){
@@ -751,7 +752,7 @@ export default class Perfil extends Network {
     }
 
     renderStatusFuncionamento(status_funcionamento){
-        if (!this.state.user.tem_horario) return null;
+        if (!this.user.tem_horario) return null;
         if (status_funcionamento == 'ABERTO'){
             return <Text style={[styles.textoStatus, styles.textoAberto]}>Aberto</Text>
         } else if (status_funcionamento == 'FECHOU' || status_funcionamento == 'NAO_ABRIU'){
@@ -760,20 +761,20 @@ export default class Perfil extends Network {
     }
 
     renderTextoHorario(status_funcionamento){
-        if (!this.state.user.tem_horario) return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
+        if (!this.user.tem_horario) return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
         if (status_funcionamento == 'ABERTO'){
-            return <Text style={styles.horarioRestaurante}>Fecha às {this.state.user.horario_fechamento}</Text>
+            return <Text style={styles.horarioRestaurante}>Fecha às {this.user.horario_fechamento}</Text>
         } else if (status_funcionamento == 'FECHOU'){
-            return <Text style={styles.horarioRestaurante}>Fechou às {this.state.user.horario_fechamento}</Text>
+            return <Text style={styles.horarioRestaurante}>Fechou às {this.user.horario_fechamento}</Text>
         } else if (status_funcionamento == 'NAO_ABRIU'){
-            return <Text style={styles.horarioRestaurante}>Abre às {this.state.user.horario_abertura}</Text>
+            return <Text style={styles.horarioRestaurante}>Abre às {this.user.horario_abertura}</Text>
         } else {
             return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
         }
     }
 
     renderModalRestaurante(){
-        if (this.state.user.is_restaurante){
+        if (this.user.is_restaurante){
             return (
                 <Modal
                     
@@ -791,21 +792,21 @@ export default class Perfil extends Network {
                         <View style={[styles.row, styles.paddingInfoRestaurante, styles.headerInfoRestaurante]}>
                             <View style={[styles.column, {flex: 1}]}>
                                 <View style={[styles.row, styles.alignCenter]}>
-                                    <Text style={styles.tituloHeaderRestaurante}>{this.state.user.nome}</Text>
-                                    {this.renderBolinha(this.state.user.status_funcionamento)}
-                                    {this.renderStatusFuncionamento(this.state.user.status_funcionamento)}
+                                    <Text style={styles.tituloHeaderRestaurante}>{this.user.nome}</Text>
+                                    {this.renderBolinha(this.user.status_funcionamento)}
+                                    {this.renderStatusFuncionamento(this.user.status_funcionamento)}
                                 </View>
                                 <View style={[styles.row, styles.alignCenter, {marginTop: 10}]}>
                                     <Icon name="clock" size={15} color="#222" solid/>
-                                    {this.renderTextoHorario(this.state.user.status_funcionamento)}
+                                    {this.renderTextoHorario(this.user.status_funcionamento)}
                                 </View>
                                 <View style={[styles.row, styles.alignCenter, {marginTop: 5}]}>
                                     <Icon name="map-marker-alt" size={15} color="#222" solid/>
-                                    <Text style={styles.enderecoRestaurante}>{this.state.user.endereco.logradouro}{this.state.user.endereco.numero ? ',' : ''} {this.state.user.endereco.numero}</Text>
+                                    <Text style={styles.enderecoRestaurante}>{this.user.endereco.logradouro}{this.user.endereco.numero ? ',' : ''} {this.user.endereco.numero}</Text>
                                 </View>
                             </View>
                             <View style={styles.viewFotoRestauranteInfo}>
-                                <Image resizeMethod="resize" source={{uri: this.state.user.foto ? this.state.user.foto : ""}} style={styles.imagemRestauranteInfo}/>
+                                <Image resizeMethod="resize" source={{uri: this.user.foto ? this.user.foto : ""}} style={styles.imagemRestauranteInfo}/>
                             </View>
                             <View style={styles.botaoFecharInfoRestaurante}>
                                 <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})}>
@@ -815,7 +816,7 @@ export default class Perfil extends Network {
                         </View>
                         <View style={[styles.column, styles.paddingInfoRestaurante, styles.viewSobreRestaurante]}>
                             <Text style={styles.tituloSobreRestaurante}>Sobre</Text>
-                            <Text style={styles.sobreRestaurante}>{this.state.user.sobre}</Text>
+                            <Text style={styles.sobreRestaurante}>{this.user.sobre}</Text>
                         </View>
                     </View>
                 </Modal>
@@ -824,8 +825,15 @@ export default class Perfil extends Network {
         return null;
     }
 
+    renderGaleria(){
+        if (this.state.galeriaAberta){
+            return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.alterarFotoPerfil(foto)} onClose={() => this.setState({galeriaAberta: false})}/>
+        }
+        return null;
+    }
+
     render(){
-        let { nome, foto } = this.state.user;
+        let { nome, foto } = this.user;
         if (this.state.carregandoPrimeiraVez){
             return (
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
@@ -833,9 +841,9 @@ export default class Perfil extends Network {
                 </View>
             );
         }
-        if (this.state.galeriaAberta){
-            return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.alterarFotoPerfil(foto)} onClose={() => this.setState({galeriaAberta: false})}/>
-        }
+        // if (this.state.galeriaAberta){
+        //     return <Galeria fotos={this.state.fotosGaleria} onPress={(foto) => this.alterarFotoPerfil(foto)} onClose={() => this.setState({galeriaAberta: false})}/>
+        // }
         return (
             <View style={{flex: 1}}>
                 <Modalzin 
@@ -846,11 +854,12 @@ export default class Perfil extends Network {
                     onClose={() => this.setState({modal: {visible: false}})}
                     botoes={this.state.modal.botoes}
                 />
+                {this.renderGaleria()}
 
                 <ModalPostagemViewer visible={this.state.modalFotoVisible}
-                            foto={this.state.user.foto}
-                            titulo={this.state.user.nome}
-                            imagens={this.formatarImagemViewer(this.state.user.foto)}
+                            foto={this.user.foto}
+                            titulo={this.user.nome}
+                            imagens={this.formatarImagemViewer(this.user.foto)}
                             onSwipeDown={() => this.setState({modalFotoVisible: false})}
                             onClose={() => this.setState({modalFotoVisible: false})}/>
 

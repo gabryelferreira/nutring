@@ -438,8 +438,8 @@ class Post extends Network {
                 <View style={styles.viewInfoAll}>
                     <View style={styles.viewInfo}>
                         <View style={styles.fotoETexto}>
-                            <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 50, width: 50, borderRadius: 50/2, backgroundColor: '#000', marginRight: 15}}>
-                                <Image resizeMethod="resize" style={{height: 50, width: 50, borderRadius: 50/2}} source={{uri: foto}}/>
+                            <TouchableOpacity onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })} style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000', marginRight: 15}}>
+                                <Image resizeMethod="resize" style={{height: 38, width: 38, borderRadius: 38/2}} source={{uri: foto}}/>
                             </TouchableOpacity>
                             <View style={styles.viewInfoTexto}>
                                 <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })}>
@@ -605,7 +605,8 @@ const styles = {
         color: '#000',
         fontWeight: 'bold',
         maxHeight: 24,
-        marginRight: 5
+        marginRight: 5,
+        marginBottom: 2
     },
     tempo: {
         fontSize: 13,

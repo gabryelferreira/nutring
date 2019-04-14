@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, Image, NativeModules, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, KeyboardAvoidingView, Platform } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../components/Loader/Loader';
@@ -25,7 +26,8 @@ export default class Login extends Network {
             botoes: this.criarBotoes()
         },
         email: "",
-        senha: ""
+        senha: "",
+        statusBarHeight: Platform.OS === 'ios' ? 20 : 0
     }
 
     static navigationOptions = {
@@ -33,6 +35,16 @@ export default class Login extends Network {
             <View></View>
         )
     };
+
+    componentDidMount(){
+        if (Platform.OS === 'ios'){
+            StatusBarManager.getHeight(statusBar => {
+                this.setState({
+                    statusBarHeight: statusBar.height
+                })
+            })
+        }
+    }
 
     async salvarNavigation(navigation){
         try {
@@ -150,7 +162,7 @@ export default class Login extends Network {
                     onClose={() => this.setState({modal: {visible: false}})}
                     botoes={this.state.modal.botoes}
                 />
-                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={64}>
+                <KeyboardAvoidingView style={{ flex: 1, flexDirection: 'column',justifyContent: 'center',}} behavior="padding" enabled={Platform.OS === 'ios' ? true : false}   keyboardVerticalOffset={0}>
                     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
 
                         {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.botaoVoltar}>

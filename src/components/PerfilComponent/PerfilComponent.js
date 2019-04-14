@@ -23,7 +23,43 @@ export default class PerfilComponent extends Network {
         super(props);
         this.state = {
             user: this.props.data,
-            infoRestauranteVisible: false
+            infoRestauranteVisible: false,
+            modal: {
+                visible: false,
+                titulo: "Foto de Perfil",
+                subTitulo: "O que deseja fazer com sua foto de perfil?",
+                botoes: this.criarBotoes()
+            },
+            modalFotoVisible: false
+        }
+    }
+
+    criarBotoes(){
+        let botoes = [
+            {chave: "ALTERAR", texto: "Alterar", color: '#27ae60', fontWeight: 'bold'},
+            {chave: "VER_FOTO", texto: "Visualizar", color: '#27ae60', fontWeight: 'bold'},
+            {chave: "TENTAR", texto: "Cancelar"},
+        ]
+        return botoes;
+    }
+
+    setModalState(visible){
+        this.setState({
+            modal: {
+                visible: visible
+            }
+        })
+    }
+
+    getModalClick(key){
+        this.setModalState(false);
+        console.log("clicando no " + key)
+        if (key == "ALTERAR"){
+            this.props.abrirGaleriaFoto();
+        } else if (key == "VER_FOTO"){
+            this.setState({
+                modalFotoVisible: true
+            })
         }
     }
 
@@ -177,7 +213,11 @@ export default class PerfilComponent extends Network {
         return null;
     }
 
-    render(){
+    formatarImagemViewer(foto){
+        return [foto]
+    }
+
+    returnPerfil(){
         if (this.state.user.is_restaurante){
             return (
                 <View>
@@ -186,74 +226,172 @@ export default class PerfilComponent extends Network {
                 </View>
             );
         }
-        
-        // return this.renderInfoPerfil();
-        return <View></View>;
+        return this.renderInfoPerfil();
+
     }
 
-    // renderInfoPerfil(){
-    //     let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa, receitas } = this.state.user;
-    //     return (
-    //         <View style={styles.viewPerfil}>
-    //             <View style={styles.capaUsuario}>
-    //                 <View style={[styles.capaUsuario, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2, alignItems: 'flex-end'}]}>
-    //                     {this.renderBotaoAlterarCapa(sou_eu)}
-    //                 </View>
-    //                 <Image resizeMethod="resize" source={{uri: capa ? capa : ""}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
-    //             </View>
-    //             <View style={styles.viewInfo}>
-    //                 <TouchableOpacity style={styles.viewFoto} onPress={() => this.validarAlteracaoFoto()}>
-    //                     <Image resizeMethod="resize" style={styles.foto} source={{uri: foto ? foto : ""}}/>
-    //                     {this.renderCamerazinha(sou_eu)}
-    //                 </TouchableOpacity>
-    //                 <Text style={styles.nome}>{nome}</Text>
-    //                 <View style={{flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 30}}>
-    //                     {this.renderDescricao()}
-    //                 </View>
-    //                 {this.renderBotaoSeguir()}
-    //                 <View style={styles.tabs}>
-    //                     <View style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
-    //                         <View style={styles.infoTab}>
-    //                             {/* <Icon name="utensils" size={15} color="#aaa"/> */}
-    //                             <Text style={styles.tabTitulo}>PRATOS</Text>
-    //                         </View>
-    //                         <Text style={styles.tabTexto}>{posts}</Text>
-    //                     </View>
-    //                     <TouchableOpacity onPress={() => this.props.navigation.push("Seguidores", { id_usuario_perfil: id_usuario})} style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
-    //                         <View style={styles.infoTab}>
-    //                             {/* <Icon name="chart-line" size={15} color="#aaa"/> */}
-    //                             <Text style={styles.tabTitulo}>SEGUIDORES</Text>
-    //                         </View>
-    //                         <Text style={styles.tabTexto}>{seguidores}</Text>
-    //                     </TouchableOpacity>
-    //                     <TouchableOpacity onPress={() => this.props.navigation.push("Seguindo", { id_usuario_perfil: id_usuario})} style={styles.tab}>
-    //                         <View style={styles.infoTab}>
-    //                             {/* <Icon name="running" size={15} color="#aaa"/> */}
-    //                             <Text style={styles.tabTitulo}>SEGUINDO</Text>
-    //                         </View>
-    //                         <Text style={styles.tabTexto}>{seguindo}</Text>
-    //                     </TouchableOpacity>
-    //                 </View>
-    //             </View>
+    render(){
+        return (
+            <View>
+                <Modalzin 
+                    titulo={this.state.modal.titulo} 
+                    subTitulo={this.state.modal.subTitulo} 
+                    visible={this.state.modal.visible} 
+                    onClick={(key) => this.getModalClick(key)}
+                    onClose={() => this.setState({modal: {visible: false}})}
+                    botoes={this.state.modal.botoes}
+                />
+                <ModalPostagemViewer visible={this.state.modalFotoVisible}
+                        foto={this.state.user.foto}
+                        titulo={this.state.user.nome}
+                        imagens={this.formatarImagemViewer(this.state.user.foto)}
+                        onSwipeDown={() => this.setState({modalFotoVisible: false})}
+                        onClose={() => this.setState({modalFotoVisible: false})}
+                />
 
-    //             {this.renderViewReceitas(receitas)}
+                {this.returnPerfil()}
 
-    //             <View style={styles.fotos}>
-    //                 <View style={styles.tabsFotos}>
-    //                     <TouchableOpacity style={styles.tabFotos} activeOpacity={1}>
-    //                         <Icon name="grip-horizontal" solid size={22} style={[this.state.tabSelecionada == 0 ? {color: '#000'} : {color: '#000'}]}/>
-    //                     </TouchableOpacity>
-    //                     {/* <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 1})}>
-    //                         <Icon name="star" solid size={22} style={[this.state.tabSelecionada == 1 ? {color: '#27ae60'} : {color: '#777'}]}/>
-    //                     </TouchableOpacity>
-    //                     <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 2})}>
-    //                         <Icon name="user" solid size={22} style={[this.state.tabSelecionada == 2 ? {color: '#27ae60'} : {color: '#777'}]}/>
-    //                     </TouchableOpacity> */}
-    //                 </View>
-    //             </View>
-    //         </View>
-    //     );
-    // }
+            </View>
+        );
+    }
+
+    renderCriarReceita(){
+        if (this.state.user.sou_eu){
+            return (
+                <TouchableOpacity onPress={() => this.props.navigation.navigate("NovaReceita")} style={styles.botaoCriarReceita}>
+                    <Text style={styles.textoCriarReceita}>Criar Receita</Text>
+                </TouchableOpacity>
+            );
+        }
+        return null;
+    }
+
+    renderReceitas(receitas){
+        return receitas.map((receita, index) => {
+            if (index > 6) return null;
+            return (
+                <View key={receita.id_receita} style={styles.receita}>
+                        {/* <Icon name="plus" size={15} color="#000"/> */}
+                    <Image resizeMethod="resize" source={{uri: receita.foto ? receita.foto : ""}} style={styles.fotoReceita}/>
+                </View>
+            );
+        })
+    }
+
+    renderViewReceitas(receitas){
+        if (receitas.length > 0){
+            return (
+                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { receitas, id_usuario_perfil: this.state.user.id_usuario })}>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                        <View style={styles.viewInfoReceitas}>
+                            <Text style={styles.tituloReceitas}>Receitas</Text>
+                            <Text style={styles.subTituloReceitas}>{receitas.length} {receitas.length == 1 ? 'prato' : 'pratos'}</Text>
+                        </View>
+                        <View style={styles.receitas}>
+                            {this.renderReceitas(receitas)}
+                        </View>
+                    </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
+                        <Icon name="chevron-right" solid size={15} color="#000"/>
+                    </View>
+                </TouchableOpacity>
+            );
+        } else if (this.state.user.sou_eu){
+            return (
+                <View style={styles.viewReceitas}>
+                    <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
+                        <View style={styles.viewInfoReceitas}>
+                            <Text style={styles.tituloReceitas}>Receitas</Text>
+                            <Text style={styles.subTituloReceitas}>Você não possui receitas</Text>
+                        </View>
+                    </View>
+                    {this.renderCriarReceita()}
+                </View>
+            );
+        }
+        return null;
+    }
+
+    renderInfoPerfil(){
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa, receitas } = this.state.user;
+        return (
+            <View style={styles.viewPerfil}>
+                <View style={styles.capaUsuario}>
+                    <View style={[styles.capaUsuario, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2, alignItems: 'flex-end'}]}>
+                        {this.renderBotaoAlterarCapa(sou_eu)}
+                    </View>
+                    <Image resizeMethod="resize" source={{uri: capa ? capa : ""}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
+                </View>
+                <View style={styles.viewInfo}>
+                    <TouchableOpacity style={styles.viewFoto} onPress={() => this.validarAlteracaoFoto()}>
+                        <Image resizeMethod="resize" style={styles.foto} source={{uri: foto ? foto : ""}}/>
+                        {this.renderCamerazinha(sou_eu)}
+                    </TouchableOpacity>
+                    <Text style={styles.nome}>{nome}</Text>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', paddingHorizontal: 30}}>
+                        {this.renderDescricao()}
+                    </View>
+                    {this.renderBotaoSeguir()}
+                    <View style={styles.tabs}>
+                        <View style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
+                            <View style={styles.infoTab}>
+                                {/* <Icon name="utensils" size={15} color="#aaa"/> */}
+                                <Text style={styles.tabTitulo}>PRATOS</Text>
+                            </View>
+                            <Text style={styles.tabTexto}>{posts}</Text>
+                        </View>
+                        <TouchableOpacity onPress={() => this.props.navigation.push("Seguidores", { id_usuario_perfil: id_usuario})} style={[styles.tab, {borderRightColor: '#ddd', borderRightWidth: 1}]}>
+                            <View style={styles.infoTab}>
+                                {/* <Icon name="chart-line" size={15} color="#aaa"/> */}
+                                <Text style={styles.tabTitulo}>SEGUIDORES</Text>
+                            </View>
+                            <Text style={styles.tabTexto}>{seguidores}</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => this.props.navigation.push("Seguindo", { id_usuario_perfil: id_usuario})} style={styles.tab}>
+                            <View style={styles.infoTab}>
+                                {/* <Icon name="running" size={15} color="#aaa"/> */}
+                                <Text style={styles.tabTitulo}>SEGUINDO</Text>
+                            </View>
+                            <Text style={styles.tabTexto}>{seguindo}</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+
+                {this.renderViewReceitas(receitas)}
+
+                <View style={styles.fotos}>
+                    <View style={styles.tabsFotos}>
+                        <TouchableOpacity style={styles.tabFotos} activeOpacity={1}>
+                            <Icon name="grip-horizontal" solid size={22} style={[this.state.tabSelecionada == 0 ? {color: '#000'} : {color: '#000'}]}/>
+                        </TouchableOpacity>
+                        {/* <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 1})}>
+                            <Icon name="star" solid size={22} style={[this.state.tabSelecionada == 1 ? {color: '#27ae60'} : {color: '#777'}]}/>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.tabFotos} onPress={() => this.setState({tabSelecionada: 2})}>
+                            <Icon name="user" solid size={22} style={[this.state.tabSelecionada == 2 ? {color: '#27ae60'} : {color: '#777'}]}/>
+                        </TouchableOpacity> */}
+                    </View>
+                </View>
+            </View>
+        );
+    }
+
+    validarAlteracaoFoto(){
+        if (this.state.user.sou_eu){
+            this.setState({
+                modal: {
+                    visible: true,
+                    titulo: "Foto de Perfil",
+                    subTitulo: "O que deseja fazer com sua foto de perfil?",
+                    botoes: this.criarBotoes()
+                }
+            })
+        } else {
+            this.setState({
+                modalFotoVisible: true
+            })
+        }
+    }
 
     renderDescricaoRestaurante(color = '#000'){
         if (this.state.user.descricao){
@@ -267,7 +405,7 @@ export default class PerfilComponent extends Network {
         let background = cor_fundo ? '#' + cor_fundo : '#fff';
         let color = cor_texto ? '#' + cor_texto : '#000';
         return (
-            <View style={styles.viewPerfilRestaurante}>
+            <View key={id_usuario} style={styles.viewPerfilRestaurante}>
                 {/* <StatusBar backgroundColor={background} /> */}
                 <View style={styles.capa}>
                     <View style={[styles.capa, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2, alignItems: 'flex-end'}]}>
@@ -281,8 +419,8 @@ export default class PerfilComponent extends Network {
                 
                     <View style={styles.viewInfoContato}>
                         <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: true})} style={styles.infoContato}><Icon name="info" size={18} solid color="#fff"/></TouchableOpacity>
-                        <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2, overflow: 'hidden'}} onPress={() => {this.tipoFoto = "fotoPerfil"; this.validarAlteracaoFoto()}}>
-                            <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2}} source={{uri: foto ? foto : ""}}/>
+                        <TouchableOpacity style={{height: 105, width: 105, borderRadius: 105/2, overflow: 'hidden'}} onPress={() => this.validarAlteracaoFoto()}>
+                            <Image resizeMethod="resize" style={{height: 105, width: 105, borderRadius: 105/2, backgroundColor: '#eee'}} source={{uri: foto ? foto : ""}}/>
                             {this.renderCamerazinha(sou_eu)}
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => Linking.openURL(`tel:${ddd}${telefone}`)} style={styles.infoContato}><Icon name="phone" size={18} solid color="#fff"/></TouchableOpacity>
@@ -412,9 +550,9 @@ export default class PerfilComponent extends Network {
                                     <Text style={styles.enderecoRestaurante}>{this.state.user.endereco.logradouro}{this.state.user.endereco.numero ? ',' : ''} {this.state.user.endereco.numero}</Text>
                                 </View>
                             </View>
-                            <View style={styles.viewFotoRestauranteInfo}>
+                            {/* <View style={styles.viewFotoRestauranteInfo}>
                                 <Image resizeMethod="resize" source={{uri: this.state.user.foto ? this.state.user.foto : ""}} style={styles.imagemRestauranteInfo}/>
-                            </View>
+                            </View> */}
                             <View style={styles.botaoFecharInfoRestaurante}>
                                 <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})}>
                                     <Icon name="times" color="#222" size={24}/>
@@ -743,7 +881,10 @@ const styles = {
         left: 0, right: 0, bottom: 0, backgroundColor: '#fff',
         zIndex: 9999,
         borderTopLeftRadius: 35, borderTopRightRadius: 35,
-        elevation: 30
+        elevation: 30,
+        shadowOffset:{  width: .5,  height: .5,  },
+        shadowColor: 'black',
+        shadowOpacity: .5,
     },
     headerInfoRestaurante: {
         borderBottomWidth: 1,

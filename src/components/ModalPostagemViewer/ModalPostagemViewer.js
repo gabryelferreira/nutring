@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Modal, Text, View, TouchableOpacity, Image } from 'react-native';
+import { Modal, Text, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -56,7 +56,7 @@ export default class ModalPostagemViewer extends Component {
                     onRequestClose={() => {
                         this.props.onClose()
                     }}>
-                    <View style={{flex: 1, backgroundColor: '#000'}}>
+                    <SafeAreaView style={{flex: 1, backgroundColor: '#000'}}>
                         <View style={styles.detalhes}>
                             <View style={styles.viewTitulos}>
                                 <View style={{height: 38, width: 38, borderRadius: 38/2, backgroundColor: '#000', marginRight: 10}}>
@@ -74,7 +74,7 @@ export default class ModalPostagemViewer extends Component {
                                     enableImageZoom={true}
                                     swipeDownThreshold={230}
                                     renderIndicator={() => null}/>
-                    </View>
+                    </SafeAreaView>
             </Modal>
         );
     }
