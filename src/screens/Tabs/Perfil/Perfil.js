@@ -402,7 +402,7 @@ export default class Perfil extends Network {
                     <View style={[styles.capaUsuario, {backgroundColor: 'rgba(0, 0, 0, .4)',  zIndex: 2, alignItems: 'flex-end'}]}>
                         {this.renderBotaoAlterarCapa(sou_eu)}
                     </View>
-                    <Image resizeMethod="resize" source={{uri: capa ? capa : null}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
+                    <Image resizeMethod="resize" source={{uri: capa ? capa : ""}} style={{flex: 1, zIndex: 1, height: undefined, width: undefined}}/>
                 </View>
                 <View style={styles.viewInfo}>
                     <TouchableOpacity style={styles.viewFoto} onPress={() => this.validarAlteracaoFoto()}>
