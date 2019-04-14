@@ -82,7 +82,7 @@ class Post extends Network {
     returnNumeroComentarios(){
         if (this.props.data.comentarios > 1){
             return (
-            <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })} style={styles.verMais}>Ver mais ({this.props.data.comentarios} comentários)</Text>
+            <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })} style={styles.verMais}>Ver mais {this.props.data.comentarios - 1} {(this.props.data.comentarios - 1) > 1 ? 'comentários' : 'comentário'}</Text>
             )
         } else return;
     }
@@ -109,7 +109,7 @@ class Post extends Network {
         }
     }
 
-    returnTextoComentar(comentarios){
+    returnTextoComentario(comentarios){
         if (comentarios > 0){
             return <Text style={{fontSize: 12, marginLeft: 7, color: '#444'}}>{comentarios}</Text>
         } else {
@@ -467,7 +467,7 @@ class Post extends Network {
                             <View style={styles.viewGostei}>
                                 <TouchableOpacity activeOpacity={0.7} onPress={() => this.props.navigation.push('Comentarios', { id_post })} style={[styles.botaoGostei]}>
                                     <Icon name="comment" size={22} color="#444"/>
-                                    {this.returnTextoComentar(comentarios)}
+                                    {this.returnTextoComentario(comentarios)}
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -678,7 +678,7 @@ const styles = {
         borderRadius: 8/2,
         backgroundColor: '#20b351',
         marginRight: 7,
-        alignSelf: 'flex-start'
+        alignSelf: 'center'
     },
     nomeComentario: {
         fontSize: 15,
