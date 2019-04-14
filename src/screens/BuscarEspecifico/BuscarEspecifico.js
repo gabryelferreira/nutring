@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image, Button, Modal, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, TouchableOpacity, NativeModules, Text, Image, Button, Modal, ActivityIndicator, SafeAreaView } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../network';
 import SearchBar from '../../components/SearchBar/SearchBar';
@@ -13,23 +14,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 const Header = ({navigation}) => {
     return (
-        <SafeAreaView style={{backgroundColor: '#fff'}}>
-            <View style={{
-                elevation: 1,
-                shadowOpacity: 0,
-                height: 50,
-                paddingHorizontal: 20,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                left: 0, right: 0, top: 0,
-                zIndex: 9999,
-                borderBottomWidth: 1,
-                borderBottomColor: '#eee'
-            }}>
-                <SearchBar navigation={navigation} onChangeText={navigation.getParam('procurar')}/>
-            </View>
-        </SafeAreaView>
+        <View></View>
     );
 }
 
@@ -47,6 +32,7 @@ export default class BuscarEspecifico extends Network {
         usuarios: [],
         offset: [],
         limit: [],
+        statusBarHeight: 20
     }
 
     constructor(props){
@@ -77,7 +63,7 @@ export default class BuscarEspecifico extends Network {
         }
     }
 
-    pesquisar = async (pesquisa) => {
+    async pesquisar(pesquisa){
         this.setState({
             loading: true
         })
@@ -95,16 +81,12 @@ export default class BuscarEspecifico extends Network {
     }
 
     componentDidMount() {
-        this.props.navigation.setParams({
-            procurar: this.pesquisar.bind(this),
-        })
+        StatusBarManager.getHeight(statusBar => {
+            this.setState({
+                statusBarHeight: statusBar.height
+            });
+        });
         this.getUsuariosPesquisados();
-    }
-
-    componentWillUnmount() {
-        this.props.navigation.setParams({
-            procurar: null,
-        })
     }
 
     renderTextoSeguindo(is_seguindo, is_seguindo_voce, seguidores){
@@ -155,13 +137,27 @@ export default class BuscarEspecifico extends Network {
 
   render() {
     return (
-    <SafeAreaView style={{flex: 1}}>
+    <View style={[{flex: 1, backgroundColor: '#fff', marginTop: this.state.statusBarHeight}]}>
 
-        <Header navigation={this.props.navigation}/>
+        <View style={{
+                elevation: 1,
+                shadowOpacity: 0,
+                height: 50,
+                paddingHorizontal: 20,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                left: 0, right: 0, top: 0,
+                zIndex: 9999,
+                borderBottomWidth: 1,
+                borderBottomColor: '#eee'
+            }}>
+                <SearchBar value={this.state.pesquisa} navigation={this.props.navigation} onChangeText={(pesquisa) => this.setState({pesquisa}, () => this.pesquisar(this.state.pesquisa))}/>
+            </View>
         <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
             {this.renderDados()}
         </ScrollView>
-    </SafeAreaView>
+    </View>
     );
   }
 

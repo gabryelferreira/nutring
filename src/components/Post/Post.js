@@ -678,8 +678,7 @@ const styles = {
         borderRadius: 8/2,
         backgroundColor: '#20b351',
         marginRight: 7,
-        alignSelf: 'flex-start',
-        marginTop: 8
+        alignSelf: 'flex-start'
     },
     nomeComentario: {
         fontSize: 15,

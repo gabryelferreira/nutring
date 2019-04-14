@@ -43,6 +43,8 @@
 	<string></string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Precisamos da sua permissão para usar o microfone</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Precisamos da sua permissão para acessar a galeria</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Precisamos da sua permissão para usar a galeria</string>
 	<key>UIAppFonts</key>

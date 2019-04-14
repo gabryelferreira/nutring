@@ -10,7 +10,7 @@ const SearchBar = ({onPress, onChangeText, value, navigation}) => {
             <HeaderBackButton tintColor="#000" onPress={() => navigation.goBack(null)} />
             <TextInput 
                 autoFocus={true}
-                onChangeText={onChangeText}
+                onChangeText={() => onChangeText(value)}
                 value={value}
                 placeholder="Procure pessoas, restaurantes e pratos"
                 style={styles.caixaDeTexto}
