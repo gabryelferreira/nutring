@@ -12,15 +12,9 @@ import Item from '../../components/Item/Item';
 import { StackActions, NavigationActions } from 'react-navigation';
 import { ScrollView } from 'react-native-gesture-handler';
 
-const Header = ({navigation}) => {
-    return (
-        <View></View>
-    );
-}
-
 export default class BuscarEspecifico extends Network {
 
-    static navigationOptions = ({ navigation }) => ({
+    static navigationOptions = () => ({
         header: (
             <View></View>
         )
@@ -124,7 +118,7 @@ export default class BuscarEspecifico extends Network {
         if (this.state.loading){
             return (
                 <View style={{flex: 1, justifyContent: 'flex-start', alignItems: 'center', flexDirection: 'column', marginTop: 20}}>
-                    <ActivityIndicator color="#777" size="large" />
+                    <ActivityIndicator color="#777" size="small" />
                 </View>
             );
         } else if (this.state.usuarios.length == 0){

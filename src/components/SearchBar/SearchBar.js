@@ -7,10 +7,10 @@ import { HeaderBackButton } from 'react-navigation';
 const SearchBar = ({onPress, onChangeText, value, navigation}) => {
     return (
         <View style={styles.container}>
-            <HeaderBackButton tintColor="#000" onPress={() => navigation.goBack(null)} />
+            <Icon name="chevron-left" size={18} style={{paddingLeft: 10, paddingRight: 26}} onPress={() => navigation.goBack(null)}/>
             <TextInput 
                 autoFocus={true}
-                onChangeText={() => onChangeText(value)}
+                onChangeText={onChangeText}
                 value={value}
                 placeholder="Procure pessoas, restaurantes e pratos"
                 style={styles.caixaDeTexto}
