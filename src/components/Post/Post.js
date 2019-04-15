@@ -333,7 +333,7 @@ class Post extends Network {
             <View style={{paddingVertical: 15}}>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                     <ShimmerPlaceHolder
-                        style={{height: 50, width: 50, borderRadius: 50/2, marginHorizontal: 15}}
+                        style={{height: 38, width: 38, borderRadius: 38/2, marginHorizontal: 15}}
                         autoRun={true}
                         visible={false}
                     ></ShimmerPlaceHolder>
