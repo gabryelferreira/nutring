@@ -201,6 +201,7 @@ export default class Perfil extends Network {
                         this.tipoFoto = "fotoPerfil";
                         Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria();
                     }}
+                    editarPerfilClick={() => this.editarPerfil()}
                     />;        
     }
 

@@ -231,7 +231,7 @@ export default class EditarPerfil extends Network {
     renderHorariosFuncionamento(){
         return this.state.horarios_funcionamento.map(dia => {
             return (
-                <TouchableOpacity onPress={() => this.mostrarModalFuncionamento(dia)} style={styles.viewHorario}>
+                <TouchableOpacity key={dia.cd_dia_semana} onPress={() => this.mostrarModalFuncionamento(dia)} style={styles.viewHorario}>
                     <Text style={[styles.textoHorario, styles.bold]}>{dia.ds_dia_semana}</Text>
                     <Text style={styles.horario}>{dia.horario_abertura} - {dia.horario_fechamento}</Text>
                 </TouchableOpacity>
@@ -302,6 +302,9 @@ export default class EditarPerfil extends Network {
                         <DateTimePicker
                             isVisible={this.state.isDateTimePickerVisible}
                             onConfirm={this._handleDatePicked}
+                            confirmTextIOS={"Confirmar"}
+                            cancelTextIOS={"Cancelar"}
+                            titleIOS={`Horário de ${this.stepHorario == 'ABERTURA' ? 'Abertura' : 'Fechamento'}`}
                             onCancel={this._hideDateTimePicker}
                             date={this.diaSelecionado.newDate}
                             mode={'time'}

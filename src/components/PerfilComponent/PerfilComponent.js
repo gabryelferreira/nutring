@@ -149,7 +149,7 @@ export default class PerfilComponent extends Network {
             return this.renderBotaoCarregandoSeguindo(color);
         if (this.state.user.sou_eu){
             return (
-                <TouchableOpacity style={styles.botaoEditar} onPress={() => this.editarPerfil()}>
+                <TouchableOpacity style={styles.botaoEditar} onPress={this.props.editarPerfilClick}>
                     <Text style={[styles.textoBotaoEditar, {color: color}]}>Editar Perfil</Text>
                 </TouchableOpacity>
             );
