@@ -98,7 +98,7 @@ export default class Item extends Network {
         }
         else if (this.props.fotoPost)
         {
-            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, backgroundColor: '#eee'}} source={{uri: this.props.fotoPost}}/>
+            return <Image resizeMethod="resize" style={{flex: 1, height: 45, width: 45, borderRadius: 4, backgroundColor: '#eee'}} source={{uri: this.props.fotoPost}}/>
         } 
         else if (this.props.tipo == "SEGUIU")
         {
@@ -117,7 +117,7 @@ export default class Item extends Network {
 
     render(){
         return (
-            <TouchableOpacity onPress={this.props.onPress} style={[styles.notificacao, [this.props.promo ? {marginBottom: 20} : {}]]}>
+            <TouchableOpacity onPress={this.props.onPress} style={[styles.notificacao, [this.props.promo ? styles.promocoes : {}]]}>
                 <TouchableOpacity style={styles.foto} onPress={this.props.onPressFoto}>
                     {this.renderFoto()}
                     {this.renderBolinha()}
@@ -219,4 +219,8 @@ const styles = {
         fontSize: 11,
         color: '#777',
     },
+    promocoes: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#eee'
+    }
 }

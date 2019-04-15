@@ -29,8 +29,8 @@ const Receita = (props) => {
                             <Text style={styles.descricao} numberOfLines={3}>{props.receita.descricao}</Text>
                         </View>
                     </View>
-                    <View style={{flex: .2, flexDirection: 'row',  justifyContent: 'flex-end'}}>
-                        <Icon name="chevron-right" solid size={16} color="#aaa"/>
+                    <View style={{paddingHorizontal: 5, paddingVertical: 2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 4, borderColor: '#ddd', borderWidth: 0.4}}>
+                        <Text style={{color: '#28b657', fontSize: 8}}>RECENTE</Text>
                     </View>
                 </TouchableOpacity>
             </View>
@@ -80,9 +80,9 @@ const styles = {
         justifyContent: 'space-between'
     },
     fotoReceita: {
-        height: 60,
-        width: 60,
-        borderRadius: 60/2
+        height: 48,
+        width: 48,
+        borderRadius: 48/2
     },
     textos: {
         marginLeft: 15,
@@ -91,11 +91,11 @@ const styles = {
     titulo: {
         color: '#000',
         fontWeight: 'bold',
-        fontSize: 18,
+        fontSize: 16,
         marginBottom: 3
     },
     descricao: {
-        color: '#000',
+        color: '#777',
         fontSize: 14,
     },
     backgroundGray: {

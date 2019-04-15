@@ -232,13 +232,13 @@ export default class VerReceita extends Network {
     renderProximoAnterior(){
         if (this.state.receita && this.state.receita.passos && this.state.receita.passos.length > 0){
             return (
-                <View style={styles.proximoAnterior}>
+                <SafeAreaView style={styles.proximoAnterior}>
                     {this.renderBotaoAnterior()}
                     <Text style={styles.textoPassos}>
                         Passo {this.state.passoAtual + 1} de {this.state.receita && this.state.receita.passos ? this.state.receita.passos.length : '0'}
                     </Text>
                     {this.renderBotaoProximo()}
-                </View>
+                </SafeAreaView>
             );
         }
     }
@@ -260,7 +260,7 @@ export default class VerReceita extends Network {
             );
         }
         return (
-            <View style={{flex: 1}}>
+            <SafeAreaView style={{flex: 1}}>
                 <View style={styles.modalHeader}>
                     <TouchableOpacity onPress={() => this.fecharModalPassos()}>
                         <Icon name="times" color="#000" size={24}/>
@@ -272,7 +272,7 @@ export default class VerReceita extends Network {
                 </View>
                 {this.renderPasso()}
                 {this.renderProximoAnterior()}
-            </View>
+            </SafeAreaView>
         );
     }
 

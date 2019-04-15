@@ -74,7 +74,8 @@ export default class Receitas extends Network {
         if (!this.carregando){
             this.carregando = true;
             this.setState({
-                loading: true
+                loading: true,
+                refreshing: true
             })
             console.log("id_usuario perfil aqui eh " + this.id_usuario_perfil)
             let result = await this.callMethod("getReceitas", { id_usuario_perfil: this.id_usuario_perfil, offset: this.offset, limit: this.limit });

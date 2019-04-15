@@ -161,7 +161,7 @@ export default class Comentarios extends Network {
 
     renderCaixaTexto(){
         return (
-            <View style={styles.caixaTexto}>
+            <KeyboardAvoidingView style={styles.caixaTexto}>
                 <TextInput
                     placeholder="Escreva um comentário"
                     placeholderTextColor="rgb(153, 153, 153)"
@@ -173,7 +173,7 @@ export default class Comentarios extends Network {
                 <View style={styles.botaoEnviarGenerico}>
                     {this.returnBotaoEnviar()}
                 </View>
-            </View>
+            </KeyboardAvoidingView>
         );
     }
 
@@ -227,6 +227,8 @@ export default class Comentarios extends Network {
 const styles = {
     caixaTexto: {
         height: 60,
+        position: 'absolute',
+        left: 0, right: 0, bottom: 0,
         borderTopWidth: 1,
         borderTopColor: '#ddd',
         flexDirection: 'row',
