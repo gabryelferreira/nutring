@@ -384,8 +384,14 @@ const AppNavigator = createStackNavigator({
 }
 );
 
-const App = createAppContainer(AppNavigator);
+const AppContainer = createAppContainer(AppNavigator);
 
-export default App;
+export default class App extends React.Component {
+    render(){
+        return (
+            <AppContainer/>
+        );
+    }
+};
 
 AppRegistry.registerComponent(appName, () => App);
