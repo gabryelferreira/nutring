@@ -7,6 +7,7 @@ import Modalzin from '../Modal/Modal';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 
 
+
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;

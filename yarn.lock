@@ -5117,6 +5117,11 @@ react-native-modal@^9.0.0:
     prop-types "^15.6.2"
     react-native-animatable "^1.2.4"
 
+react-native-push-notification-popup@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/react-native-push-notification-popup/-/react-native-push-notification-popup-1.2.0.tgz#857540c3c719287a43f1e9c38c3be3bc0d830673"
+  integrity sha512-QXa63FuU1dT78vPXecDyg/z4XliMm94yJ4xbLjq18gCieFGcNRmia0SSA00GrDBX/bdvmB65IAEDm4VEICU7lw==
+
 react-native-safe-area-view@^0.11.0:
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.11.0.tgz#4f3dda43c2bace37965e7c6aef5fc83d4f19d174"

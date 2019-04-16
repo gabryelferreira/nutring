@@ -11,6 +11,8 @@ import firebase from 'react-native-firebase';
 import SemDados from '../../../components/SemDados/SemDados';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ModalPostagemViewer from '../../../components/ModalPostagemViewer/ModalPostagemViewer';
+import NotificationPopup from 'react-native-push-notification-popup';
+
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -75,6 +77,7 @@ export default class Feed extends Network {
     componentDidMount(){
         this.carregarDadosIniciais();
         this.salvarToken();
+        this.mostrarPopup();
     }
 
     carregarDadosIniciais() {
@@ -323,6 +326,7 @@ export default class Feed extends Network {
         let dados = this.state.dados.filter(post => {
             return id_post != post.id_post
         })
+        this.mostrarPopup();
         this.setState({
             avoidBugFlatList: true
         }, function(){
@@ -346,6 +350,19 @@ export default class Feed extends Network {
             );
         }
         return null;
+    }
+
+    popup;
+
+    mostrarPopup(){
+        this.popup.show({
+            onPress: function() {console.log('Pressed')},
+            // appIconSource: require('./assets/icon.jpg'),
+            appTitle: 'Some App',
+            timeText: 'Now',
+            title: 'Hello World',
+            body: 'This is a sample message.\nTesting emoji 😀',
+          });
     }
 
     renderFeed(){
@@ -406,6 +423,7 @@ export default class Feed extends Network {
                                     onSwipeDown={() => this.setState({modalFotoVisible: false})}
                                     onClose={() => this.setState({modalFotoVisible: false})}/>
                 {this.renderFeed()}
+                <NotificationPopup ref={ref => this.popup = ref} />
             </View>
                 
         );
