@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, FlatList, ActivityIndicator, Modal } from 'react-native';
+import { View, Text, Image, Alert, Dimensions, FlatList, ActivityIndicator, Modal } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
@@ -77,8 +77,54 @@ export default class Feed extends Network {
     componentDidMount(){
         this.carregarDadosIniciais();
         this.salvarToken();
-        this.mostrarPopup();
+        this.createNotificationListeners();
     }
+    
+    async createNotificationListeners() {
+        // console.log("entrei aqui no notification listener");
+        // /*
+        // * Triggered when a particular notification has been received in foreground
+        // * */
+        // this.notificationListener = firebase.notifications().onNotification((notification) => {
+        //     console.log("recebi notificacao bb")
+        //     const { title, body } = notification;
+        //     this.showAlert(title, body);
+        // });
+      
+        // /*
+        // * If your app is in background, you can listen for when a notification is clicked / tapped / opened as follows:
+        // * */
+        // this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
+        //     const { title, body } = notificationOpen.notification;
+        //     this.showAlert(title, body);
+        // });
+      
+        // /*
+        // * If your app is closed, you can check if it was opened by a notification being clicked / tapped / opened as follows:
+        // * */
+        // const notificationOpen = await firebase.notifications().getInitialNotification();
+        // if (notificationOpen) {
+        //     const { title, body } = notificationOpen.notification;
+        //     this.showAlert(title, body);
+        // }
+        // /*
+        // * Triggered for data only payload in foreground
+        // * */
+        // this.messageListener = firebase.messaging().onMessage((message) => {
+        //   //process data message
+        //   console.log(JSON.stringify(message));
+        // });
+      }
+      
+      showAlert(title, body) {
+        Alert.alert(
+          title, body,
+          [
+              { text: 'OK', onPress: () => console.log('OK Pressed') },
+          ],
+          { cancelable: false },
+        );
+      }
 
     carregarDadosIniciais() {
         this.offset = 0;
@@ -93,6 +139,7 @@ export default class Feed extends Network {
     async salvarToken(){
         const fcmToken = await firebase.messaging().getToken();
         if (fcmToken) {
+            console.log("token = ", fcmToken);
             await this.callMethod("salvarToken", { token: fcmToken });
         }
     }
