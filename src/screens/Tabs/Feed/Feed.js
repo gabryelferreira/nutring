@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Alert, Dimensions, FlatList, ActivityIndicator, Modal } from 'react-native';
+import { View, Text, Image, Alert, Dimensions, FlatList, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
@@ -133,6 +133,7 @@ export default class Feed extends Network {
             semMaisDados: false,
             refreshing: true,
             avoidRender: true,
+            semInternet: false
         }, this.carregarDados);
     }
 
@@ -197,6 +198,7 @@ export default class Feed extends Network {
                 this.setState({
                     semInternet: true
                 })
+                if (this.offset > 0) this.offset = this.offset - 10;
             }
         }
         
@@ -440,9 +442,21 @@ export default class Feed extends Network {
         );
     }
 
-    render(){
+    renderSemConexao(){
         if (this.state.semInternet){
-            return <SemDados titulo={"Sem internet"} texto={"Parece que você está sem internet."}/>
+            return (
+                <View style={styles.semConexao}>
+                    <Text style={styles.textoSemConexao}>Sem conexão</Text>
+                    <Text onPress={() => this.pegarDados()} style={styles.tentarNovamente}>Tentar novamente</Text>
+                </View>
+            );
+        }
+        return null;
+    }
+
+    render(){
+        if (this.state.semInternet && this.state.dados.length == 0){
+            return <SemDados titulo={"Sem internet"} texto={"Parece que você está sem internet."} textoBotao={'Tentar novamente'} onClickBotao={() => this.carregarDadosIniciais()}/>
         }
         // if (this.state.carregandoPrimeiraVez){
         //     return (
@@ -470,6 +484,7 @@ export default class Feed extends Network {
                                     onSwipeDown={() => this.setState({modalFotoVisible: false})}
                                     onClose={() => this.setState({modalFotoVisible: false})}/>
                 {this.renderFeed()}
+                {this.renderSemConexao()}
                 <NotificationPopup ref={ref => this.popup = ref} />
             </View>
                 
@@ -488,5 +503,32 @@ export default class Feed extends Network {
             modalFotoVisible: true,
             itemSelecionado: newItem
         })
+    }
+}
+
+const styles = {
+    semConexao: {
+        position: 'absolute',
+        bottom: 0, left: 0, right: 0,
+        paddingHorizontal: 0,
+        paddingVertical: 2,
+        zIndex: 9999,
+        backgroundColor: '#666',
+        flexDirection: 'row',
+        flex: 1,
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    textoSemConexao: {
+        color: '#fff',
+        fontSize: 12,
+        paddingHorizontal: 10,
+        paddingVertical: 5
+    },
+    tentarNovamente: {
+        color: '#28b657',
+        fontSize: 12,
+        paddingHorizontal: 10,
+        paddingVertical: 5
     }
 }

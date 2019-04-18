@@ -218,6 +218,7 @@ const styles = {
     tempo: {
         fontSize: 11,
         color: '#777',
+        marginTop: 2
     },
     promocoes: {
         borderBottomWidth: 1,

@@ -168,6 +168,7 @@ export default class Comentarios extends Network {
                     value={this.state.comentario}
                     onChangeText={(comentario) => this.setState({comentario})}
                     style={styles.caixaTextoComentario}
+                    returnKeyType="send"
                     onSubmitEditing={() => this.comentarPost()}
                 />
                 <View style={styles.botaoEnviarGenerico}>
