@@ -15,9 +15,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 export default class BuscarEspecifico extends Network {
 
     static navigationOptions = () => ({
-        header: (
-            <View></View>
-        )
+        header: null,
     });
 
     state = {
@@ -139,7 +137,7 @@ export default class BuscarEspecifico extends Network {
                 elevation: 1,
                 shadowOpacity: 0,
                 height: 50,
-                paddingHorizontal: 20,
+                paddingHorizontal: 10,
                 flexDirection: 'row',
                 alignItems: 'center',
                 justifyContent: 'space-between',

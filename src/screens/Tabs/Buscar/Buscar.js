@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, TouchableOpacity, Text, Image, Button, Modal, ScrollView, Dimensions, ActivityIndicator,RefreshControl } from 'react-native';
+import { View, TouchableOpacity, NativeModules, Text, Image, Button, Modal, ScrollView, Dimensions, ActivityIndicator, RefreshControl, Platform } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
 import SearchBar from '../../../components/SearchBar/SearchBar';
@@ -17,23 +18,9 @@ const imageWidth = dimensions.width;
 
 export default class Buscar extends Network {
 
-    static navigationOptions = ({ navigation }) => 
+    static navigationOptions = () => 
     ({
-        header: (
-            <SafeAreaView style={{backgroundColor: '#fff'}}>
-                <View style={{
-                    borderBottom: 1,
-                    borderColor: '#ddd',
-                    borderBottomWidth: 1,
-                    elevation: 1,
-                    shadowOpacity: 0,
-                    height: 50,
-                    overflow: 'hidden'
-                }}>
-                    <SearchButton onPress={navigation.getParam('abrirModal')}/>
-                </View>
-            </SafeAreaView>
-        )
+        header: null
     });
 
     imagens = [
@@ -65,7 +52,8 @@ export default class Buscar extends Network {
         pratos: [],
         loadingPratos: false,
         semMaisPratos: false,
-        refreshing: false
+        refreshing: false,
+        statusBarHeight: Platform.OS === 'ios' ? 20 : 0
     }
 
     constructor(props){
@@ -73,6 +61,13 @@ export default class Buscar extends Network {
     }
 
     componentDidMount() {
+        if (Platform.OS === 'ios'){
+            StatusBarManager.getHeight(statusBar => {
+                this.setState({
+                    statusBarHeight: statusBar.height
+                });
+            });
+        }
         this.props.navigation.setParams({
             abrirModal: this.abrirModal.bind(this)
         })
@@ -288,43 +283,67 @@ export default class Buscar extends Network {
 
     carregando = false;
 
-    render() {
+    renderAll(){
         if (this.state.loading){
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#777" />
+                    <ActivityIndicator size="small" color="#777" />
                 </View>
 
             );
         }
         return (
-        <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} onScroll={({nativeEvent}) => {
-            if (this.isCloseToBottom(nativeEvent)) {
-                this.getMaisPratos();
+            <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} onScroll={({nativeEvent}) => {
+                if (this.isCloseToBottom(nativeEvent)) {
+                    this.getMaisPratos();
+                }
+            }}
+            refreshControl={
+                <RefreshControl
+                    refreshing={this.state.refreshing}
+                    onRefresh={this.recarregarDados.bind(this)}
+                />
             }
-        }}
-        refreshControl={
-            <RefreshControl
-                refreshing={this.state.refreshing}
-                onRefresh={this.recarregarDados.bind(this)}
-            />
-        }
-        scrollEventThrottle={400}>
-            <Text style={[styles.titulo, styles.paddingHorizontal]}>Em alta</Text>
-            
-            {this.renderTopRestaurantesView()}
+            scrollEventThrottle={400}>
+                <Text style={[styles.titulo, styles.paddingHorizontal]}>Em alta</Text>
+                
+                {this.renderTopRestaurantesView()}
 
-            
-            {this.renderTopReceitasView()}
-            
+                
+                {this.renderTopReceitasView()}
+                
 
-            <Text style={[styles.titulo, styles.paddingHorizontal]}>Para você</Text>
-            
-            <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                {this.renderImagens()}
+                <Text style={[styles.titulo, styles.paddingHorizontal]}>Para você</Text>
+                
+                <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
+                    {this.renderImagens()}
+                </View>
+                {this.returnLoader()}
+            </ScrollView>
+        );
+    }
+
+    render() {
+        return (
+            <View style={[{flex: 1, backgroundColor: '#fff', marginTop: this.state.statusBarHeight}]}>
+
+            <View style={{
+                    elevation: 1,
+                    shadowOpacity: 0,
+                    height: 50,
+                    paddingHorizontal: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    left: 0, right: 0, top: 0,
+                    zIndex: 9999,
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#eee'
+                }}>
+                    <SearchButton onPress={this.props.navigation.getParam('abrirModal')}/>
+                </View>
+                {this.renderAll()}
             </View>
-            {this.returnLoader()}
-        </ScrollView>
         );
     }
 

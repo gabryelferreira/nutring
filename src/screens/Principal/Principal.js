@@ -10,9 +10,7 @@ const imageWidth = dimensions.width;
 export default class Principal extends Component {
 
     static navigationOptions = {
-        header: (
-            <View></View>
-        )
+        header: null
     };
 
     constructor(props){

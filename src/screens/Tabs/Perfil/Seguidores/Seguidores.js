@@ -81,7 +81,7 @@ export default class Seguidores extends Network {
         if (this.state.carregando && this.state.carregandoInicial){
             return (
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                    <ActivityIndicator size="large" color="#777" />
+                    <ActivityIndicator size="small" color="#777" />
                 </View>
             );
         }

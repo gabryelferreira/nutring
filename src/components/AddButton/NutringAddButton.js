@@ -134,7 +134,7 @@ class NutringAddButton extends Network {
         // if (this.state.carregando){
         //     return (
         //         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        //             <ActivityIndicator size="large" color="#28b657"/>
+        //             <ActivityIndicator size="small" color="#28b657"/>
         //         </View>
         //     );
         // }

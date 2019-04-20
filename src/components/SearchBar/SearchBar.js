@@ -7,7 +7,7 @@ import { HeaderBackButton } from 'react-navigation';
 const SearchBar = ({onPress, onChangeText, value, navigation}) => {
     return (
         <View style={styles.container}>
-            <Icon name="chevron-left" size={18} style={{paddingLeft: 10, paddingRight: 26}} onPress={() => navigation.goBack(null)}/>
+            <Icon name="chevron-left" size={22} style={{paddingLeft: 10, paddingRight: 26}} onPress={() => navigation.goBack(null)}/>
             <TextInput 
                 autoFocus={true}
                 onChangeText={onChangeText}

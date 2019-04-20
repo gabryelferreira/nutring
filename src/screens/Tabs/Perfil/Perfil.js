@@ -838,7 +838,7 @@ export default class Perfil extends Network {
         if (this.state.carregandoPrimeiraVez){
             return (
                 <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
-                    <ActivityIndicator size="large" color="#777" />
+                    <ActivityIndicator size="small" color="#777" />
                 </View>
             );
         }

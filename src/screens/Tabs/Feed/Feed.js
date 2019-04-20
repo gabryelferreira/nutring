@@ -300,7 +300,7 @@ export default class Feed extends Network {
 
     returnLoaderInicial(){
         if (this.state.dados.length == 0 && !this.state.semMaisDados){
-            return <ActivityIndicator color="#777" size="large" style={{ marginTop: 30 }}/>
+            return <ActivityIndicator color="#777" size="small" style={{ marginTop: 30 }}/>
         }
         return;
     }
@@ -461,7 +461,7 @@ export default class Feed extends Network {
         // if (this.state.carregandoPrimeiraVez){
         //     return (
         //         <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-        //             <ActivityIndicator size="large" color="#777"/>
+        //             <ActivityIndicator size="small" color="#777"/>
         //         </View>
         //     );
         // }
