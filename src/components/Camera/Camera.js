@@ -296,7 +296,6 @@ export default class Camera extends Network {
         })
         if (this.state.fotoPostada){
             this.props.onClose();
-            this.props.onClose;
         }
     }
 
