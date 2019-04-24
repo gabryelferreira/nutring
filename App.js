@@ -127,10 +127,6 @@ const InsideTabs = {
         screen: Receitas,
         navigationOptions: NavigationOptions
     },
-    VerReceita: {
-        screen: VerReceita,
-        navigationOptions: NavigationOptions
-    },
     MeuPlano: {
         screen: MeuPlano,
         navigationOptions: NavigationOptions
@@ -300,85 +296,89 @@ const Tabs = createBottomTabNavigator({
 
 const AppNavigator = createStackNavigator({
     
-  Tabs: {
-      screen: Tabs,
-      navigationOptions: {
-          header: null,
-          headerBackTitle: null,
-          headerBackTitleStyle: {
-              color: '#000'
-          }
-      }
-  },
-  Principal: {
-    screen: Principal,
-    navigationOptions: NavigationOptions
-  },
-  Login: {
-    screen: Login,
-    navigationOptions: NavigationOptions
-  },
-  Cadastro: {
-    screen: Cadastro,
-    navigationOptions: NavigationOptions
-  },
-  EsqueciSenha: {
-    screen: EsqueciSenha,
-    navigationOptions: NavigationOptions
-  },
-  InserirCodigoRecuperacao: {
-    screen: InserirCodigoRecuperacao,
-    navigationOptions: NavigationOptions
-  },
-  RecuperarSenha: {
-    screen: RecuperarSenha,
-    navigationOptions: NavigationOptions
-  },
-  BuscarEspecifico: {
-    screen: BuscarEspecifico,
-    navigationOptions: NavigationOptions
-  },
-  EditarPerfil: {
-    screen: EditarPerfil,
-    navigationOptions: NavigationOptions
-  },
-  Comentarios: {
-    screen: Comentarios,
-    navigationOptions: NavigationOptions
-  },
-  AlterarUsuario: {
-    screen: AlterarUsuario,
-    navigationOptions: NavigationOptions
-  },
-  AlterarEmail: {
-    screen: AlterarEmail,
-    navigationOptions: NavigationOptions
-  },
-  AlterarSenha: {
-    screen: AlterarSenha,
-    navigationOptions: NavigationOptions
-  },
+    Tabs: {
+        screen: Tabs,
+        navigationOptions: {
+            header: null,
+            headerBackTitle: null,
+            headerBackTitleStyle: {
+                color: '#000'
+            }
+        }
+    },
+    Principal: {
+        screen: Principal,
+        navigationOptions: NavigationOptions
+    },
+    Login: {
+        screen: Login,
+        navigationOptions: NavigationOptions
+    },
+    Cadastro: {
+        screen: Cadastro,
+        navigationOptions: NavigationOptions
+    },
+    EsqueciSenha: {
+        screen: EsqueciSenha,
+        navigationOptions: NavigationOptions
+    },
+    InserirCodigoRecuperacao: {
+        screen: InserirCodigoRecuperacao,
+        navigationOptions: NavigationOptions
+    },
+    RecuperarSenha: {
+        screen: RecuperarSenha,
+        navigationOptions: NavigationOptions
+    },
+    BuscarEspecifico: {
+        screen: BuscarEspecifico,
+        navigationOptions: NavigationOptions
+    },
+    EditarPerfil: {
+        screen: EditarPerfil,
+        navigationOptions: NavigationOptions
+    },
+    Comentarios: {
+        screen: Comentarios,
+        navigationOptions: NavigationOptions
+    },
+    AlterarUsuario: {
+        screen: AlterarUsuario,
+        navigationOptions: NavigationOptions
+    },
+    AlterarEmail: {
+        screen: AlterarEmail,
+        navigationOptions: NavigationOptions
+    },
+    AlterarSenha: {
+        screen: AlterarSenha,
+        navigationOptions: NavigationOptions
+    },
 
-  NovaPromocao: {
-    screen: NovaPromocao,
-    navigationOptions: NavigationOptions
-  },
-  EnviarNotificacao: {
-    screen: EnviarNotificacao,
-    navigationOptions: NavigationOptions
-  },
-  NovaReceita: {
-    screen: NovaReceita,
-    navigationOptions: NavigationOptions
-  },
-  EditarPasso: {
-    screen: EditarPasso,
-    navigationOptions: NavigationOptions
-  },
-  EditarReceita: {
-    screen: EditarReceita,
-    navigationOptions: NavigationOptions
-  }
+    NovaPromocao: {
+        screen: NovaPromocao,
+        navigationOptions: NavigationOptions
+    },
+    EnviarNotificacao: {
+        screen: EnviarNotificacao,
+        navigationOptions: NavigationOptions
+    },
+    NovaReceita: {
+        screen: NovaReceita,
+        navigationOptions: NavigationOptions
+    },
+    EditarPasso: {
+        screen: EditarPasso,
+        navigationOptions: NavigationOptions
+    },
+    EditarReceita: {
+        screen: EditarReceita,
+        navigationOptions: NavigationOptions
+    },
+    VerReceita: {
+        screen: VerReceita,
+        navigationOptions: NavigationOptions
+    },
 
     
 }, {

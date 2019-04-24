@@ -12,6 +12,8 @@ import FotoPequenaEsquerda from './FotosLayout/FotoPequenaEsquerda';
 import FotoPequenaDireita from './FotosLayout/FotoPequenaDireita';
 import { SafeAreaView } from 'react-navigation';
 
+import Swiper from 'react-native-swiper';
+
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
 const imageWidth = dimensions.width;

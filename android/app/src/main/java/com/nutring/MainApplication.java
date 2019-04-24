@@ -7,8 +7,7 @@ import com.BV.LinearGradient.LinearGradientPackage;
 import com.RNFetchBlob.RNFetchBlobPackage;
 import org.reactnative.camera.RNCameraPackage;
 import io.invertase.firebase.RNFirebasePackage;
-import org.reactnative.camera.RNCameraPackage;
-import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.notifications.RNFirebaseNotificationsPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
 import com.facebook.react.ReactNativeHost;
@@ -39,7 +38,8 @@ public class MainApplication extends Application implements ReactApplication {
             new RNCameraPackage(),
             new VectorIconsPackage(),
             new RNGestureHandlerPackage(),
-            new RNFirebaseMessagingPackage()
+            new RNFirebaseMessagingPackage(),
+              new RNFirebaseNotificationsPackage()
       );
     }
 

@@ -7,6 +7,7 @@ import Modalzin from '../../../../components/Modal/Modal';
 import AutoHeightImage from 'react-native-auto-height-image';
 import BotaoPequeno from '../../../../components/Botoes/BotaoPequeno';
 import PassoReceita from '../../../../components/PassoReceita/PassoReceita';
+import PassosReceita from '../../../../components/PassosReceita/PassosReceita';
 import SemDados from '../../../../components/SemDados/SemDados';
 
 const dimensions = Dimensions.get('window');
@@ -26,9 +27,7 @@ export default class VerReceita extends Network {
                             <ActivityIndicator animating color="#DC143C" size="small"/>
                         </View>
                     ) : (
-                        <TouchableOpacity onPress={navigation.getParam("onDotsClick")} style={{paddingVertical: 5, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center'}}>
-                            <Icon name="ellipsis-v" solid color="#000" size={18}/>
-                        </TouchableOpacity>
+                        null
                     )}
                     
                 </View>
@@ -38,7 +37,11 @@ export default class VerReceita extends Network {
         )
     });
 
+
+    //props
     receitaExcluida = false;
+    swiper;
+    swiperIndex = 0;
 
     constructor(props){
         super(props);
@@ -98,6 +101,17 @@ export default class VerReceita extends Network {
         return botoes;
     }
 
+    onExcluirClick(){
+        this.showModal("Excluir Receita", "Deseja excluir a receita? Você não poderá voltar atrás.", this.criarBotoesExclusao());
+    }
+
+    onEditarClick(){
+        this.props.navigation.navigate("EditarReceita", {
+            receita: this.state.receita,
+            onGoBack: () => this.carregarDadosIniciais()
+        })
+    }
+
     carregarDadosIniciais(){
         this.setState({
             carregandoInicial: true
@@ -110,15 +124,6 @@ export default class VerReceita extends Network {
                 visible: false
             }
         })
-        if (key == "EXCLUIR"){
-            this.showModal("Excluir Receita", "Deseja excluir a receita? Você não poderá voltar atrás.", this.criarBotoesExclusao())
-        }
-        if (key == "EDITAR"){
-            this.props.navigation.navigate("EditarReceita", {
-                receita: this.state.receita,
-                onGoBack: () => this.carregarDadosIniciais()
-            })
-        }
         if (key == "CONFIRMAR_EXCLUSAO"){
             this.excluirReceita();
         }
@@ -178,17 +183,6 @@ export default class VerReceita extends Network {
         this.props.navigation.setParams({
             receita: this.state.receita
         })
-    }
-
-    renderPasso(){
-        console.log("to aqui no passo renderizando kk")
-        if (this.state.receita && this.state.receita.passos && this.state.receita.passos.length > 0){
-            console.log("passo atual = ", this.state.receita.passos[this.state.passoAtual])
-            return (
-                <PassoReceita data={this.state.receita.passos[this.state.passoAtual]} index={this.state.passoAtual}/>
-            );
-        }
-        return null;
     }
 
     reduzirPasso(){
@@ -270,10 +264,19 @@ export default class VerReceita extends Network {
                         <Icon name="times" color="#fff" size={24}/>
                     </TouchableOpacity>
                 </View>
-                {this.renderPasso()}
-                {this.renderProximoAnterior()}
+                <PassosReceita passos={this.state.receita.passos}/>
             </SafeAreaView>
         );
+    }
+
+    setSwiperIndex(index){
+        this.swiperIndex = index;
+    }
+
+    swipe(targetIndex) {
+        const currentIndex = this.swiper.state.index;
+        const offset = targetIndex- currentIndex;
+        this.swiper.scrollBy(offset);
     }
 
     verPassosReceita(){
@@ -318,6 +321,43 @@ export default class VerReceita extends Network {
         );
     }
 
+    renderBotoesEdicao(){
+        if (this.state.receita.minha_receita && !this.props.navigation.getParam("excluindo") && !this.receitaExcluida){
+            return (
+                <View style={styles.botoesImagem}>
+                    <View style={styles.botaoImagem}>
+                        <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoVerPassos]} onPress={() => this.verPassosReceita()}>
+                            <Icon name="chevron-right" color="#fff" size={16}/>
+                        </TouchableOpacity>
+                        <Text style={styles.textoBotaoImagem}>Ver passos</Text>
+                    </View>
+                    <View style={styles.botaoImagem}>
+                        <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoEditar]} onPress={() => this.onEditarClick()}>
+                            <Icon name="pencil-alt" color="#fff" size={20}/>
+                        </TouchableOpacity>
+                        <Text style={styles.textoBotaoImagem}>Editar</Text>
+                    </View>
+                    <View style={styles.botaoImagem}>
+                        <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoExcluir]} onPress={() => this.onExcluirClick()}>
+                            <Icon name="trash" color="#fff" size={20}/>
+                        </TouchableOpacity>
+                        <Text style={styles.textoBotaoImagem}>Excluir</Text>
+                    </View>
+                </View>
+            );
+        }
+        return (
+            <View style={styles.botoesImagem}>
+                <View style={styles.botaoImagem}>
+                    <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoVerPassos]} onPress={() => this.verPassosReceita()}>
+                        <Icon name="chevron-right" color="#fff" size={16}/>
+                    </TouchableOpacity>
+                    <Text style={styles.textoBotaoImagem}>Ver passos</Text>
+                </View>
+            </View>
+        );
+    }
+
     render(){
         if (this.state.carregandoInicial){
             return (
@@ -352,22 +392,25 @@ export default class VerReceita extends Network {
                 </SafeAreaView>
                         
                 </Modal>
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}> */}
                     
                     {/* <View style={styles.viewImagem}>
                         {this.renderFoto(this.state.receita.foto)}
                     </View> */}
                     <View style={styles.container}>
-                        <View style={styles.imagem}>
+                        <View style={styles.viewImagem}>
                             <Image resizeMethod="resize" style={styles.imagem} source={{uri: this.state.receita.foto}}/>
+                            {this.renderBotoesEdicao()}
                         </View>
-                        <Text style={styles.titulo}>{this.state.receita.titulo}</Text>
-                        <Text style={styles.descricao}>{this.state.receita.descricao}</Text>
-                        <View style={styles.botaoVerSteps}>
-                            <BotaoPequeno texto={"Passo a Passo"} onPress={() => this.verPassosReceita()}/>
+                        <View style={styles.viewTextos}>
+                            <Text style={styles.titulo}>{this.state.receita.titulo}</Text>
+                            <Text style={styles.descricao}>{this.state.receita.descricao}</Text>
+                            {/* <View style={styles.botaoVerSteps}>
+                                <BotaoPequeno texto={"Passo a Passo"} onPress={() => this.verPassosReceita()}/>
+                            </View> */}
                         </View>
                     </View>
-                </ScrollView>
+                {/* </ScrollView> */}
             </View>
         );
     }
@@ -375,41 +418,87 @@ export default class VerReceita extends Network {
 }
 
 const styles = {
-    container: {
-        paddingVertical: 40,
-        paddingHorizontal: 40,
+    wrapper: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: '#000'
+    },
+    viewArrowSwiper: {
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    botoesImagem: {
+        position: 'absolute',
+        top: 0, right: 0,
+        paddingHorizontal: 10,
+        paddingVertical: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        zIndex: 999
+    },
+    botaoImagem: {
+        marginHorizontal: 8,
         flexDirection: 'column',
         alignItems: 'center'
     },
-    viewImagem: {
-        flexDirection: 'row',
-        maxHeight: 250,
-        overflow: 'hidden',
+    iconeBotaoImagem: {
+        height: 35,
+        width: 35,
+        borderRadius: 35/2,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
+    },
+    iconeBotaoEditar: {backgroundColor: 'rgba(30, 30, 30, .45)',},
+    iconeBotaoExcluir: {backgroundColor: 'rgba(255, 0, 0, .45)',},
+    iconeBotaoVerPassos: {backgroundColor: 'rgba(40,182,87, .8)',},
+    textoBotaoImagem: {
+        marginTop: 2,
+        color: '#fff',
+        fontSize: 12,
+        fontWeight: 'bold'
+    },
+    container: {
+        flex: 1,
+        flexDirection: 'column',
+    },
+    viewImagem: {
+        flex: .8,
         backgroundColor: '#eee'
     },
     imagem: {
-        width: 185,
-        height: 185,
-        borderRadius: 185/2,
-        marginBottom: 25,
-        backgroundColor: '#eee'
+        flex: 1,
+        width: null,
+        height: null
+    },
+    viewTextos: {
+        flex: .2,
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        transform: [
+            {translateY: -25}
+        ],
+        borderTopLeftRadius: 30,
+        borderTopRightRadius: 30,
+        backgroundColor: '#fff',
     },
     titulo: {
-        fontSize: 22,
+        fontSize: 18,
         color: '#000',
         fontWeight: 'bold',
-        textAlign: 'center',
+        textAlign: 'left',
     },
     descricao: {
-        fontSize: 16,
-        color: '#000',
-        marginTop: 20,
-        textAlign: 'center'
+        fontSize: 14,
+        color: '#777',
+        marginTop: 10,
+        textAlign: 'left'
     },
     botaoVerSteps: {
-        marginTop: 25
+        marginTop: 25,
+        flexDirection: 'row',
+        justifyContent: 'flex-start'
     },
     modalHeader: {
         flexDirection: 'row',
