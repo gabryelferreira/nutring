@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Dimensions, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { View, Text, Dimensions, ScrollView, Image, TouchableOpacity, Animated, PanResponder } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ShimmerPlaceHolder from 'react-native-shimmer-placeholder';
 
@@ -18,10 +18,25 @@ export default class PassosReceita extends Component {
 
     constructor(props){
         super(props);
+        this.position = new Animated.ValueXY();
         this.state = {
             titulo: "",
             descricao: ""
         }
+    }
+
+    componentWillMount(){
+        this.panResponder = PanResponder.create({
+
+            onStartShouldSetPanResponder: (e, gestureState) => true,
+            onPanResponderMove: (evt, gestureState) => {
+                this.position.setValue({ y: gestureState.dy })
+            },
+            onPanResponderRelease: (evt, gestureState) => {
+
+            }
+
+        })
     }
 
     componentDidMount(){
@@ -38,7 +53,7 @@ export default class PassosReceita extends Component {
     renderPassos = (passos) => {
         return passos.map((passo, index) => {
             return (
-                <View style={{flex: 1, zIndex: 9999}}>
+                <View key={index} style={{flex: 1, zIndex: 9999}}>
                     <View style={styles.container}>
                         <View style={styles.viewImagem}>
                             {this.renderFoto(passo.foto)}
@@ -64,7 +79,7 @@ export default class PassosReceita extends Component {
     }
 
     render(){
-        let { passos } = this.props;
+        let { passos, foto } = this.props;
         return (
             <View style={{flex: 1}}>
                 <Swiper style={styles.wrapper}
@@ -79,20 +94,38 @@ export default class PassosReceita extends Component {
                             <View style={styles.activeDot}/>
                         }
                         prevButton={
-                            <TouchableOpacity style={styles.viewArrowSwiper} onPress={() => this.swipe(this.swiperIndex - 1)}>
-                                <Icon name="chevron-left" color="#28b657" solid size={30}/>
-                            </TouchableOpacity>
+                            // <TouchableOpacity style={styles.viewArrowSwiper} onPress={() => this.swipe(this.swiperIndex - 1)}>
+                            //     <Icon name="chevron-left" color="#28b657" solid size={30}/>
+                            // </TouchableOpacity>
+                            <View></View>
                         }
                         nextButton={
-                            <TouchableOpacity style={styles.viewArrowSwiper} onPress={() => this.swipe(this.swiperIndex + 1)}>
-                                <Icon name="chevron-right" color="#28b657" solid size={30}/>
-                            </TouchableOpacity>
+                            // <TouchableOpacity style={styles.viewArrowSwiper} onPress={() => this.swipe(this.swiperIndex + 1)}>
+                            //     <Icon name="chevron-right" color="#28b657" solid size={30}/>
+                            // </TouchableOpacity>
+                            <View></View>
                         }>
                     {this.renderPassos(passos)}
                 </Swiper>
-                <View style={styles.viewTextos}>
+                {/* 
+                    ANIMAÇÃO AQUIII PANRESPONDER PAN RESPONDER GESTURE REACT-NATIVE GESTURE REACT NATIVE GESTURE PAN HANDLER PANHANDLER PAN-HANDLER
+                <Animated.View style={[styles.viewTextos, this.position.getLayout()]} {...this.panResponder.panHandlers}>
                     <Text style={styles.titulo}>{this.state.titulo}</Text>
                     <Text style={styles.passo}>Passo {this.swiperIndex + 1}</Text>
+                    <Text style={styles.descricao}>{this.state.descricao}</Text>
+                </Animated.View> */}
+                <View style={styles.viewTextos}>
+                    <View style={[styles.row, styles.justifySpaceBetween]}>
+                        <View style={[styles.flex, styles.paddingRight]}>
+                            <Text numberOfLines={1} style={styles.titulo}>{this.state.titulo}</Text>
+                            <Text style={styles.passo}>Passo {this.swiperIndex + 1}</Text>
+                        </View>
+                        <View style={styles.viewFotoReceita}>
+                            <View style={styles.baixoFotoReceita}>
+                                <Image resizeMethod="resize" style={styles.fotoReceita} source={{uri: foto}}/>
+                            </View>
+                        </View>
+                    </View>
                     <Text style={styles.descricao}>{this.state.descricao}</Text>
                 </View>
             </View>
@@ -102,10 +135,37 @@ export default class PassosReceita extends Component {
 }
 
 const styles = {
-    wrapper: {
+    row: {
+        flexDirection: 'row'
+    },
+    justifySpaceBetween: {
+        justifyContent: 'space-between'
+    },
+    viewFotoReceita: {
+        width: 80,
+    },
+    baixoFotoReceita: {
+        position: 'absolute',
+        right: 0, top: -40,
+        borderRadius: 15,
+        height: 80,
+        width: 80,
+        elevation: 1,
+        backgroundColor: '#eee'
+    },
+    fotoReceita: {
+        width: 80, height: 80,
+        borderRadius: 15
+    },
+    flex: {
         flex: 1,
-        flexDirection: 'row',
-        backgroundColor: '#000'
+    },
+    paddingRight: {
+        paddingRight: 10
+    },
+    wrapper: {
+        position: 'absolute',
+        left: 0, top: 0, right: 0, height: (imageHeight*8/10) - 50
     },
     activeDot: {
         backgroundColor:'#28b657',
@@ -151,7 +211,7 @@ const styles = {
         height: null
     },
     viewTextos: {
-        flex: .3,
+        minHeight: (imageHeight*2.5/10) - 50,
         paddingHorizontal: 20,
         paddingTop: 20,
         transform: [
@@ -163,7 +223,7 @@ const styles = {
     },
     passo: {
         fontSize: 16,
-        color: '#000',
+        color: '#222',
     },
     titulo: {
         fontSize: 18,
@@ -172,7 +232,7 @@ const styles = {
         textAlign: 'left',
     },
     descricao: {
-        fontSize: 14,
+        fontSize: 15,
         color: '#777',
         marginTop: 10,
         textAlign: 'left'

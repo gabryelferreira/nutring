@@ -259,12 +259,12 @@ export default class VerReceita extends Network {
                     <TouchableOpacity onPress={() => this.fecharModalPassos()}>
                         <Icon name="times" color="#000" size={24}/>
                     </TouchableOpacity>
-                    <Text style={styles.tituloModal}>Passos</Text>
+                    <Text style={styles.tituloModal}>{this.state.receita.titulo}</Text>
                     <TouchableOpacity>
                         <Icon name="times" color="#fff" size={24}/>
                     </TouchableOpacity>
                 </View>
-                <PassosReceita passos={this.state.receita.passos}/>
+                <PassosReceita passos={this.state.receita.passos} foto={this.state.receita.foto}/>
             </SafeAreaView>
         );
     }
@@ -322,24 +322,25 @@ export default class VerReceita extends Network {
     }
 
     renderBotoesEdicao(){
-        if (this.state.receita.minha_receita && !this.props.navigation.getParam("excluindo") && !this.receitaExcluida){
+        if (this.props.navigation.getParam("excluindo") || this.receitaExcluida) return null;
+        if (this.state.receita.minha_receita){
             return (
                 <View style={styles.botoesImagem}>
                     <View style={styles.botaoImagem}>
                         <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoVerPassos]} onPress={() => this.verPassosReceita()}>
-                            <Icon name="chevron-right" color="#fff" size={16}/>
+                            <Icon name="chevron-right" color="#fff" size={14}/>
                         </TouchableOpacity>
                         <Text style={styles.textoBotaoImagem}>Ver passos</Text>
                     </View>
                     <View style={styles.botaoImagem}>
                         <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoEditar]} onPress={() => this.onEditarClick()}>
-                            <Icon name="pencil-alt" color="#fff" size={20}/>
+                            <Icon name="pencil-alt" color="#fff" size={16}/>
                         </TouchableOpacity>
                         <Text style={styles.textoBotaoImagem}>Editar</Text>
                     </View>
                     <View style={styles.botaoImagem}>
-                        <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoExcluir]} onPress={() => this.onExcluirClick()}>
-                            <Icon name="trash" color="#fff" size={20}/>
+                        <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoEditar]} onPress={() => this.onExcluirClick()}>
+                            <Icon name="trash" color="#fff" size={16}/>
                         </TouchableOpacity>
                         <Text style={styles.textoBotaoImagem}>Excluir</Text>
                     </View>
@@ -403,7 +404,17 @@ export default class VerReceita extends Network {
                             {this.renderBotoesEdicao()}
                         </View>
                         <View style={styles.viewTextos}>
-                            <Text style={styles.titulo}>{this.state.receita.titulo}</Text>
+                            <View style={[styles.row, styles.justifySpaceBetween]}>
+                                <View style={[styles.flex, styles.paddingRight]}>
+                                    <Text numberOfLines={1} style={styles.titulo}>{this.state.receita.titulo} <Text style={styles.passo}>{this.state.receita.passos.length} passos</Text></Text>
+                                    <Text style={styles.nomeUsuario}>{this.state.receita.nome}</Text>
+                                </View>
+                                <View style={styles.viewFotoReceita}>
+                                    <View style={styles.baixoFotoReceita}>
+                                        <Image resizeMethod="resize" style={styles.fotoReceita} source={{uri: this.state.receita.foto_perfil}}/>
+                                    </View>
+                                </View>
+                            </View>
                             <Text style={styles.descricao}>{this.state.receita.descricao}</Text>
                             {/* <View style={styles.botaoVerSteps}>
                                 <BotaoPequeno texto={"Passo a Passo"} onPress={() => this.verPassosReceita()}/>
@@ -418,6 +429,34 @@ export default class VerReceita extends Network {
 }
 
 const styles = {
+    row: {
+        flexDirection: 'row'
+    },
+    justifySpaceBetween: {
+        justifyContent: 'space-between'
+    },
+    viewFotoReceita: {
+        width: 80,
+    },
+    baixoFotoReceita: {
+        position: 'absolute',
+        right: 0, top: -40,
+        borderRadius: 15,
+        height: 80,
+        width: 80,
+        elevation: 1,
+        backgroundColor: '#eee'
+    },
+    fotoReceita: {
+        width: 80, height: 80,
+        borderRadius: 15
+    },
+    flex: {
+        flex: 1,
+    },
+    paddingRight: {
+        paddingRight: 10
+    },
     wrapper: {
         flex: 1,
         flexDirection: 'row',
@@ -451,7 +490,7 @@ const styles = {
         alignItems: 'center'
     },
     iconeBotaoEditar: {backgroundColor: 'rgba(30, 30, 30, .45)',},
-    iconeBotaoExcluir: {backgroundColor: 'rgba(255, 0, 0, .45)',},
+    iconeBotaoExcluir: {backgroundColor: 'rgba(200, 0, 0, .45)',},
     iconeBotaoVerPassos: {backgroundColor: 'rgba(40,182,87, .8)',},
     textoBotaoImagem: {
         marginTop: 2,
@@ -464,7 +503,8 @@ const styles = {
         flexDirection: 'column',
     },
     viewImagem: {
-        flex: .8,
+        position: 'absolute',
+        left: 0, top: 0, right: 0, height: (imageHeight*8/10) - 50,
         backgroundColor: '#eee'
     },
     imagem: {
@@ -473,7 +513,9 @@ const styles = {
         height: null
     },
     viewTextos: {
-        flex: .2,
+        position: 'absolute',
+        minHeight: (imageHeight*2.5/10) - 50,
+        bottom: 0, left: 0, right: 0,
         paddingHorizontal: 20,
         paddingTop: 20,
         transform: [
@@ -483,14 +525,23 @@ const styles = {
         borderTopRightRadius: 30,
         backgroundColor: '#fff',
     },
+    nomeUsuario: {
+        fontSize: 16,
+        color: '#222'
+    },
     titulo: {
         fontSize: 18,
         color: '#000',
         fontWeight: 'bold',
         textAlign: 'left',
     },
+    passo: {
+        fontSize: 12,
+        color: '#aaa',
+        fontWeight: 'normal'
+    },
     descricao: {
-        fontSize: 14,
+        fontSize: 15,
         color: '#777',
         marginTop: 10,
         textAlign: 'left'
