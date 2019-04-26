@@ -50,7 +50,9 @@ const Header = ({onCloseClick, onPress, loading}) => {
         }}>
             <View style={{position: 'relative', flex:1, zIndex: 9999, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                 <View style={{flexDirection: 'row', justifyContent: 'flex-start', flex: .3, alignItems: 'center'}}>
-                    <Icon onPress={onCloseClick} name="chevron-left" color="#000" size={20}/>
+                    <TouchableOpacity style={{paddingRight: 15}} onPress={onCloseClick}>
+                        <Icon  name="chevron-left" color="#000" size={20}/>
+                    </TouchableOpacity>
                 </View>
                 <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: .4}}>
                     <Text style={{color: '#000', fontWeight: 'bold', fontSize: 18}}>Postar Foto</Text>
@@ -64,6 +66,10 @@ const Header = ({onCloseClick, onPress, loading}) => {
 }
 
 export default class Camera extends Network {
+
+    static navigationOptions = () => ({
+        header: null
+    });
     
 
     constructor(props){
@@ -161,11 +167,11 @@ export default class Camera extends Network {
             })
           } else {
             console.log('Camera permission denied');
-            this.props.onClose();
+            this.props.navigation.goBack(null);
           }
         } catch (err) {
           console.warn(err);
-          this.props.onClose();
+          this.props.navigation.goBack(null);
         }
     }
 
@@ -190,11 +196,11 @@ export default class Camera extends Network {
             this.getUltimaFotoGaleria();
           } else {
             console.log('Camera permission denied');
-            this.props.onClose();
+            this.props.navigation.goBack(null);
           }
         } catch (err) {
           console.warn(err);
-          this.props.onClose();
+          this.props.navigation.goBack(null);
         }
     }
 
@@ -295,7 +301,7 @@ export default class Camera extends Network {
             }
         })
         if (this.state.fotoPostada){
-            this.props.onClose();
+            this.props.navigation.goBack(null);
         }
     }
 
@@ -364,7 +370,7 @@ export default class Camera extends Network {
                                     multiline={true}
                                     small={true}
                                     numberOfLines={5}
-                                    maxLength={500}
+                                    maxLength={255}
                                     returnKeyType={"default"}
                                 />
                                 <TouchableHighlight style={{marginVertical: 5, flex: .7}}>
@@ -388,9 +394,10 @@ export default class Camera extends Network {
                     <View style={styles.botoesCima}>
                         <View style={[styles.viewBotao, styles.alignEsquerda]}>
                             <TouchableOpacity disabled={this.state.uploading}
-                            onPress={this.props.onClose}
+                            onPress={() => this.props.navigation.goBack(null)}
+                            style={{padding: 10}}
                             >
-                                <Icon name="angle-down" color="#fff" size={32}/>
+                                <Icon name="times" color="#fff" size={22}/>
                             </TouchableOpacity>
                         </View>
                         {/* <View style={[styles.viewBotao, styles.alignDireita]}>

@@ -7,6 +7,8 @@ import Input from '../../../../../components/Input/Input'
 import Sugestoes from '../../../../../components/Sugestoes/Sugestoes';
 import BotaoPequeno from '../../../../../components/Botoes/BotaoPequeno';
 import Modalzin from '../../../../../components/Modal/Modal';
+import { validarCNPJ, validarData, validarCampo } from '../../../../../validacoes';
+
 
 const HEADER_HEIGHT = 50;
 
@@ -56,14 +58,30 @@ export default class AlterarUsuario extends Network {
     }
 
     validarDados(){
-        if (!this.state.usuarioAtual.trim() || !this.state.usuarioNovo.trim()){
-            this.showModal("Campos inválidos", "Preencha todos os campos corretamente para alterar seu usuário.");
-            return false;
+        this.campoErro = "";
+        let campos = [
+            {campo: "usuarioAtual", texto: "Usuário atual", obrigatorio: true, validador: "usuario"},
+            {campo: "usuarioNovo", texto: "Novo usuário", obrigatorio: true, validador: "usuario"},
+        ];
+        for (var i = 0; i < campos.length; i++){
+            if (campos[i].obrigatorio){
+                if (this.state[campos[i].campo].length == 0){
+                    this.campoErro = "O campo " + campos[i].texto + " é obrigatório.";
+                    return false;
+                }
+                if (campos[i].validador){
+                    if (!validarCampo(campos[i].validador, this.state[campos[i].campo])){
+                        this.campoErro = "O usuário é inválido. Ele precisa ter no mínimo 6 caracteres e são válidos letras, números e os caracteres .-_";
+                        return false;
+                    }
+                }
+            }
         }
         return true;
     }
 
     async alterarUsuario(){
+        console.log("validar dados = ", this.validarDados());
         if (this.validarDados()){
             this.setState({
                 loading: true
@@ -90,6 +108,8 @@ export default class AlterarUsuario extends Network {
             this.setState({
                 loading: false
             })
+        } else {
+            this.showModal("Verifique os campos", this.campoErro);
         }
     }
 

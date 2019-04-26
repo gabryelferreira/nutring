@@ -124,7 +124,7 @@ export default class EsqueciSenha extends Network {
                         onSubmitEditing={() => this.recuperar()}
                         autoCapitalize = 'none'
                         returnKeyType={"next"}
-                        maxLength={400}
+                        maxLength={60}
                         />
                         <TouchableOpacity onPress={() => this.recuperar()} style={styles.botao}>
                             {this.renderTextoBotao()}

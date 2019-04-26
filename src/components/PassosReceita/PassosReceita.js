@@ -94,16 +94,16 @@ export default class PassosReceita extends Component {
                             <View style={styles.activeDot}/>
                         }
                         prevButton={
-                            // <TouchableOpacity style={styles.viewArrowSwiper} onPress={() => this.swipe(this.swiperIndex - 1)}>
-                            //     <Icon name="chevron-left" color="#28b657" solid size={30}/>
-                            // </TouchableOpacity>
-                            <View></View>
+                            <TouchableOpacity style={styles.viewArrowSwiper} onPress={() => this.swipe(this.swiperIndex - 1)}>
+                                <Icon name="chevron-left" color="#fff" solid size={26}/>
+                            </TouchableOpacity>
+                            // <View></View>
                         }
                         nextButton={
-                            // <TouchableOpacity style={styles.viewArrowSwiper} onPress={() => this.swipe(this.swiperIndex + 1)}>
-                            //     <Icon name="chevron-right" color="#28b657" solid size={30}/>
-                            // </TouchableOpacity>
-                            <View></View>
+                            <TouchableOpacity style={styles.viewArrowSwiper} onPress={() => this.swipe(this.swiperIndex + 1)}>
+                                <Icon name="chevron-right" color="#fff" solid size={26}/>
+                            </TouchableOpacity>
+                            // <View></View>
                         }>
                     {this.renderPassos(passos)}
                 </Swiper>
@@ -213,7 +213,7 @@ const styles = {
     viewTextos: {
         minHeight: (imageHeight*2.5/10) - 50,
         paddingHorizontal: 20,
-        paddingTop: 20,
+        paddingTop: 12,
         transform: [
             {translateY: -25}
         ],

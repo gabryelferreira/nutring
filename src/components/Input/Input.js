@@ -8,7 +8,9 @@ const Input = (props) => {
     returnLabel = () => {
         if (props.label){
             return (
-                <Label label={props.label} icone={props.icone}/>
+                <View style={styles.row}>
+                    <Label label={props.label + renderRestante()} icone={props.icone}/>
+                </View>
             );
         }
         return null;
@@ -21,6 +23,13 @@ const Input = (props) => {
                     <Text style={{fontSize: 14, color: '#777'}}>#</Text>
                 </View>
             );
+        }
+        return null;
+    }
+
+    renderRestante = () => {
+        if (props.maxLength){
+            return ` (${props.value ? props.maxLength - props.value.length : props.maxLength})`;
         }
         return null;
     }
@@ -59,6 +68,9 @@ const Input = (props) => {
 export default Input;
 
 const styles = {
+    row: {
+        flexDirection: 'row'
+    },
     container: {
         paddingVertical: 5,
         flexDirection: 'column',

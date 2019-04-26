@@ -228,8 +228,6 @@ export default class Comentarios extends Network {
 const styles = {
     caixaTexto: {
         height: 60,
-        position: 'absolute',
-        left: 0, right: 0, bottom: 0,
         borderTopWidth: 1,
         borderTopColor: '#ddd',
         flexDirection: 'row',

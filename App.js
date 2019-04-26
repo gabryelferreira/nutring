@@ -50,6 +50,7 @@ import NovaReceita from './src/screens/Tabs/NovaReceita/NovaReceita';
 import EditarReceita from './src/screens/Tabs/EditarReceita/EditarReceita';
 import EditarPasso from './src/screens/Tabs/EditarReceita/EditarPasso/EditarPasso';
 import VerReceita from './src/screens/Tabs/Receitas/VerReceita/VerReceita';
+import Camera from './src/components/Camera/Camera';
 
 const NavigationOptions = {
     headerStyle: {
@@ -154,51 +155,54 @@ function addNewPage(_initialRouteName){
             // defaultNavigationOptions: {
             //   headerBackTitle: null
             // }
-            // transitionConfig : () => (Platform.OS === 'ios' ? {
+            transitionConfig : () => (Platform.OS === 'ios' ? {
                 
-            //   screenInterpolator: props => {
-            //         // Transitioning to search screen (navigate)
-            //         // if (props.scene.route.routeName === 'Search') {
-            //         //   return StackViewStyleInterpolator.forFade(props);
-            //         // }
+              screenInterpolator: props => {
+                    // Transitioning to search screen (navigate)
+                    // if (props.scene.route.routeName === 'Search') {
+                    //   return StackViewStyleInterpolator.forFade(props);
+                    // }
               
-            //         // const last = props.scenes[props.scenes.length - 1];
+                    // const last = props.scenes[props.scenes.length - 1];
               
-            //         // // Transitioning from search screen (goBack)
-            //         // if (last.route.routeName === 'Search') {
-            //         //   return StackViewStyleInterpolator.forFade(props);
-            //         // }
-            //         // if (Platform.OS === 'ios') {
-            //     const routeName = props.scene.route.routeName;
-            //     if (props.scene.route.routeName == 'Principal'){
-            //       return StackViewStyleInterpolator.forFade(props);
-            //     }
-            //     if (props.scene.route.routeName == 'BuscarEspecifico'){
-            //       return;
-            //     }
-            //     if (props.scene.route.routeName == 'EditarPasso'){
-            //         return StackViewStyleInterpolator.forFade(props);
-            //     }
-            //     if (props.scene.route.routeName == 'Principal'){
-            //         return StackViewStyleInterpolator.forFade(props);
-            //     }
-            //     const last = props.scenes[props.scenes.length - 1];
-            //     if (last.route.routeName === 'EditarPasso') {
-            //         return StackViewStyleInterpolator.forFade(props);
-            //     }
-            //     return StackViewStyleInterpolator.forHorizontal(props);
-            //         // }
+                    // // Transitioning from search screen (goBack)
+                    // if (last.route.routeName === 'Search') {
+                    //   return StackViewStyleInterpolator.forFade(props);
+                    // }
+                    // if (Platform.OS === 'ios') {
+                const routeName = props.scene.route.routeName;
+                if (props.scene.route.routeName == 'Principal'){
+                  return StackViewStyleInterpolator.forFade(props);
+                }
+                if (props.scene.route.routeName == 'BuscarEspecifico'){
+                  return;
+                }
+                if (props.scene.route.routeName == 'EditarPasso'){
+                    return StackViewStyleInterpolator.forFade(props);
+                }
+                if (props.scene.route.routeName == 'Principal'){
+                    return StackViewStyleInterpolator.forFade(props);
+                }
+                const last = props.scenes[props.scenes.length - 1];
+                if (last.route.routeName === 'EditarPasso') {
+                    return StackViewStyleInterpolator.forFade(props);
+                }
+                if (routeName == 'Camera'){
+                    return StackViewStyleInterpolator.forFade(props);
+                }
+                return StackViewStyleInterpolator.forHorizontal(props);
+                    // }
               
-            //         // return;
-            //       },
-            //     } : {
-            //         transitionSpec: {
-            //             duration: 0,
-            //             timing: Animated.timing,
-            //             easing: Easing.step0,
-            //         },
-            //     }
-            // ),
+                    // return;
+                  },
+                } : {
+                    transitionSpec: {
+                        duration: 0,
+                        timing: Animated.timing,
+                        easing: Easing.step0,
+                    },
+                }
+            ),
             // navigationOptions: {
             //   tabBarVisible: false
             // },
@@ -379,6 +383,10 @@ const AppNavigator = createStackNavigator({
         screen: VerReceita,
         navigationOptions: NavigationOptions
     },
+    Camera: {
+        screen: Camera,
+        navigationOptions: NavigationOptions
+    }
 
     
 }, {
@@ -400,15 +408,18 @@ const AppNavigator = createStackNavigator({
             
             // // Transitioning from search screen (goBack)
             // if (Platform.OS === 'ios') {
-          const routeName = props.scene.route.routeName;
-          if (routeName == 'BuscarEspecifico'){
-              return;
-          }
-          if (routeName == 'Principal'){
-              return StackViewStyleInterpolator.forFade(props);
-          }
-          const lastRouteName = props.scenes[props.scenes.length - 1].route.routeName;
-          return StackViewStyleInterpolator.forHorizontal(props);
+            const routeName = props.scene.route.routeName;
+            if (routeName == 'BuscarEspecifico'){
+                return;
+            }
+            if (routeName == 'Principal'){
+                return StackViewStyleInterpolator.forFade(props);
+            }
+            if (routeName == 'Camera'){
+                return StackViewStyleInterpolator.forFade(props);
+            }
+            const lastRouteName = props.scenes[props.scenes.length - 1].route.routeName;
+            return StackViewStyleInterpolator.forHorizontal(props);
             // }
       
             // return;

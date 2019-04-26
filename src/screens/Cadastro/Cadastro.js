@@ -8,7 +8,7 @@ import Network from '../../network';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Input from '../../components/Input/Input';
 import Label from '../../components/Label/Label';
-import { validarCNPJ, validarData } from '../../validacoes';
+import { validarCNPJ, validarData, validarCampo } from '../../validacoes';
 import { removerCaracteresEspeciais, removerCaracter, formatarCNPJ, formatarData, formatarCep } from '../../help-functions';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
@@ -18,6 +18,7 @@ const imageWidth = dimensions.width;
 
 export default class Cadastro extends Network {
 
+    campoErro = "";
 
     state = {
         loading: false,
@@ -36,7 +37,6 @@ export default class Cadastro extends Network {
         backup_cnpj: "",
         backup_cep: "",
         sexo: "M",
-        campoErro: "",
         ddi: "",
         ddd: "",
         telefone: "",
@@ -123,22 +123,31 @@ export default class Cadastro extends Network {
 
     async validarDados(){
         let valido = true;
-        this.setState({
-            campoErro: ""
-        })
-        let campos = ["nome", "email", "usuario", "senha"];
-        if (!validarData(this.state.dt_nasc)){
-            await this.setState({
-                campoErro: "A data de nascimento está incorreta."
-            })
-            return false;
-        }
+        this.campoErro = "";
+        let campos = [
+            {campo: "nome", texto: "Nome", obrigatorio: true},
+            {campo: "dt_nasc", texto: "Data de Nascimento", obrigatorio: true, validador: "data"},
+            {campo: "email", texto: "Email", obrigatorio: true, validador: "email"},
+            {campo: "usuario", texto: "Usuário", obrigatorio: true, validador: "usuario"},
+            {campo: "senha", texto: "Senha", obrigatorio: true, validador: "senha"}
+        ];
         for (var i = 0; i < campos.length; i++){
-            if (this.state[campos[i]].length <= 0){
-                await this.setState({
-                    campoErro: "O campo " + campos[i] + " é obrigatório."
-                });
-                return false;
+            if (campos[i].obrigatorio){
+                if (this.state[campos[i].campo].length == 0){
+                    this.campoErro = "O campo " + campos[i].texto + " é obrigatório.";
+                    return false;
+                }
+                if (campos[i].validador){
+                    if (!validarCampo(campos[i].validador, this.state[campos[i].campo])){
+                        if (campos[i].campo == "usuario")
+                            this.campoErro = "O usuário é inválido. Ele precisa ter no mínimo 6 caracteres e são válidos letras, números e os caracteres .-_";
+                        else if (campos[i].campo == "senha")
+                            this.campoErro = "A senha é inválida. Ela precisa ter no mínimo 6 caracteres.";
+                        else
+                            this.campoErro = "O campo " + campos[i].texto + " é inválido.";
+                        return false;
+                    }
+                }
             }
         }
         return valido;
@@ -146,28 +155,20 @@ export default class Cadastro extends Network {
 
     async validarDadosRestaurante(){
         let valido = true;
-        this.setState({
-            campoErro: ""
-        })
+        this.campoErro = "";
         let campos = ["nome", "email", "cnpj", "ddi", "ddd", "telefone", "cep", "logradouro", "bairro", "cidade", "estado", "pais", "numero"];
         if (!validarCNPJ(this.state.cnpj)){
-            await this.setState({
-                campoErro: "CNPJ inválido."
-            })
+            this.campoErro = "CNPJ inválido.";
             return false;
         }
         let cepValido = await this.isCepValido(removerCaracteresEspeciais(this.state.cep, ["-"]));
         if (!cepValido){
-            await this.setState({
-                campoErro: "CEP inválido."
-            })
+            this.campoErro = "CEP inválido.";
             return false;
         }
         for (var i = 0; i < campos.length; i++){
             if (this.state[campos[i]].length <= 0){
-                await this.setState({
-                    campoErro: "O campo " + campos[i] + " é obrigatório."
-                });
+                this.campoErro = "O campo " + campos[i] + " é obrigatório.";
                 return false;
             }
         }
@@ -242,10 +243,8 @@ export default class Cadastro extends Network {
             user = JSON.stringify(user);
             let result = await this.callMethod("register", { user, tipoDeCadastro: this.state.opcao })
             if (result.success){
-                if (result.result == "EMAIL_EXISTS"){
-                    this.showModal("Email já cadastrado", "Esse email já está cadastro em nosso sistema.");
-                } else if (result.result == "USER_EXISTS"){
-                    this.showModal("Usuário já cadastrado", "Esse nome de usuário já está cadastro em nosso sistema.");
+                if (result.result.error){
+                    this.showModal("Verifique os erros", result.result.error);
                 } else {
                     if (this.state.opcao == "PESSOA"){
                         await this.salvarDadosUsuario(result.result);
@@ -266,7 +265,7 @@ export default class Cadastro extends Network {
                 this.showModal("Ocorreu um erro!", "Verifique sua internet e tente novamente em alguns instantes.");
             }
         } else {
-            this.showModal("Dados inválidos", this.state.campoErro)
+            this.showModal("Dados inválidos", this.campoErro)
         }
         await this.setState({loading: false});
     }
@@ -325,7 +324,7 @@ export default class Cadastro extends Network {
                 onSubmitEditing={() => this.segundoInput.focus()}
                 blurOnSubmit={false}
                 autoCapitalize = 'words'
-                maxLength={100}
+                maxLength={30}
                 />
                 <Input
                 label={"CNPJ *"}
@@ -357,7 +356,7 @@ export default class Cadastro extends Network {
                 blurOnSubmit={false}
                 autoCapitalize = 'none'
                 returnKeyType={"next"}
-                maxLength={100}
+                maxLength={60}
                 />
                 <Input
                 label={"DDI *"}
@@ -512,7 +511,7 @@ export default class Cadastro extends Network {
                 blurOnSubmit={false}
                 autoCapitalize = 'none'
                 keyboardType="number-pad"
-                maxLength={30}
+                maxLength={10}
                 />
                 <Input
                 label={"Complemento"}
@@ -544,14 +543,13 @@ export default class Cadastro extends Network {
                     icone={"user-circle"}
                     placeholder="Nome" 
                     placeholderTextColor="rgb(153, 153, 153)" 
-                    // style={styles.input}
                     onChangeText={(nome) => this.setState({nome})}
                     value={this.state.nome}
                     returnKeyType={"next"}
                     onSubmitEditing={() => this.segundoInput.focus()}
                     blurOnSubmit={false}
                     autoCapitalize = 'words'
-                    maxLength={100}
+                    maxLength={60}
                     />
                 <Input
                 label={"Data de Nascimento"}
@@ -561,17 +559,12 @@ export default class Cadastro extends Network {
                 placeholderTextColor="rgb(153, 153, 153)" 
                 value={this.state.dt_nasc}
                 onChangeText={(dt_nasc) => this.setState({dt_nasc}, this.verifyDtNasc)}
-                // onSubmitEditing={() => this.terceiroInput.focus()}
-                // blurOnSubmit={false}
                 autoCapitalize = 'none'
                 keyboardType='number-pad'
                 maxLength={10}
                 />
                 <Label label={"Gênero"} icone={"transgender"}/>
                 <View style={styles.picker}>
-                    {/* <View style={{ position: 'absolute', top: 0, left: 0, bottom: 0, right: 0, pointerEvents: 'none', background: '#fff', borderRadius: 30 }}>
-                        <Text style={{ fontSize: 15, marginLeft: 15, color: "rgb(153, 153, 153)" }}>Gênero</Text>
-                    </View> */}
                     <Picker
                         selectedValue={this.state.sexo}
                         onValueChange={(sexo, _) => this.setState({ sexo }, function(){
@@ -596,7 +589,7 @@ export default class Cadastro extends Network {
                 blurOnSubmit={false}
                 autoCapitalize = 'none'
                 returnKeyType={"next"}
-                maxLength={100}
+                maxLength={60}
                 />
                 <Input
                 icone={"user-circle"}
@@ -625,7 +618,7 @@ export default class Cadastro extends Network {
                 onSubmitEditing={() => this.cadastrar()}
                 secureTextEntry={true}
                 autoCapitalize = 'none'
-                maxLength={100}
+                maxLength={30}
                 />
                 {this.renderBotaoLogin()}
             </View>
@@ -656,10 +649,6 @@ export default class Cadastro extends Network {
                     <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
 
                         <View style={styles.viewCadastro}>
-
-                            {/* <TouchableOpacity onPress={() => this.props.navigation.goBack()} style={styles.botaoVoltar}>
-                                <Icon name="chevron-left" solid color="#28b657" size={22}/>
-                            </TouchableOpacity> */}
 
                             <View style={{alignItems: 'center'}}>
                                 <AutoHeightImage source={require('../../assets/imgs/logo-com-slogan.png')} width={260}/>

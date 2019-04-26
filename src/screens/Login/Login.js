@@ -193,6 +193,7 @@ export default class Login extends Network {
                                 onSubmitEditing={() => this.segundoInput.focus()}
                                 blurOnSubmit={false}
                                 autoCapitalize = 'none'
+                                maxLength={60}
                                 />
                                 <TextInput 
                                 ref={(input) => this.segundoInput = input}
@@ -204,8 +205,9 @@ export default class Login extends Network {
                                 onSubmitEditing={() => this.login()}
                                 secureTextEntry={true}
                                 autoCapitalize = 'none'
+                                maxLength={30}
                                 />
-                                <TouchableOpacity onPress={() => this.login()} style={styles.botao}>
+                                <TouchableOpacity disabled={!this.state.email.trim() || !this.state.senha.trim()} onPress={() => this.login()} style={[styles.botao, !this.state.email.trim() || !this.state.senha.trim() ? styles.disabled : {}]}>
                                     {this.renderTextoBotao()}
                                 </TouchableOpacity>
                                 <View style={{marginTop: 20, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
@@ -228,6 +230,9 @@ export default class Login extends Network {
 }
 
 const styles = {
+    disabled: {
+        opacity: .4
+    },
     container: {
         flexDirection: 'column',
         paddingHorizontal: 30,

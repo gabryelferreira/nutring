@@ -375,15 +375,18 @@ export default class Feed extends Network {
         let dados = this.state.dados.filter(post => {
             return id_post != post.id_post
         })
-        this.mostrarPopup();
-        this.setState({
-            avoidBugFlatList: true
-        }, function(){
+        if (dados.length == 0) this.carregarDadosIniciais();
+        else {
             this.setState({
-                dados,
-                avoidBugFlatList: false
+                avoidBugFlatList: true
+            }, function(){
+                this.setState({
+                    dados,
+                    avoidBugFlatList: false
+                })
             })
-        })
+        }
+        // this.mostrarPopup();
     }
     
     renderNovoPorAqui(){

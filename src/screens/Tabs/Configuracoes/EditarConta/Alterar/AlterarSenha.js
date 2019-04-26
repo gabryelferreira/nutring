@@ -7,6 +7,8 @@ import Input from '../../../../../components/Input/Input'
 import Sugestoes from '../../../../../components/Sugestoes/Sugestoes';
 import BotaoPequeno from '../../../../../components/Botoes/BotaoPequeno';
 import Modalzin from '../../../../../components/Modal/Modal';
+import { validarCNPJ, validarData, validarCampo } from '../../../../../validacoes';
+
 
 const HEADER_HEIGHT = 50;
 
@@ -58,8 +60,28 @@ export default class AlterarSenha extends Network {
     }
 
     validarDados(){
-        if (!this.state.senhaAtual.trim() || !this.state.novaSenha.trim() || !this.state.repetirSenha.trim()){
-            this.showModal("Campos inválidos", "Preencha todos os campos corretamente para alterar sua senha.");
+        this.campoErro = "";
+        let campos = [
+            {campo: "senhaAtual", texto: "Senha atual", obrigatorio: true, validador: "senha"},
+            {campo: "novaSenha", texto: "Nova senha", obrigatorio: true, validador: "senha"},
+            {campo: "repetirSenha", texto: "Confirme a nova senha", obrigatorio: true, validador: "senha"},
+        ];
+        for (var i = 0; i < campos.length; i++){
+            if (campos[i].obrigatorio){
+                if (this.state[campos[i].campo].length == 0){
+                    this.campoErro = "O campo " + campos[i].texto + " é obrigatório.";
+                    return false;
+                }
+                if (campos[i].validador){
+                    if (!validarCampo(campos[i].validador, this.state[campos[i].campo])){
+                        this.campoErro = "O campo " + campos[i].texto + " é inválido. Ele precisa ter no mínimo 6 caracteres.";
+                        return false;
+                    }
+                }
+            }
+        }
+        if (this.state.novaSenha != this.state.repetirSenha){
+            this.campoErro = "Os campos Nova senha e Confirme a nova senha precisam ser iguais.";
             return false;
         }
         return true;
@@ -92,6 +114,8 @@ export default class AlterarSenha extends Network {
             this.setState({
                 loading: false
             })
+        } else {
+            this.showModal("Verifique os campos", this.campoErro);
         }
     }
 
@@ -128,6 +152,7 @@ export default class AlterarSenha extends Network {
                                 autoCapitalize={"none"}
                                 secureTextEntry={true}
                                 small={true}
+                                maxLength={30}
                             />
                             <Input label={"Nova senha"} 
                                     inputRef={(input) => {this.segundoInput = input}}
@@ -139,6 +164,7 @@ export default class AlterarSenha extends Network {
                                 blurOnSubmit={false}
                                 secureTextEntry={true}
                                 small={true}
+                                maxLength={30}
                             />
                             <Input label={"Confirme a nova senha"} 
                                     inputRef={(input) => {this.terceiroInput = input}}
@@ -149,6 +175,7 @@ export default class AlterarSenha extends Network {
                                 autoCapitalize={"none"}
                                 secureTextEntry={true}
                                 small={true}
+                                maxLength={30}
                             />
                             <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
                                 <BotaoPequeno texto={"Alterar"} textoLoading={"Alterando"} onPress={() => this.alterarSenha()} loading={this.state.loading}/>

@@ -1056,7 +1056,8 @@ const styles = {
         alignItems: 'center',
         paddingVertical: 3,
         paddingHorizontal: 7,
-        borderRadius: 4
+        borderRadius: 4,
+        elevation: 1
     },
     textoCriarReceita: {
         fontSize: 12,

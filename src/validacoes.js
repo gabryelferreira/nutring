@@ -1,5 +1,32 @@
 
 
+export function validarCampo(campo, valor){
+    if (campo == "usuario") return validarUsuario(valor);
+    if (campo == "senha") return validarSenha(valor);
+    if (campo == "data") return validarData(valor);
+    if (campo == "email") return validarEmail(valor);
+    return false;
+}
+
+export function validarUsuario(usuario){
+    if (!usuario || usuario.length < 6) return false;
+    let caracteresAceitos = "abcdefghijklmnopqrstuvywxzABCDEFGHIJKLMNOPQRSTUVYWXZ0123456789_-.";
+    for (let i = 0; i < usuario.length; i++){
+        if (caracteresAceitos.indexOf(usuario[i]) == -1) return false;
+    }
+    return true;
+}
+
+export function validarSenha(senha){
+    if (!senha || senha.length < 6) return false;
+    return true;
+}
+
+export function validarEmail(email){
+    if (!email || email.length < 8 || email.indexOf("@") == -1) return false;
+    return true;
+}
+
 export function validarCNPJ(cnpj) {
 
     cnpj = cnpj.replace(/[^\d]+/g,'');

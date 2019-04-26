@@ -273,7 +273,7 @@ export default class EditarPasso extends Network {
                                     autoCapitalize={"sentences"}
                                     blurOnSubmit={false}
                                     small={true}
-                                    maxLength={255}
+                                    maxLength={30}
                                     returnKeyType={"next"}
                                 />
                             <Input label={"Descrição"}
@@ -286,7 +286,7 @@ export default class EditarPasso extends Network {
                                 small={true}
                                 multiline={true}
                                 numberOfLines={5}
-                                maxLength={255}
+                                maxLength={120}
                                 returnKeyType={"default"}
                             />
                         </View>

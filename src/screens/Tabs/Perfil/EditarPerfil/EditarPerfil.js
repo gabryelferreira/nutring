@@ -344,7 +344,7 @@ export default class EditarPerfil extends Network {
                                 onSubmitEditing={() => this.segundoInput.focus()}
                                 small={true}
                                 blurOnSubmit={false}
-                                maxLength={60}
+                                maxLength={30}
                                 returnKeyType={'next'}
                             />
                             <Input label={"Descrição"}
@@ -356,7 +356,7 @@ export default class EditarPerfil extends Network {
                                 small={true}
                                 multiline={true}
                                 numberOfLines={5}
-                                maxLength={255}
+                                maxLength={120}
                                 returnKeyType={'default'}
                             />
                             {this.renderCoresRestaurante()}

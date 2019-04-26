@@ -406,8 +406,12 @@ export default class VerReceita extends Network {
                         <View style={styles.viewTextos}>
                             <View style={[styles.row, styles.justifySpaceBetween]}>
                                 <View style={[styles.flex, styles.paddingRight]}>
-                                    <Text numberOfLines={1} style={styles.titulo}>{this.state.receita.titulo} <Text style={styles.passo}>{this.state.receita.passos.length} passos</Text></Text>
-                                    <Text style={styles.nomeUsuario}>{this.state.receita.nome}</Text>
+                                    <Text numberOfLines={1} style={styles.titulo}>{this.state.receita.titulo}</Text>
+                                    <View style={[styles.row, styles.alignCenter]}>
+                                        <Text style={styles.passo}>{this.state.receita.passos.length} {this.state.receita.passos.length == 1 ? 'Passo' : 'Passos'}</Text>
+                                        <View style={styles.bolinhaVerde}></View>
+                                        <Text numberOfLines={1} style={styles.nomeUsuario}>{this.state.receita.nome}</Text>
+                                    </View>
                                 </View>
                                 <View style={styles.viewFotoReceita}>
                                     <View style={styles.baixoFotoReceita}>
@@ -429,6 +433,17 @@ export default class VerReceita extends Network {
 }
 
 const styles = {
+    bolinhaVerde: {
+        height: 8,
+        width: 8,
+        borderRadius: 8/2,
+        backgroundColor: '#20b351',
+        marginHorizontal: 7,
+        alignSelf: 'center'
+    },
+    alignCenter: {
+        alignItems: 'center'
+    },
     row: {
         flexDirection: 'row'
     },
@@ -517,7 +532,7 @@ const styles = {
         minHeight: (imageHeight*2.5/10) - 50,
         bottom: 0, left: 0, right: 0,
         paddingHorizontal: 20,
-        paddingTop: 20,
+        paddingTop: 12,
         transform: [
             {translateY: -25}
         ],
@@ -526,19 +541,20 @@ const styles = {
         backgroundColor: '#fff',
     },
     nomeUsuario: {
-        fontSize: 16,
-        color: '#222'
+        fontSize: 14,
+        color: '#aaa',
+        fontWeight: 'normal'
     },
     titulo: {
-        fontSize: 18,
+        fontSize: 20,
         color: '#000',
         fontWeight: 'bold',
         textAlign: 'left',
     },
     passo: {
-        fontSize: 12,
-        color: '#aaa',
-        fontWeight: 'normal'
+        fontSize: 16,
+        color: '#000',
+        fontWeight: 'bold'
     },
     descricao: {
         fontSize: 15,

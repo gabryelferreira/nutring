@@ -65,10 +65,14 @@ class NutringAddButton extends Network {
     }
 
     abrirCamera(){
+        // this.setState({
+        //     visible: false,
+        //     cameraVisible: true
+        // })
         this.setState({
-            visible: false,
-            cameraVisible: true
+            visible: false
         })
+        this.props.navigation.navigate("Camera");
     }
 
     abrirPagina(pagina){

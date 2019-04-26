@@ -126,8 +126,11 @@ export default class Configuracoes extends Network {
                 />
                 <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}>
                     {this.renderNovaPromocao()}
-                    <Opcao icone={"user-circle"} texto={"Editar conta"} seta={true} onPress={() => this.props.navigation.navigate("EditarConta")}/>
-                    <Opcao icone={"question-circle"} texto={"Ajuda"} seta={true} onPress={() => this.props.navigation.navigate("Ajuda")}/>
+                    {/* <Opcao icone={"user-circle"} texto={"Editar conta"} seta={true} onPress={() => this.props.navigation.navigate("EditarConta")}/> */}
+                    <Opcao icone={"user-circle"} texto={"Alterar usuário"} onPress={() => this.props.navigation.navigate("AlterarUsuario")}/>
+                    {/* <Opcao icone={"envelope"} texto={"Alterar email"} onPress={() => this.props.navigation.navigate("AlterarEmail")}/> */}
+                    <Opcao icone={"lock"} texto={"Alterar senha"} onPress={() => this.props.navigation.navigate("AlterarSenha")}/>
+                    {/* <Opcao icone={"question-circle"} texto={"Ajuda"} seta={true} onPress={() => this.props.navigation.navigate("Ajuda")}/> */}
                     {/* <Opcao icone={"key"} texto={"Privacidade"} seta={true} onPress={() => this.props.navigation.navigate("Privacidade")}/> */}
                     <Separador/>
                     {/* <Opcao icone={"external-link-alt"} texto={"Nutring Calorias"}/> */}
