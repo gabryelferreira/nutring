@@ -257,11 +257,11 @@ export default class VerReceita extends Network {
             <SafeAreaView style={{flex: 1}}>
                 <View style={styles.modalHeader}>
                     <TouchableOpacity onPress={() => this.fecharModalPassos()}>
-                        <Icon name="times" color="#000" size={24}/>
+                        <Icon name="times" color="#000" size={20}/>
                     </TouchableOpacity>
                     <Text style={styles.tituloModal}>{this.state.receita.titulo}</Text>
                     <TouchableOpacity>
-                        <Icon name="times" color="#fff" size={24}/>
+                        <Icon name="times" color="#fff" size={20}/>
                     </TouchableOpacity>
                 </View>
                 <PassosReceita passos={this.state.receita.passos} foto={this.state.receita.foto}/>
@@ -460,7 +460,10 @@ const styles = {
         height: 80,
         width: 80,
         elevation: 1,
-        backgroundColor: '#eee'
+        backgroundColor: '#eee',
+        shadowOffset:{  width: .5,  height: .5,  },
+        shadowColor: 'black',
+        shadowOpacity: .2,
     },
     fotoReceita: {
         width: 80, height: 80,
@@ -529,16 +532,17 @@ const styles = {
     },
     viewTextos: {
         position: 'absolute',
-        minHeight: (imageHeight*2.5/10) - 50,
+        minHeight: (imageHeight*2.5/10) - 25,
         bottom: 0, left: 0, right: 0,
         paddingHorizontal: 20,
-        paddingTop: 12,
-        transform: [
-            {translateY: -25}
-        ],
+        paddingVertical: 12,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         backgroundColor: '#fff',
+        shadowOffset:{  width: .5,  height: .5,  },
+        shadowColor: 'black',
+        shadowOpacity: .2,
+        elevation: 1
     },
     nomeUsuario: {
         fontSize: 14,
@@ -554,7 +558,7 @@ const styles = {
     passo: {
         fontSize: 16,
         color: '#000',
-        fontWeight: 'bold'
+        // fontWeight: 'bold'
     },
     descricao: {
         fontSize: 15,
@@ -577,7 +581,7 @@ const styles = {
     tituloModal: {
         color: '#000',
         fontWeight: 'bold',
-        fontSize: 22
+        fontSize: 18
     },
     proximoAnterior: {
         flexDirection: 'row',

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, PermissionsAndroid, CameraRoll, Linking, Modal, Platform, RefreshControl } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../../components/Loader/Loader';
@@ -26,6 +26,8 @@ export default class Perfil extends Network {
         'https://culinaria.culturamix.com/blog/wp-content/gallery/como-fazer-pratos-de-restaurante-2/Como-Fazer-Pratos-de-Restaurante-2.jpg',
         'https://img.elo7.com.br/product/zoom/22565B3/adesivo-parede-prato-comida-frango-salada-restaurante-lindo-adesivo-parede.jpg'
     ]
+
+    loading = false;
 
     static navigationOptions = ({navigation}) => ({
         title: navigation.getParam('nome', ''),
@@ -108,7 +110,7 @@ export default class Perfil extends Network {
 
     async getPerfil(){
         if (!this.state.refreshing){
-            await this.setState({
+            this.setState({
                 refreshing: true,
             })
         }
@@ -142,12 +144,11 @@ export default class Perfil extends Network {
 
     async carregarFotosIniciais() {
         console.log("carregando seus dados iniciais bb")
-        await this.setState({
+        this.setState({
             offset: 0,
             semMaisDados: false,
             dados: []
-        })
-        this.carregarDados();
+        }, this.carregarDados);
     }
 
     async carregarDados() {
@@ -168,24 +169,28 @@ export default class Perfil extends Network {
                         dados.push(result.result[i]);
                     }
                     if (result.result.length < 18){
-                        await this.setState({
+                        this.setState({
                             semMaisDados: true
                         })
                     }
-                    await this.setState({
+                    this.setState({
                         dados: dados,
                         offset: this.state.offset + 18
                     });
                 }
             }
         }
-        await this.setState({
+        this.setState({
             refreshing: false,
         })
+        this.loading = false;
     }
 
     pegarDados(){
-        this.carregarDados();        
+        if (!this.loading){
+            this.loading = true;
+            this.carregarDados();
+        }
     }
 
     returnHeaderComponent(){
@@ -590,20 +595,32 @@ export default class Perfil extends Network {
 
     returnFotos(){
         return (
-            <FlatList
-            data={this.state.dados}
-            keyExtractor={(item, index) => item.id_post.toString()}
-            numColumns={3}
-            renderItem={({item, index}) => (
-                <FotoPerfil data={item} index={index} onPress={() => this.props.navigation.push("Postagem", { id_post: item.id_post, onGoBack: () => this.getPerfil(), } )}/>
-            )}
-            refreshing={this.state.refreshing}
-            onRefresh={() => this.getPerfil()}
-            onEndReached={() => this.pegarDados()}
-            onEndReachedThreshold={0.5}
-            ListHeaderComponent={() => this.returnHeaderComponent()}
-            ListFooterComponent={() => this.returnFooterComponent()}
-            />
+            // <FlatList
+            // data={this.state.dados}
+            // keyExtractor={(item, index) => item.id_post.toString()}
+            // numColumns={3}
+            // renderItem={({item, index}) => (
+            //     <FotoPerfil key={index} data={item} index={index} onPress={() => this.props.navigation.push("Postagem", { id_post: item.id_post, onGoBack: () => this.getPerfil(), } )}/>
+            // )}
+            // refreshing={this.state.refreshing}
+            // onRefresh={() => this.getPerfil()}
+            // onEndReached={() => this.pegarDados()}
+            // onEndReachedThreshold={0.5}
+            // ListHeaderComponent={() => this.returnHeaderComponent()}
+            // ListFooterComponent={() => this.returnFooterComponent()}
+            // />
+            <ScrollView contentContainerStyle={{flexGrow: 1}}
+                        style={{flex: 1}}>
+                <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
+                    {
+                        this.state.dados.map((item, index) => {
+                            return <FotoPerfil key={index} data={item} index={index} onPress={() => this.props.navigation.push("Postagem", { id_post: item.id_post, onGoBack: () => this.getPerfil() } )}/>
+                        })
+                    }
+                </View>
+                {this.returnFooterComponent()}
+                
+            </ScrollView>
         );
     }
 
@@ -833,6 +850,12 @@ export default class Perfil extends Network {
         return null;
     }
 
+    isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+        const paddingToBottom = 20;
+        return layoutMeasurement.height + contentOffset.y >=
+            contentSize.height - paddingToBottom;
+    };
+
     render(){
         let { nome, foto } = this.user;
         if (this.state.carregandoPrimeiraVez){
@@ -864,10 +887,31 @@ export default class Perfil extends Network {
                             onSwipeDown={() => this.setState({modalFotoVisible: false})}
                             onClose={() => this.setState({modalFotoVisible: false})}/>
 
-                {this.renderModalRestaurante()}
+                <ScrollView contentContainerStyle={{flexGrow: 1}}
+                            style={{flex: 1}}
+                            onScroll={({nativeEvent}) => {
+                                if (this.isCloseToBottom(nativeEvent)) {
+                                    this.pegarDados();
+                                }
+                            }}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={() => this.getPerfil()}
+                />
+            }
+            scrollEventThrottle={400}
+            >
+
+                {this.returnHeaderComponent()}
+                {this.returnFotos()}
+
+            </ScrollView>
+
+                {/* {this.renderModalRestaurante()} */}
                 
                 {/* <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}}> */}
-                    {this.returnFotos()}
+                    {/* {this.returnFotos()} */}
 
 
                         {/*fotos aqui*/}

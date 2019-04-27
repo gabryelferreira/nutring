@@ -295,10 +295,12 @@ export default class Buscar extends Network {
             );
         }
         return (
-            <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} onScroll={({nativeEvent}) => {
-                if (this.isCloseToBottom(nativeEvent)) {
-                    this.getMaisPratos();
-                }
+            <ScrollView contentContainerStyle={{flexGrow: 1}}
+                        style={{flex: 1}}
+                        onScroll={({nativeEvent}) => {
+                            if (this.isCloseToBottom(nativeEvent)) {
+                                this.getMaisPratos();
+                            }
             }}
             refreshControl={
                 <RefreshControl

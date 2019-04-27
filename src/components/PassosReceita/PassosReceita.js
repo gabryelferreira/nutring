@@ -82,16 +82,18 @@ export default class PassosReceita extends Component {
         let { passos, foto } = this.props;
         return (
             <View style={{flex: 1}}>
-                <Swiper style={styles.wrapper}
+                <Swiper containerStyle={styles.wrapper}
                         ref={component => this.swiper = component}
                         onIndexChanged={(index) => this.setSwiperIndex(index)}
                         showsButtons={true}
                         loop={false}
                         dot={
-                            <View style={styles.inactiveDot} />
+                            // <View style={styles.inactiveDot} />
+                            <View></View>
                         }
                         activeDot={
-                            <View style={styles.activeDot}/>
+                            // <View style={styles.activeDot}/>
+                            <View></View>
                         }
                         prevButton={
                             <TouchableOpacity style={styles.viewArrowSwiper} onPress={() => this.swipe(this.swiperIndex - 1)}>
@@ -151,7 +153,10 @@ const styles = {
         height: 80,
         width: 80,
         elevation: 1,
-        backgroundColor: '#eee'
+        backgroundColor: '#eee',
+        shadowOffset:{  width: .5,  height: .5,  },
+        shadowColor: 'black',
+        shadowOpacity: .2,
     },
     fotoReceita: {
         width: 80, height: 80,
@@ -211,15 +216,18 @@ const styles = {
         height: null
     },
     viewTextos: {
-        minHeight: (imageHeight*2.5/10) - 50,
+        position: 'absolute',
+        bottom: 0, left: 0, right: 0,
+        minHeight: (imageHeight*2.5/10) - 25,
         paddingHorizontal: 20,
-        paddingTop: 12,
-        transform: [
-            {translateY: -25}
-        ],
+        paddingVertical: 12,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
         backgroundColor: '#fff',
+        shadowOffset:{  width: .5,  height: .5,  },
+        shadowColor: 'black',
+        shadowOpacity: .2,
+        elevation: 1
     },
     passo: {
         fontSize: 16,
