@@ -28,16 +28,17 @@ class Post extends Network {
             hideShimmer: false,
             altura: 0,
             carregandoImagem: true,
+            carregandoThumbnail: true,
             parandoDeSeguir: false,
-            seguindo: false
+            seguindo: false,
         }
-        this.calcularHeight(this.props.data.conteudo);
+        this.calcularHeight(this.props.thumbnail ? this.props.thumbnail : this.props.data.conteudo);
     }
 
     calcularHeight(conteudo){
         let img = "";
-        if (!Array.isArray(conteudo)) return null;
-        img = conteudo[0].url_conteudo;
+        if (!Array.isArray(conteudo)) img = conteudo;
+        else img = conteudo[0].url_conteudo;
         Image.getSize(img, (width, height) => {
             let alturaIdeal = imageWidth * height / width;
             this.setState({altura: alturaIdeal})
@@ -73,7 +74,7 @@ class Post extends Network {
                     <View style={styles.viewComentario}>
                         <View style={styles.bolinhaComentario}>
                         </View>
-                        <Text style={styles.comentario}><Text onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: this.state.data.id_usuario_comentario })} style={styles.nomeComentario}>{this.props.data.pessoa_comentario}</Text>  <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.comentario}</Text></Text>
+                        <Text numberOfLines={4} style={styles.comentario}><Text onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: this.state.data.id_usuario_comentario })} style={styles.nomeComentario}>{this.props.data.pessoa_comentario}</Text>  <Text onPress={() => this.props.navigation.push('Comentarios', { id_post: this.state.data.id_post })}>{this.props.data.comentario}</Text></Text>
                     </View>
                 </View>
             )
@@ -394,6 +395,13 @@ class Post extends Network {
         );
     }
 
+    renderThumbnail(thumbnail){
+        if (this.state.carregandoImagem){
+            return <Image onLoad={() => this.setState({ carregandoThumbnail: false })} resizeMethod="resize" source={{uri: thumbnail}} style={{width: imageWidth, height: this.state.altura}}/>
+        }
+        return null;
+    }
+
     renderConteudo(conteudo){
         if (this.state.altura || !this.state.carregandoImagem){
             return (
@@ -401,9 +409,10 @@ class Post extends Network {
                     <ShimmerPlaceHolder
                         style={{flex: 1, height: this.state.altura}}
                         autoRun={true}
-                        visible={!this.state.carregandoImagem}
+                        visible={!this.state.carregandoImagem || !this.state.carregandoThumbnail}
                     >
-                        <Image onLoad={() => this.setState({ carregandoImagem: false })} resizeMethod="resize" source={{uri: this.formatarConteudo(conteudo)}} style={{width: imageWidth, height: this.state.altura}}/>
+                        {this.renderThumbnail(this.props.thumbnail)}
+                        <Image onLoad={() => this.setState({ carregandoImagem: false })} resizeMethod="resize" source={{uri: this.formatarConteudo(conteudo)}} style={{width: imageWidth, height: this.state.carregandoImagem ? 1 : this.state.altura}}/>
                     </ShimmerPlaceHolder>
                 </View>
             );
@@ -444,7 +453,7 @@ class Post extends Network {
                             </TouchableOpacity>
                             <View style={styles.viewInfoTexto}>
                                 <TouchableOpacity style={{flexDirection: 'row'}} onPress={() => this.props.navigation.push('Perfil', { id_usuario_perfil: id_usuario })}>
-                                    <Text style={styles.nome}>{nome}</Text>
+                                    <Text numberOfLines={1} style={styles.nome}>{nome}</Text>
                                     {this.returnFolhinha(is_restaurante)}
                                 </TouchableOpacity>
                                 {this.returnTextoPostedAgo(tempo_postado)}
@@ -605,9 +614,7 @@ const styles = {
         fontSize: 16,
         color: '#000',
         fontWeight: 'bold',
-        maxHeight: 24,
         marginRight: 5,
-        marginBottom: 2
     },
     tempo: {
         fontSize: 13,

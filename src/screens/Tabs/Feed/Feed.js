@@ -429,7 +429,14 @@ export default class Feed extends Network {
                     
                     <View>
                         
-                        <Post shimmer={this.state.carregandoPrimeiraVez} onClickFoto={() => this.abrirFotos(item)} data={item} index={index} navigation={this.props.navigation} onDelete={(id_post) => this.excluirPost(id_post)}/>
+                        <Post shimmer={this.state.carregandoPrimeiraVez}
+                                onClickFoto={() => this.abrirFotos(item)}
+                                data={item}
+                                index={index}
+                                navigation={this.props.navigation}
+                                onDelete={(id_post) => this.excluirPost(id_post)}
+                                thumbnail={item.conteudo_qualidade_baixa}
+                        />
                         {this.returnLoader(index, 'dados')}
                     </View>
 

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, ActivityIndicator, RefreshControl } from 'react-native';
 import Network from '../../../network';
 import Post from '../../../components/Post/Post';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -29,24 +29,30 @@ export default class Postagem extends Network {
     }
 
     async getPostById(){
+        this.setState({
+            refreshing: true
+        })
         let id_post = this.props.navigation.getParam("id_post", "0");
         let result = await this.callMethod("getPostById", { id_post });
         if (result.success){
             if (result.result == "NAO_ENCONTRADO"){
                 this.setState({
                     naoEncontrado: true,
-                    loading: false
+                    loading: false,
+                    refreshing: false
                 })
             } else {
                 this.setState({
                     post: result.result,
-                    loading: false
+                    loading: false,
+                    refreshing: false
                 })
             }
         } else {
             this.setState({
                 loading: false,
-                semInternet: false
+                semInternet: false,
+                refreshing: false
             })
         }
     }
@@ -78,8 +84,22 @@ export default class Postagem extends Network {
                                     imagens={this.state.itemSelecionado.conteudo}
                                     onSwipeDown={() => this.setState({modalFotoVisible: false})}
                                     onClose={() => this.setState({modalFotoVisible: false})}/>
-                <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
-                    <Post onClickFoto={() => this.abrirFotos(this.state.post)} data={this.state.post} navigation={this.props.navigation} onDelete={() => this.voltarParaPerfil()}/>
+                <ScrollView contentContainerStyle={{flexGrow: 1}}
+                            style={{flex: 1}}
+                            keyboardShouldPersistTaps={"handled"}
+                            refreshControl={
+                                <RefreshControl
+                                    refreshing={this.state.refreshing}
+                                    onRefresh={() => this.getPostById()}
+                                />
+                            }
+                >
+                    <Post onClickFoto={() => this.abrirFotos(this.state.post)}
+                            data={this.state.post}
+                            navigation={this.props.navigation}
+                            onDelete={() => this.voltarParaPerfil()}
+                            thumbnail={this.state.post.conteudo_qualidade_baixa}
+                    />
                 </ScrollView>
             </View>
         );

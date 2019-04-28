@@ -244,7 +244,7 @@ export default class Buscar extends Network {
 
     renderTopReceitas(){
         return this.state.receitas.map((receita) => {
-            return <Card key={receita.id_receita + "receita"} imagem={receita.foto ? receita.foto : ''} nome={receita.titulo} onPress={() => this.props.navigation.navigate("VerReceita", { id_receita: receita.id_receita })}/>
+            return <Card key={receita.id_receita + "receita"} imagem={receita.foto ? receita.foto : ''} nome={receita.titulo} descricao={receita.nome} onPress={() => this.props.navigation.navigate("VerReceita", { id_receita: receita.id_receita })}/>
         })
     }
 
