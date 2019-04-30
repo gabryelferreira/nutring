@@ -327,12 +327,6 @@ export default class VerReceita extends Network {
             return (
                 <View style={styles.botoesImagem}>
                     <View style={styles.botaoImagem}>
-                        <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoVerPassos]} onPress={() => this.verPassosReceita()}>
-                            <Icon name="chevron-right" color="#fff" size={14}/>
-                        </TouchableOpacity>
-                        <Text style={styles.textoBotaoImagem}>Ver passos</Text>
-                    </View>
-                    <View style={styles.botaoImagem}>
                         <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoEditar]} onPress={() => this.onEditarClick()}>
                             <Icon name="pencil-alt" color="#fff" size={16}/>
                         </TouchableOpacity>
@@ -347,16 +341,7 @@ export default class VerReceita extends Network {
                 </View>
             );
         }
-        return (
-            <View style={styles.botoesImagem}>
-                <View style={styles.botaoImagem}>
-                    <TouchableOpacity style={[styles.iconeBotaoImagem, styles.iconeBotaoVerPassos]} onPress={() => this.verPassosReceita()}>
-                        <Icon name="chevron-right" color="#fff" size={16}/>
-                    </TouchableOpacity>
-                    <Text style={styles.textoBotaoImagem}>Ver passos</Text>
-                </View>
-            </View>
-        );
+        return null;
     }
 
     render(){
@@ -423,6 +408,9 @@ export default class VerReceita extends Network {
                             {/* <View style={styles.botaoVerSteps}>
                                 <BotaoPequeno texto={"Passo a Passo"} onPress={() => this.verPassosReceita()}/>
                             </View> */}
+                            <TouchableOpacity style={styles.botaoVerSteps} onPress={() => this.verPassosReceita()}>
+                                <Text style={styles.textoBotaoVerSteps}>Ver o passo a passo</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 {/* </ScrollView> */}
@@ -434,9 +422,9 @@ export default class VerReceita extends Network {
 
 const styles = {
     bolinhaVerde: {
-        height: 8,
-        width: 8,
-        borderRadius: 8/2,
+        height: 6,
+        width: 6,
+        borderRadius: 6/2,
         backgroundColor: '#20b351',
         marginHorizontal: 7,
         alignSelf: 'center'
@@ -545,7 +533,7 @@ const styles = {
         elevation: 1
     },
     nomeUsuario: {
-        fontSize: 14,
+        fontSize: 12,
         color: '#aaa',
         fontWeight: 'normal'
     },
@@ -556,20 +544,15 @@ const styles = {
         textAlign: 'left',
     },
     passo: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#000',
-        // fontWeight: 'bold'
+        fontWeight: 'bold'
     },
     descricao: {
-        fontSize: 15,
-        color: '#777',
-        marginTop: 10,
+        fontSize: 14,
+        color: '#000',
+        marginVertical: 10,
         textAlign: 'left'
-    },
-    botaoVerSteps: {
-        marginTop: 25,
-        flexDirection: 'row',
-        justifyContent: 'flex-start'
     },
     modalHeader: {
         flexDirection: 'row',
@@ -604,5 +587,20 @@ const styles = {
     },
     disabled: {
         opacity: .4
+    },
+    botaoVerSteps: {
+        borderRadius: 30,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        backgroundColor: '#28b657',
+        marginTop: 10
+    },
+    textoBotaoVerSteps: {
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 15
     }
 }

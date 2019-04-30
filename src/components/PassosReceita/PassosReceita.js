@@ -73,9 +73,11 @@ export default class PassosReceita extends Component {
     }
 
     swipe = (targetIndex) => {
-        const currentIndex = this.swiper.state.index;
-        const offset = targetIndex- currentIndex;
-        this.swiper.scrollBy(offset);
+        if (this.swiperIndex < this.props.passos.length && this.swiperIndex >= 0){
+            const currentIndex = this.swiper.state.index;
+            const offset = targetIndex- currentIndex;
+            this.swiper.scrollBy(offset);
+        }
     }
 
     render(){
@@ -116,11 +118,19 @@ export default class PassosReceita extends Component {
                     <Text style={styles.passo}>Passo {this.swiperIndex + 1}</Text>
                     <Text style={styles.descricao}>{this.state.descricao}</Text>
                 </Animated.View> */}
+                
                 <View style={styles.viewTextos}>
+                    <View style={styles.bolinhas}>
+                        {
+                            passos.map((passo, index) => {
+                                return <View key={index} style={[this.swiperIndex == index ? styles.activeDot : styles.inactiveDot]}/>
+                            })
+                        }
+                    </View>
                     <View style={[styles.row, styles.justifySpaceBetween]}>
                         <View style={[styles.flex, styles.paddingRight]}>
                             <Text numberOfLines={1} style={styles.titulo}>{this.state.titulo}</Text>
-                            <Text style={styles.passo}>Passo {this.swiperIndex + 1}</Text>
+                            <Text style={styles.passo}>Passo {this.swiperIndex + 1} de {passos.length}</Text>
                         </View>
                         <View style={styles.viewFotoReceita}>
                             <View style={styles.baixoFotoReceita}>
@@ -230,7 +240,7 @@ const styles = {
         elevation: 1
     },
     passo: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#222',
     },
     titulo: {
@@ -241,8 +251,15 @@ const styles = {
     },
     descricao: {
         fontSize: 15,
-        color: '#777',
+        color: '#000',
         marginTop: 10,
         textAlign: 'left'
+    },
+    bolinhas: {
+        position: 'absolute',
+        top: -30, left: 0, right: 0,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
 }

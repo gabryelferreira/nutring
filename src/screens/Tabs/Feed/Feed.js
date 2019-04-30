@@ -488,6 +488,7 @@ export default class Feed extends Network {
             <View>
                 {/* {this.returnNovidades()} */}
                 <ModalPostagemViewer visible={this.state.modalFotoVisible}
+                                    id_usuario={this.state.itemSelecionado.id_usuario}
                                     foto={this.state.itemSelecionado.foto}
                                     titulo={this.state.itemSelecionado.nome}
                                     imagens={this.state.itemSelecionado.conteudo}

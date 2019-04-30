@@ -219,7 +219,7 @@ export default class Perfil extends Network {
     returnFooterComponent(){
         if (!this.state.semMaisDados && !this.state.refreshing){
             return <ActivityIndicator color="#777" size="small" style={{ marginVertical: 20 }}/>
-        } else if (!this.state.refreshing && this.state.semMaisDados && this.state.dados.length == 0){
+        } else if (this.state.semMaisDados && this.state.dados.length == 0){
             return (
                 <SemDadosPerfil icone={"utensils"} titulo={"Ainda não há pratos"} texto={this.getTextoSemFotos()} seta={false}/>
             );
@@ -609,7 +609,7 @@ export default class Perfil extends Network {
             // ListHeaderComponent={() => this.returnHeaderComponent()}
             // ListFooterComponent={() => this.returnFooterComponent()}
             // />
-            <ScrollView contentContainerStyle={{flexGrow: 1}}
+            <ScrollView contentContainerStyle={{justifyContent: 'flex-start'}}
                         style={{flex: 1}}>
                 <View style={{flex: 1, flexDirection: 'row', flexWrap: 'wrap'}}>
                     {

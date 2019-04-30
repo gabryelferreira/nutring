@@ -41,8 +41,8 @@ const Card = ({onPress, imagem, nome, seguidores, curtidas, descricao}) => {
     return (
         <TouchableOpacity onPress={onPress} style={styles.card} activeOpacity={0.2}>
             <View style={styles.imagemDeFundo}>
-                <Image resizeMethod="resize" source={{uri: imagem}} style={{flex: 1, width: null, height: null}}/>
-                {/* <View style={{position: 'absolute', left: 0, bottom: 0, right: 0, top: 0, backgroundColor: 'rgba(0, 0, 0, .3)', zIndex: 3}}></View> */}
+                <Image resizeMethod="resize" source={{uri: imagem}} style={{flex: 1, width: null, height: null, zIndex: 2}}/>
+                <View style={{position: 'absolute', left: 0, bottom: 0, right: 0, top: 0, backgroundColor: 'rgba(0, 0, 0, .3)', zIndex: 3}}></View>
             </View>
             <View style={styles.container}>
                 <View style={styles.info}>
@@ -63,34 +63,33 @@ const styles = {
     card: {
         flexDirection: 'column',
         overflow: 'hidden',
-        width: 140,
-        
+        width: 180,
+        height: 110,
         borderRadius: 5,
-        marginRight: 10,
-        elevation: .85,
-        shadowOffset:{  width: .5,  height: .5,  },
-        shadowColor: 'black',
-        shadowOpacity: .2,
+        marginRight: 2
     },
     imagemDeFundo: {
-        width: 140,
-        height: 100,
-        backgroundColor: '#eee',
-        overflow: 'hidden'
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        bottom: 0,
+        right: 0
     },
     container: {
-        paddingVertical: 10,
+        paddingBottom: 10,
         paddingHorizontal: 15,
+        zIndex: 999,
         justifyContent: 'flex-end',
         flex: 1,
     },
     info: {
         flexDirection: 'column',
         justifyContent: 'center',
+        marginTop: 10
     },
     nome: {
-        fontSize: 14,
-        color: '#000',
+        fontSize: 15,
+        color: '#fff',
         fontWeight: 'bold'
     },
     infoBaixo: {
@@ -104,7 +103,7 @@ const styles = {
     },
     textoCurtidas: {
         fontSize: 11,
-        color: '#000',
+        color: '#fff',
         fontWeight: 'normal'
     },
     bolinhaVerde: {
