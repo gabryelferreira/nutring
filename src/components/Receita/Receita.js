@@ -14,6 +14,17 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import ModalPostagemViewer from '../ModalPostagemViewer/ModalPostagemViewer';
 
 const Receita = (props) => {
+
+    renderRecente = () => {
+        if (!props.receita.recente)
+            return (
+                <View style={{marginTop: 5, paddingHorizontal: 8, paddingVertical: 2, flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', justifyContent: 'center', borderRadius: 4, borderColor: '#ddd', borderWidth: 0.7}}>
+                    <Text style={{color: '#28b657', fontSize: 10}}>RECENTE</Text>
+                </View>
+            )
+        return null;
+    }
+
     return (
         <View style={styles.flex}>
             <View style={styles.borderBottom}>
@@ -27,11 +38,10 @@ const Receita = (props) => {
                         <View style={styles.textos}>
                             <Text style={styles.titulo} numberOfLines={1}>{props.receita.titulo}</Text>
                             <Text style={styles.descricao} numberOfLines={3}>{props.receita.descricao}</Text>
+                            {renderRecente()}
                         </View>
                     </View>
-                    <View style={{paddingHorizontal: 5, paddingVertical: 2, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderRadius: 4, borderColor: '#ddd', borderWidth: 0.4}}>
-                        <Text style={{color: '#28b657', fontSize: 8}}>RECENTE</Text>
-                    </View>
+                    
                 </TouchableOpacity>
             </View>
         </View>

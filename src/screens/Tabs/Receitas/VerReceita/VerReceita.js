@@ -589,7 +589,7 @@ const styles = {
         opacity: .4
     },
     botaoVerSteps: {
-        borderRadius: 30,
+        borderRadius: 4,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
