@@ -392,13 +392,22 @@ export default class Feed extends Network {
     renderNovoPorAqui(){
         if (this.feedAleatorio && this.state.dados.length > 0 && !this.state.carregando && !this.state.carregandoPrimeiraVez){
             return (
-                <View style={{paddingVertical: 10, paddingHorizontal: 15, backgroundColor: '#f9f9f9', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
-                    <View>
-                        <Text style={{fontSize: 14, color: '#000'}}>Novo por aqui? Veja os</Text>
-                        <Text style={{fontSize: 22, color: '#000', fontWeight: 'bold'}}>Posts mais populares</Text>
+                <>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('TodasPromocoes')} style={{paddingVertical: 10, paddingHorizontal: 15, backgroundColor: '#f9f9f9', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
+                        <View>
+                            <Text style={{fontSize: 14, color: '#000'}}>Veja as melhores</Text>
+                            <Text style={{fontSize: 22, color: '#000', fontWeight: 'bold'}}>Promoções</Text>
+                        </View>
+                        <Icon name="th-large" solid color="#aaa" size={16}/>
+                    </TouchableOpacity>
+                    <View style={{paddingVertical: 10, paddingHorizontal: 15, backgroundColor: '#f9f9f9', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
+                        <View>
+                            <Text style={{fontSize: 14, color: '#000'}}>Novo por aqui? Veja os</Text>
+                            <Text style={{fontSize: 22, color: '#000', fontWeight: 'bold'}}>Posts mais populares</Text>
+                        </View>
+                        <Icon name="th-large" solid color="#aaa" size={16}/>
                     </View>
-                    <Icon name="th-large" solid color="#aaa" size={16}/>
-                </View>
+                </>
             );
         }
         return null;

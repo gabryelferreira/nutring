@@ -51,6 +51,7 @@ import EditarReceita from './src/screens/Tabs/EditarReceita/EditarReceita';
 import EditarPasso from './src/screens/Tabs/EditarReceita/EditarPasso/EditarPasso';
 import VerReceita from './src/screens/Tabs/Receitas/VerReceita/VerReceita';
 import Camera from './src/components/Camera/Camera';
+import TodasPromocoes from './src/screens/Tabs/TodasPromocoes/TodasPromocoes';
 
 const NavigationOptions = {
     headerStyle: {
@@ -142,6 +143,10 @@ const InsideTabs = {
         screen: NutringAddButton,
         navigationOptions: NavigationOptions
     },
+    TodasPromocoes: {
+        screen: TodasPromocoes,
+        navigationOptions: NavigationOptions
+    }
 
 }
 
