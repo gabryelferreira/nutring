@@ -27,7 +27,8 @@
     "react-native-svg": "X.X.X",
     "react-native-swiper": "^1.5.14",
     "react-native-vector-icons": "^6.1.0",
-    "react-navigation": "^3.0.9"
+    "react-navigation": "^3.0.9",
+    "styled-components": "^4.2.0"
   },
   "devDependencies": {
     "babel-jest": "23.6.0",

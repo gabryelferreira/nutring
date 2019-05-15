@@ -234,7 +234,7 @@ export default class Buscar extends Network {
                             <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Restaurantes</Text>
                         </View>
                     </View>
-                    <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
+                    <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 20, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
                         {this.renderTopRestaurantes()}
                     </ScrollView>
                 </View>
@@ -257,7 +257,7 @@ export default class Buscar extends Network {
                             <View style={styles.bolinhaVerde}></View><Text style={styles.subTitulo}>Receitas</Text>
                         </View>
                     </View>
-                    <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
+                    <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 20, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
                         {this.renderTopReceitas()}
                     </ScrollView>
                 </View>
@@ -358,7 +358,7 @@ const styles = {
         flexDirection: 'column'
     },
     paddingHorizontal: {
-        paddingHorizontal: 15
+        paddingHorizontal: 20
     },
     item: {
         marginTop: 7
