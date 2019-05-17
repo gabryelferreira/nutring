@@ -24,6 +24,7 @@
     "react-native-push-notification-popup": "^1.2.0",
     "react-native-shadow": "^1.2.2",
     "react-native-shimmer-placeholder": "^1.0.30",
+    "react-native-splash-screen": "3.0.6",
     "react-native-svg": "X.X.X",
     "react-native-swiper": "^1.5.14",
     "react-native-vector-icons": "^6.1.0",

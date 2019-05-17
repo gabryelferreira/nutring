@@ -12,6 +12,7 @@ import SemDados from '../../../components/SemDados/SemDados';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ModalPostagemViewer from '../../../components/ModalPostagemViewer/ModalPostagemViewer';
 import NotificationPopup from 'react-native-push-notification-popup';
+import SplashScreen from 'react-native-splash-screen';
 
 
 const dimensions = Dimensions.get('window');
@@ -78,6 +79,7 @@ export default class Feed extends Network {
         this.carregarDadosIniciais();
         this.salvarToken();
         this.createNotificationListeners();
+        SplashScreen.hide();
     }
     
     async createNotificationListeners() {

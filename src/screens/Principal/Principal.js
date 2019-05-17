@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator, BackHandler } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { StackActions, NavigationActions } from 'react-navigation';
+import SplashScreen from 'react-native-splash-screen';
 
 const dimensions = Dimensions.get('window');
 const imageHeight = dimensions.height;
@@ -50,11 +51,13 @@ export default class Principal extends Component {
                 await this.setState({
                     carregando: false
                 })
+                SplashScreen.hide();
             }
         } catch (error) {
             await this.setState({
                 carregando: false
             })
+            SplashScreen.hide();
             console.error(error);
         }
 

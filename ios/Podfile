@@ -9,6 +9,10 @@ target 'nutring' do
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   target 'nutringTests' do
     inherit! :search_paths
     # Pods for testing

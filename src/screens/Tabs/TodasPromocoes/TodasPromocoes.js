@@ -8,6 +8,7 @@ import CardTwo from '../../../components/Card/CardTwo';
 import SemDadosPerfil from '../../../components/SemDadosPerfil/SemDadosPerfil';
 import SemDados from '../../../components/SemDados/SemDados';
 import Item from '../../../components/Item/Item';
+import ScrollViewWithAnimatedHeader from '../../../components/ScrollViewWithAnimatedHeader/ScrollViewWithAnimatedHeader';
 
 
 const dimensions = Dimensions.get('window');
@@ -69,7 +70,7 @@ export default class TodasPromocoes extends Network {
 
     renderPromocoesDoDia(){
         return this.state.promocoesDoDia.map(promocao => {
-            return <CardTwo key={promocao.id_promocao.toString()} imagem={promocao.foto_promocao} nome={promocao.nome} descricao={promocao.descricao}/>
+            return <CardTwo onPress={() => this.props.navigation.navigate("Promocao", { id_promocao: promocao.id_promocao })} key={promocao.id_promocao.toString()} imagem={promocao.foto_promocao} nome={promocao.nome} descricao={promocao.descricao}/>
         })
     }
 
@@ -117,73 +118,12 @@ export default class TodasPromocoes extends Network {
     }
 
     render() {
-
-        const elevation = this.state.scrollY.interpolate({
-            inputRange: [0, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT - 0.01, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT],
-            outputRange: [0, 0, 1],
-            extrapolate: 'clamp'
-        });
-
-
-        const headerBackgroundColor = this.state.scrollY.interpolate({
-            inputRange: [0, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT - 0.01, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT],
-            outputRange: ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 1)']
-        });
-
-        const headerColorOpacity = this.state.scrollY.interpolate({
-            inputRange: [0, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT - 0.01, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT],
-            outputRange: [0, 0, 1]
-        });
-
-        const headerColor = this.state.scrollY.interpolate({
-            inputRange: [0, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT - 0.01, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT],
-            outputRange: ['#fff', '#fff', '#000']
-        });
-        
-        const textOpacity = this.state.scrollY.interpolate({
-            inputRange: [0, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT],
-            outputRange: [1, 0.2],
-            extrapolate: 'clamp'
-        });
-
-        const positionLeft = this.state.scrollY.interpolate({
-            inputRange: [0, PICTURE_MAX_HEIGHT - PICTURE_MIN_HEIGHT],
-            outputRange: [20, imageWidth/2 - 100],
-            extrapolate: 'clamp'
-        })
-
-        const AnimatedIcon = Animated.createAnimatedComponent(Icon)
         
         return (
             <SafeAreaView style={{flex: 1}}>
-                <Animated.View style={{position: 'absolute', paddingHorizontal: 5, zIndex: 9999, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', left: 0, top: 0, right: 0, height: HEADER_HEIGHT, width: imageWidth, backgroundColor: headerBackgroundColor, elevation}}>
-                    <AnimatedIcon name="chevron-left" size={22} style={{paddingLeft: 10, paddingRight: 10}} color={headerColor} onPress={() => this.props.navigation.goBack(null)}/>
-                    <Animated.Text style={{fontSize: 16, fontWeight: 'bold', color: headerColor, opacity: headerColorOpacity}}>Promoções</Animated.Text>
-                    <AnimatedIcon name="search" size={22} style={{paddingLeft: 10, paddingRight: 10}} color={headerColor} onPress={() => navigation.goBack(null)}/>
-                </Animated.View>
-                <Animated.View style={{width: imageWidth, height: PICTURE_MAX_HEIGHT, position: 'absolute', left: 0, right: 0, top: 0, zIndex: 1}}>
-                    <Image resizeMethod="resize" style={{flex: 1, width: undefined, height: undefined}} source={require('../../../assets/imgs/promocoes.jpg')}/>
-                    {/* <Text style={{position: 'absolute', left: 30, bottom: textBottom, color: '#fff', fontSize: 30, fontWeight: 'bold'}}>Promoções</Text> */}
-                </Animated.View>
-                
-                <ScrollView style={{height: 1000, zIndex: 3}}
-                    onScroll={Animated.event([{
-                        nativeEvent: {
-                            contentOffset: {
-                                y: this.state.scrollY
-                            }
-                        }
-                    }]
-                    )}>
-                    <View style={{marginTop: PICTURE_MAX_HEIGHT, paddingBottom: 15, backgroundColor: '#fff'}}>
-                        <Animated.Text style={{position: 'absolute', left: 20, top: -55, color: '#fff', fontSize: 30, fontWeight: 'bold', opacity: textOpacity}}>Promoções</Animated.Text>
-                        {this.renderContent()}
-
-
-                    </View>
-
-
-                </ScrollView>
+                <ScrollViewWithAnimatedHeader title={"Promoções"} onGoBack={() => this.props.navigation.goBack(null)}>
+                    {this.renderContent()}
+                </ScrollViewWithAnimatedHeader>
             </SafeAreaView> 
         );
 
