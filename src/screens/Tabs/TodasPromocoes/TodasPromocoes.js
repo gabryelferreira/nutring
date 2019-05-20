@@ -31,6 +31,7 @@ export default class TodasPromocoes extends Network {
     limit = 10;
     promocoesDoDia = [];
     promocoesDaSemana = [];
+    restauranteDestaque = {};
 
 
     constructor(props){
@@ -39,7 +40,8 @@ export default class TodasPromocoes extends Network {
             scrollY: new Animated.Value(0),
             loadingInitial: true,
             promocoesDoDia: [],
-            promocoesDaSemana: []
+            promocoesDaSemana: [],
+            restauranteDestaque: {}
         }
     }
 
@@ -60,23 +62,32 @@ export default class TodasPromocoes extends Network {
         let result = await this.callMethod('getPromocoesDaSemana', { limit: this.limit, offset: 0 });
         if (result.success){
         this.promocoesDaSemana = result.result;
-        this.setState({
-            promocoesDoDia: this.promocoesDoDia,
-            promocoesDaSemana: this.promocoesDaSemana,
-            loadingInitial: false
-        });
+        this.getRestauranteDestaque();
+        }
+    }
+
+    async getRestauranteDestaque(){
+        let result = await this.callMethod('getRestauranteDestaque');
+        if (result.success){
+            this.restauranteDestaque = result.result;
+            this.setState({
+                promocoesDoDia: this.promocoesDoDia,
+                promocoesDaSemana: this.promocoesDaSemana,
+                restauranteDestaque: this.restauranteDestaque,
+                loadingInitial: false
+            });
         }
     }
 
     renderPromocoesDoDia(){
         return this.state.promocoesDoDia.map(promocao => {
-            return <CardTwo onPress={() => this.props.navigation.navigate("Promocao", { id_promocao: promocao.id_promocao })} key={promocao.id_promocao.toString()} imagem={promocao.foto_promocao} nome={promocao.nome} descricao={promocao.descricao}/>
+            return <CardTwo hoje={promocao.is_promocao_relampago} onPress={() => this.props.navigation.navigate("Promocao", { id_promocao: promocao.id_promocao })} key={promocao.id_promocao.toString()} imagem={promocao.foto_promocao} nome={promocao.nome} descricao={promocao.descricao}/>
         })
     }
 
     renderPromocoesDaSemana(){
         return this.state.promocoesDaSemana.map(promocao => {
-            return <CardTwo key={promocao.id_promocao.toString()} imagem={promocao.foto_promocao} nome={promocao.nome} descricao={promocao.descricao}/>
+            return <CardTwo hoje={promocao.is_promocao_relampago} onPress={() => this.props.navigation.navigate("Promocao", { id_promocao: promocao.id_promocao })} key={promocao.id_promocao.toString()} imagem={promocao.foto_promocao} nome={promocao.nome} descricao={promocao.descricao}/>
         })
     }
 
@@ -88,31 +99,64 @@ export default class TodasPromocoes extends Network {
         );
     }
 
+    renderRestauranteDestaque(){
+        if (this.state.restauranteDestaque){
+            return (
+                <>
+                    <Text style={[styles.titulo, styles.paddingHorizontal]}><Text style={{fontWeight: 'normal'}}>Restaurante</Text> Destaque</Text>
+                    <View style={{flex: 1, paddingHorizontal: 15, paddingVertical: 10}}>
+                        <TouchableOpacity onPress={() => this.props.navigation.navigate('Perfil', { id_usuario_perfil: this.state.restauranteDestaque.id_usuario })} style={{flex: 1, borderRadius: 10, elevation: 1, overflow: 'hidden', backgroundColor: '#eee'}}>
+                            <Image resizeMethod="resize" style={{flex: 1, width: undefined, height: 200}} source={{uri: this.state.restauranteDestaque.foto_restaurante}}/>
+                            <View style={{paddingHorizontal: 15, paddingVertical: 10, backgroundColor: '#fff'}}>
+                                <Text style={{fontSize: 18, fontWeight: 'bold', color: '#000'}}>{this.state.restauranteDestaque.nome}</Text>
+                                <Text style={{fontSize: 14, fontWeight: 'normal', color: '#000'}}>Parabéns por ser o restaurante destaque da semana!</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </>
+            );
+        }
+        return null;
+    }
+
+    renderPromocoesDoDiaView(){
+        if (this.state.promocoesDoDia && this.state.promocoesDoDia.length > 0){
+            return (
+                <>
+                    <Text style={[styles.titulo, styles.paddingHorizontal]}>De Hoje</Text>
+                    <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
+                        {this.renderPromocoesDoDia()}
+                    </ScrollView>
+                </>
+            );
+        }
+        return null;
+    }
+
+    renderPromocoesDaSemanaView(){
+        if (this.state.promocoesDoDia && this.state.promocoesDoDia.length > 0){
+            return (
+                <>
+                    <Text style={[styles.titulo, styles.paddingHorizontal]}>Da Semana</Text>
+                    <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
+                        {this.renderPromocoesDaSemana()}
+                    </ScrollView>
+                </>
+            );
+        }
+        return null;
+    }
+
     renderContent(){
         if (this.state.loadingInitial) return this.renderFullLoader();
 
         return (
             <>
-                <Text style={[styles.titulo, styles.paddingHorizontal]}>De Hoje</Text>
-                <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
-                    {this.renderPromocoesDoDia()}
-                </ScrollView>
+                {this.renderPromocoesDoDiaView()}
 
-                <Text style={[styles.titulo, styles.paddingHorizontal]}>Da Semana</Text>
-                <ScrollView horizontal={true} contentContainerStyle={{paddingHorizontal: 15, paddingVertical: 10}} showsHorizontalScrollIndicator={false}>
-                    {this.renderPromocoesDaSemana()}
-                </ScrollView>
+                {this.renderPromocoesDaSemanaView()}
 
-                <Text style={[styles.titulo, styles.paddingHorizontal]}><Text style={{fontWeight: 'normal'}}>Restaurante</Text> Destaque</Text>
-                <View style={{flex: 1, paddingHorizontal: 15, paddingVertical: 10}}>
-                    <TouchableOpacity style={{flex: 1, borderRadius: 10, elevation: 1, overflow: 'hidden'}}>
-                        <Image resizeMethod="resize" style={{flex: 1, width: undefined, height: 200}} source={require('../../../assets/imgs/promocoes.jpg')}/>
-                        <View style={{paddingHorizontal: 15, paddingVertical: 10}}>
-                            <Text style={{fontSize: 18, fontWeight: 'bold', color: '#000'}}>Obba Gastronomia Saudável</Text>
-                            <Text style={{fontSize: 14, fontWeight: 'normal', color: '#000'}}>Parabéns por ser o restaurante destaque da semana!</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
+                {this.renderRestauranteDestaque()}
             </>
         );
     }

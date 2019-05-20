@@ -4,7 +4,8 @@ import { AsyncStorage } from 'react-native';
 export default class Network extends Component {
 
     // url = "http://nutring.com.br/api/";
-    url = "http://10.0.2.2/nutring-api/";
+    url = "http://beta.nutring.com.br/api/";
+    // url = "http://10.0.2.2/nutring-api/";
 
     constructor(props){
         super(props);

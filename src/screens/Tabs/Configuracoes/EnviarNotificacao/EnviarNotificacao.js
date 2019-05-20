@@ -39,7 +39,6 @@ export default class EnviarNotificacao extends Network {
             loading: false,
             tituloNotificacao: "",
             descricaoNotificacao: "",
-            permissaoNotificacao: false,
             planoNotificacao: false,
             seguidores: 0,
             disabled: true,
@@ -65,7 +64,6 @@ export default class EnviarNotificacao extends Network {
         if (result.success){
             this.setState({
                 tituloNotificacao: result.result.nome,
-                permissaoNotificacao: result.result.permissao_notificacao,
                 planoNotificacao: result.result.plano_notificacao,
                 seguidores: result.result.seguidores,
                 disabled: false,
@@ -161,14 +159,11 @@ export default class EnviarNotificacao extends Network {
                         Notificação não permitida
                     </Text>
                     <Text style={{fontSize: 14, color: '#000', marginTop: 5, marginBottom: 20, textAlign: 'center'}}>
-                        Seu plano atual não permite o envio de notificações. Clique no botão abaixo para ver nossos planos.
+                        Você não possui permissão para enviar notificações. Para saber como enviar notificações, clique no botão abaixo.
                     </Text>
-                    <BotaoPequeno texto={"Ver planos"} onPress={() => this.props.navigation.navigate("MeuPlano")}/>
+                    <BotaoPequeno texto={"Ver mais"} onPress={() => this.props.navigation.navigate("MeuPlano")}/>
                 </View>
             );
-        }
-        if (!this.state.permissaoNotificacao){
-            return <SemDados titulo={"Notificação não permitida"} texto={"Parece que você já enviou suas notificações diárias."}/>
         }
         return (
             <View style={{flex: 1}}>
@@ -206,7 +201,7 @@ export default class EnviarNotificacao extends Network {
                                 returnKeyType={"send"}
                             />
                             <View style={{marginVertical: 5, flex: .7}}>
-                                <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores.</Text>
+                                <Text style={{fontSize: 11, color: '#000'}}>A notificação será enviada para todos seus seguidores, portanto, tome <Text style={{color: 'red'}}>cuidado com o número de notificações enviadas.</Text></Text>
                             </View>
                             <View style={{marginVertical: 10, flexDirection: 'column', alignItems: 'flex-start'}}>
                                 <BotaoPequeno disabled={this.state.disabled} texto={"Enviar"} textoLoading={"Enviando"} onPress={() => this.confirmarEnvio()} loading={this.state.loading}/>

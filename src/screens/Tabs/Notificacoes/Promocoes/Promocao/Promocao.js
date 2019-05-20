@@ -117,7 +117,7 @@ export default class Promocao extends Network {
                 return <Text style={styles.descricaoHeader}>{this.state.promocao.confirmados} usuários já garantiram cupom</Text>
             }
         } else if (this.state.promocao.is_promocao_relampago){
-            return <Text style={styles.descricaoHeader}>Essa é uma promoção relâmpago!</Text>
+            return <Text style={styles.descricaoHeader}>Essa é uma promoção valida por apenas 24 horas!</Text>
         } else {
             return <Text style={styles.descricaoHeader}>Garanta agora seu cupom!</Text>
         }

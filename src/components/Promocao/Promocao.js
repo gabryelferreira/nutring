@@ -45,7 +45,7 @@ export default class Promocao extends Network {
             }
         }
         if (this.props.relampago){
-            return <Text style={styles.tempo}>Essa é uma promoção relâmpago!</Text>;
+            return <Text style={styles.tempo}>Essa é uma promoção válida por apenas 24 horas!</Text>;
         }
         return <Text style={styles.tempo}>Garanta agora seu cupom!</Text>;
     }

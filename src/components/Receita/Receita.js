@@ -16,7 +16,7 @@ import ModalPostagemViewer from '../ModalPostagemViewer/ModalPostagemViewer';
 const Receita = (props) => {
 
     renderRecente = () => {
-        if (!props.receita.recente)
+        if (props.receita.recente)
             return (
                 <View style={{marginTop: 5, paddingHorizontal: 8, paddingVertical: 2, flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', justifyContent: 'center', borderRadius: 4, borderColor: '#ddd', borderWidth: 0.7}}>
                     <Text style={{color: '#28b657', fontSize: 10}}>RECENTE</Text>

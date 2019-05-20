@@ -12,7 +12,7 @@ const SearchBar = ({onPress, onChangeText, value, navigation}) => {
                 autoFocus={true}
                 onChangeText={onChangeText}
                 value={value}
-                placeholder="Procure pessoas, restaurantes e pratos"
+                placeholder="Procure pessoas e restaurante"
                 style={styles.caixaDeTexto}
                 returnKeyType="search"
                 />

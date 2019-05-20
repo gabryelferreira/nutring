@@ -66,7 +66,7 @@ const styles = {
         width: 180,
         height: 110,
         borderRadius: 5,
-        marginRight: 2
+        marginRight: 2,
     },
     imagemDeFundo: {
         position: 'absolute',

@@ -10,7 +10,7 @@ const SearchBarButton = ({onPress, onChangeText, value}) => {
                 style={styles.caixaDeTexto}
                 onPress={onPress}
             >
-                <Text>Procure pessoas, restaurantes e pratos</Text>
+                <Text>Procure pessoas e restaurantes</Text>
             </TouchableOpacity>
         </View>
     );

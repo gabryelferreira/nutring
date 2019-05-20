@@ -334,6 +334,10 @@ export default class MeuPlano extends Network {
             return (
                 <Text style={[styles.textoObsModal, {marginVertical: 15}]}>Renovando o Plano Nutring {plano.nome}, você terá 30 dias acrescentados aos seus dias restantes, somando um total de {parseInt(plano.dias_restantes) + 30} dias.</Text>
             );
+        } else if (!plano.is_plano_atual && this.state.meuPlano) {
+            return (
+                <Text style={[styles.textoObsModal, {marginVertical: 15}]}>Assinando o Plano Nutring {plano.nome}, você terá até o final do seu período atual para utilizá-lo, e pagará proporcional aos dias de uso.</Text>
+            );
         } else {
             return (
                 <Text style={[styles.textoObsModal, {marginVertical: 15}]}>Assinando o Plano Nutring {plano.nome}, você terá até o final do seu período atual para utilizá-lo, e pagará proporcional aos dias de uso.</Text>
@@ -354,7 +358,7 @@ export default class MeuPlano extends Network {
                             <Icon name="times" color="#000" size={24}/>
                         </TouchableOpacity>
                     </View>
-                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1}} keyboardShouldPersistTaps={"handled"}>
+                    <ScrollView contentContainerStyle={{flexGrow: 1}} style={{flex: 1, paddingTop: 50}} keyboardShouldPersistTaps={"handled"}>
                         <View style={styles.viewModalFoto}>
                             <Image style={[styles.fotoModal, {borderColor: this.state.planoAssinando.id_plano == 2 ? '#976938' : '#28b657'}]} source={{uri: this.state.planoAssinando.foto}}/>
                         </View>
@@ -428,11 +432,14 @@ export default class MeuPlano extends Network {
 const styles = {
 
     modalHeader: {
+        position: 'absolute',
+        left: 0, right: 0, top: 0,
+        height: 50,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingVertical: 10,
-        paddingHorizontal: 15
+        paddingHorizontal: 15,
+        zIndex: 9
     },
     tituloModal: {
         color: '#fff',

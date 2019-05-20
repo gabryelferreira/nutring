@@ -71,7 +71,6 @@ export default class NovaPromocao extends Network {
             this.setState({
                 tituloNotificacao: result.result.nome,
                 seguidores: result.result.seguidores,
-                permissaoNotificacao: result.result.permissao_notificacao,
                 planoNotificacao: result.result.plano_notificacao,
                 disabled: false,
                 carregandoInicial: false
@@ -319,7 +318,7 @@ export default class NovaPromocao extends Network {
                                     </TouchableOpacity>
                             </View>
                         </View>
-                        <Opcao icone={"bolt"} texto={"Promoção Relâmpago"} toggle={true} toggleChange={() => this.setState({promocaoRelampago: !this.state.promocaoRelampago})} toggleValue={this.state.promocaoRelampago}/>
+                        <Opcao icone={"bolt"} texto={"Válida por apenas 24 horas"} toggle={true} toggleChange={() => this.setState({promocaoRelampago: !this.state.promocaoRelampago})} toggleValue={this.state.promocaoRelampago}/>
                         <View style={styles.container}>
                             <Input label={"Título"}
                                     icone={"comment"}
