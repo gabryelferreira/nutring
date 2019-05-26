@@ -417,7 +417,20 @@ export default class Feed extends Network {
                 </>
             );
         }
-        return null;
+        return (
+            <TouchableOpacity onPress={() => this.props.navigation.navigate('TodasPromocoes')} style={{paddingVertical: 10, paddingLeft: 15, backgroundColor: '#11bd38', justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{height: 35, width: 2, backgroundColor: '#ff0000'}}></View>
+                    <View style={{marginLeft: 15, justifyContent: 'flex-start', alignSelf: 'center'}}>
+                        <Text style={{fontSize: 14, color: '#fff'}}>Novas</Text>
+                        <Text style={{fontSize: 22, color: '#fff', fontWeight: 'bold'}}>Promoções</Text>
+                    </View>
+                </View>
+                <View style={{position: 'absolute', right: 0, top: 0, bottom: 0, zIndex: 9999}}>
+                    <Image resizeMethod="resize" source={require('../../../assets/imgs/promocoes.png')} style={{flex: 1, width: undefined, height: undefined}} />
+                </View>
+            </TouchableOpacity>
+        );
     }
 
     popup;
