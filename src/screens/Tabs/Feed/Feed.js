@@ -426,8 +426,8 @@ export default class Feed extends Network {
                         <Text style={{fontSize: 22, color: '#fff', fontWeight: 'bold'}}>Promoções</Text>
                     </View>
                 </View>
-                <View style={{position: 'absolute', right: 0, top: 0, bottom: 0, zIndex: 9999}}>
-                    <Image resizeMethod="resize" source={require('../../../assets/imgs/promocoes.png')} style={{flex: 1, width: undefined, height: undefined}} />
+                <View style={{position: 'absolute', right: 0, top: 0, bottom: 0, zIndex: 999}}>
+                    <Image resizeMethod="resize" source={require('../../../assets/imgs/promocoes.png')} style={{flex: 1, width: 130, height: undefined}} />
                 </View>
             </TouchableOpacity>
         );
