@@ -195,7 +195,7 @@ export default class Perfil extends Network {
 
     returnHeaderComponent(){
         return <PerfilComponent
-                    data={this.user}
+                    user={this.state.user}
                     navigation={this.props.navigation}
                     onOpenInfo={() => this.setState({infoRestauranteVisible: true})}
                     abrirGaleriaCapa={() => {
@@ -900,7 +900,7 @@ export default class Perfil extends Network {
                                     onRefresh={() => this.getPerfil()}
                 />
             }
-            scrollEventThrottle={400}
+            scrollEventThrottle={16}
             >
 
                 {this.returnHeaderComponent()}

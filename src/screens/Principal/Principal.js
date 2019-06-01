@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator, BackHandler } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, AsyncStorage, ActivityIndicator, BackHandler, Platform } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import { StackActions, NavigationActions } from 'react-navigation';
 import SplashScreen from 'react-native-splash-screen';
@@ -51,13 +51,15 @@ export default class Principal extends Component {
                 await this.setState({
                     carregando: false
                 })
-                SplashScreen.hide();
+                if (Platform.OS != 'ios')
+                    SplashScreen.hide();
             }
         } catch (error) {
             await this.setState({
                 carregando: false
             })
-            SplashScreen.hide();
+            if (Platform.OS != 'ios')
+                    SplashScreen.hide();
             console.error(error);
         }
 

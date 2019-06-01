@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import {BoxShadow} from 'react-native-shadow';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const CardTwo = ({onPress, imagem, nome, seguidores, curtidas, descricao, hoje}) => {
@@ -106,7 +105,9 @@ const styles = {
     },
     card: {
         flexDirection: 'column',
-        overflow: 'hidden',
+        shadowOffset:{  width: .5,  height: .5,  },
+        shadowColor: 'black',
+        shadowOpacity: .2,
         width: 180,
         height: 210,
         borderRadius: 5,

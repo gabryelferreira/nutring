@@ -32,7 +32,7 @@ export default class Login extends Network {
 
     static navigationOptions = {
         header: (
-            <View></View>
+            null
         )
     };
 

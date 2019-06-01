@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Animated, ScrollView, TouchableOpacity, Text, Image, Button, Modal, FlatList, Dimensions, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, Animated, ScrollView, TouchableOpacity, Text, Image, Button, Modal, FlatList, Dimensions, ActivityIndicator, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
 
@@ -16,7 +16,7 @@ export default class ScrollViewWithAnimatedHeader extends Component {
         title: 'Promoções',
         headerBackTitle: "",
         header: (
-            <View></View>
+            null
         )
     });
 
@@ -63,16 +63,24 @@ export default class ScrollViewWithAnimatedHeader extends Component {
             extrapolate: 'clamp'
         });
 
+        testeHeight = this.state.scrollY.interpolate({
+            inputRange: [-100, 0],
+            outputRange: [PICTURE_MAX_HEIGHT + 100, PICTURE_MAX_HEIGHT],
+        });
+
         const AnimatedIcon = Animated.createAnimatedComponent(Icon)
         
         return (
             <>
-                <Animated.View style={{position: 'absolute', paddingHorizontal: 5, zIndex: 9999, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', left: 0, top: 0, right: 0, height: HEADER_HEIGHT, width: imageWidth, backgroundColor: headerBackgroundColor, elevation}}>
+                {Platform.OS === 'ios' ? (
+                    <Animated.View style={{position: 'absolute', left: 0, right: 0, top: 0, height: this.props.statusBarHeight, zIndex: 99, backgroundColor: headerBackgroundColor}}></Animated.View>
+                ) : <View/>}
+                <Animated.View style={{position: 'absolute', paddingHorizontal: 5, zIndex: 9999, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', left: 0, top: this.props.statusBarHeight, right: 0, height: HEADER_HEIGHT, width: imageWidth, backgroundColor: headerBackgroundColor, elevation, borderBottomWidth: elevation, borderBottomColor: '#ddd'}}>
                     <AnimatedIcon name="chevron-left" size={22} style={{paddingLeft: 10, paddingRight: 10}} color={headerColor} onPress={this.props.onGoBack}/>
                     <Animated.Text style={{fontSize: 16, fontWeight: 'bold', color: headerColor, opacity: headerColorOpacity}}>Promoções</Animated.Text>
                     <AnimatedIcon name="search" size={22} style={{paddingLeft: 10, paddingRight: 10}} color="transparent" onPress={() => navigation.goBack(null)}/>
                 </Animated.View>
-                <Animated.View style={{width: imageWidth, height: PICTURE_MAX_HEIGHT, position: 'absolute', left: 0, right: 0, top: 0, zIndex: 1, backgroundColor: 'rgba(0, 0, 0, .2)'}}>
+                <Animated.View style={{width: imageWidth, height: testeHeight, position: 'absolute', left: 0, right: 0, top: 0, zIndex: 1, backgroundColor: 'rgba(0, 0, 0, .2)'}}>
                     <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: '#eee', zIndex: 1}}></View>
                     <Image resizeMethod="resize" style={{flex: 1, width: undefined, height: undefined, zIndex: 2}} source={this.props.image ? {uri: this.props.image} : require('../../assets/imgs/promocoes.jpg')}/>
                 </Animated.View>
@@ -84,7 +92,8 @@ export default class ScrollViewWithAnimatedHeader extends Component {
                             }
                         }
                     }]
-                    )}>
+                    )}
+                    scrollEventThrottle={1}>
                     <View style={{marginTop: PICTURE_MAX_HEIGHT, paddingBottom: 15, backgroundColor: '#fff'}}>
                         <Animated.Text style={{position: 'absolute', left: 20, top: -55, color: '#fff', fontSize: 30, fontWeight: 'bold', opacity: textOpacity}}>{this.props.title}</Animated.Text>
                         {this.props.children}

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Alert, Dimensions, FlatList, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
+import { View, Text, Image, Alert, Dimensions, FlatList, ActivityIndicator, Modal, TouchableOpacity, Platform } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
@@ -79,7 +79,9 @@ export default class Feed extends Network {
         this.carregarDadosIniciais();
         this.salvarToken();
         this.createNotificationListeners();
-        SplashScreen.hide();
+        
+        if (Platform.OS != 'ios')
+            SplashScreen.hide();
     }
     
     async createNotificationListeners() {

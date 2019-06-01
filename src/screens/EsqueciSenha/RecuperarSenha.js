@@ -18,7 +18,7 @@ export default class RecuperarSenha extends Network {
 
     static navigationOptions = {
         header: (
-            <View></View>
+            null
         )
     };
 

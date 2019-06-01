@@ -17,7 +17,7 @@ export default class EsqueciSenha extends Network {
 
     static navigationOptions = {
         header: (
-            <View></View>
+            null
         )
     };
 

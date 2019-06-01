@@ -55,7 +55,7 @@ export default class Cadastro extends Network {
 
     static navigationOptions = {
         header: (
-            <View></View>
+            null
         )
     };
 

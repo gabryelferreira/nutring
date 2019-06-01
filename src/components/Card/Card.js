@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, Image } from 'react-native';
-import {BoxShadow} from 'react-native-shadow'
 
 const Card = ({onPress, imagem, nome, seguidores, curtidas, descricao}) => {
 

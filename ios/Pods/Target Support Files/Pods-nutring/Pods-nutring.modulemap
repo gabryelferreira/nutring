@@ -1,0 +1,6 @@
+framework module Pods_nutring {
+  umbrella header "Pods-nutring-umbrella.h"
+
+  export *
+  module * { export * }
+}

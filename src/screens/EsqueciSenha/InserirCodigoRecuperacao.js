@@ -17,7 +17,7 @@ export default class InserirCodigoRecuperacao extends Network {
 
     static navigationOptions = {
         header: (
-            <View></View>
+            null
         )
     };
 

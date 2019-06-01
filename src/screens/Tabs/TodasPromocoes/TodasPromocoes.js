@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { View, Animated, ScrollView, TouchableOpacity, Text, Image, Button, Modal, FlatList, Dimensions, ActivityIndicator, SafeAreaView } from 'react-native';
+import { View, Animated, NativeModules, ScrollView, TouchableOpacity, Text, Image, Button, Modal, FlatList, Dimensions, ActivityIndicator, SafeAreaView, Platform } from 'react-native';
+const { StatusBarManager } = NativeModules;
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Network from '../../../network';
 import SearchBar from '../../../components/SearchBar/SearchBar';
@@ -24,7 +25,7 @@ export default class TodasPromocoes extends Network {
         title: 'Promoções',
         headerBackTitle: "",
         header: (
-            <View></View>
+            null
         )
     });
 
@@ -41,13 +42,21 @@ export default class TodasPromocoes extends Network {
             loadingInitial: true,
             promocoesDoDia: [],
             promocoesDaSemana: [],
-            restauranteDestaque: {}
+            restauranteDestaque: {},
+            statusBarHeight: Platform.OS === 'ios' ? 20 : 0
         }
     }
 
     componentDidMount(){
         // this.getNotificacoes();
         this.getPromocoesDoDia();
+        if (Platform.OS === 'ios'){
+            StatusBarManager.getHeight(statusBar => {
+                this.setState({
+                    statusBarHeight: statusBar.height
+                })
+            })
+        }
     }
 
     async getPromocoesDoDia(){
@@ -164,11 +173,11 @@ export default class TodasPromocoes extends Network {
     render() {
         
         return (
-            <SafeAreaView style={{flex: 1}}>
-                <ScrollViewWithAnimatedHeader title={"Promoções"} onGoBack={() => this.props.navigation.goBack(null)}>
+            <View style={{flex: 1, backgroundColor: '#fff'}}>
+                <ScrollViewWithAnimatedHeader statusBarHeight={this.state.statusBarHeight} title={"Promoções"} onGoBack={() => this.props.navigation.goBack(null)}>
                     {this.renderContent()}
                 </ScrollViewWithAnimatedHeader>
-            </SafeAreaView> 
+            </View> 
         );
 
     }

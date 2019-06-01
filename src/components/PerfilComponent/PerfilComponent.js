@@ -22,7 +22,7 @@ export default class PerfilComponent extends Network {
     constructor(props){
         super(props);
         this.state = {
-            user: this.props.data,
+            user: this.props.user,
             infoRestauranteVisible: false,
             modal: {
                 visible: false,
@@ -99,13 +99,6 @@ export default class PerfilComponent extends Network {
         return null;
     }
 
-    editarPerfil(){
-        this.props.navigation.navigate("EditarPerfil", {
-            onGoBack: () => this.getPerfil(),
-            user: this.state.user
-          });
-    }
-
     async seguir(){
         let id_seguido = this.props.navigation.getParam('id_usuario_perfil', "");
         await this.setState({
@@ -113,7 +106,7 @@ export default class PerfilComponent extends Network {
         })
         let result = await this.callMethod("followUnfollow", { id_seguido });
         if (result.success){
-            let user = this.state.user;
+            let user = this.props.user;
             user.is_seguindo = true;
             user.seguidores = user.seguidores + 1;
             await this.setState({
@@ -132,7 +125,7 @@ export default class PerfilComponent extends Network {
         })
         let result = await this.callMethod("followUnfollow", { id_seguido });
         if (result.success){
-            let user = this.state.user;
+            let user = this.props.user;
             user.is_seguindo = false;
             user.seguidores = user.seguidores - 1;
             await this.setState({
@@ -147,14 +140,14 @@ export default class PerfilComponent extends Network {
     renderBotaoSeguir(color = "#000"){
         if (this.state.parandoDeSeguir || this.state.seguindo)
             return this.renderBotaoCarregandoSeguindo(color);
-        if (this.state.user.sou_eu){
+        if (this.props.user.sou_eu){
             return (
                 <TouchableOpacity style={styles.botaoEditar} onPress={this.props.editarPerfilClick}>
                     <Text style={[styles.textoBotaoEditar, {color: color}]}>Editar Perfil</Text>
                 </TouchableOpacity>
             );
         }
-        if (this.state.user.is_seguindo){
+        if (this.props.user.is_seguindo){
             return (
                 <TouchableOpacity style={styles.botaoEditar} onPress={() => this.pararDeSeguir()}>
                     <Text style={[styles.textoBotaoEditar, {color: color}]}>Seguindo</Text>
@@ -195,11 +188,11 @@ export default class PerfilComponent extends Network {
     }
 
     renderLocalizacao(){
-        if (this.state.user.endereco && this.state.user.endereco.cidade && this.state.user.endereco.estado){
+        if (this.props.user.endereco && this.props.user.endereco.cidade && this.props.user.endereco.estado){
             return (
                 <View style={{flexDirection: 'row', marginTop: 5}}>
                     <Icon name="map-marker-alt" color="#fff" size={14} style={{marginRight: 5}}/>
-                    <Text style={styles.localizacao}>{this.state.user.endereco.cidade} - {this.state.user.endereco.estado}</Text>
+                    <Text style={styles.localizacao}>{this.props.user.endereco.cidade} - {this.props.user.endereco.estado}</Text>
                 </View>
             );
         }
@@ -207,8 +200,8 @@ export default class PerfilComponent extends Network {
     }
 
     renderDescricao(){
-        if (this.state.user.descricao){
-            return <Text style={styles.descricao}>{this.state.user.descricao}</Text>;
+        if (this.props.user.descricao){
+            return <Text style={styles.descricao}>{this.props.user.descricao}</Text>;
         }
         return null;
     }
@@ -218,7 +211,7 @@ export default class PerfilComponent extends Network {
     }
 
     returnPerfil(){
-        if (this.state.user.is_restaurante){
+        if (this.props.user.is_restaurante){
             return (
                 <View>
                     {this.renderInfoPerfilRestaurante()}
@@ -242,9 +235,9 @@ export default class PerfilComponent extends Network {
                     botoes={this.state.modal.botoes}
                 />
                 <ModalPostagemViewer visible={this.state.modalFotoVisible}
-                        foto={this.state.user.foto}
-                        titulo={this.state.user.nome}
-                        imagens={this.formatarImagemViewer(this.state.user.foto)}
+                        foto={this.props.user.foto}
+                        titulo={this.props.user.nome}
+                        imagens={this.formatarImagemViewer(this.props.user.foto)}
                         onSwipeDown={() => this.setState({modalFotoVisible: false})}
                         onClose={() => this.setState({modalFotoVisible: false})}
                 />
@@ -256,7 +249,7 @@ export default class PerfilComponent extends Network {
     }
 
     renderCriarReceita(){
-        if (this.state.user.sou_eu){
+        if (this.props.user.sou_eu){
             return (
                 <TouchableOpacity onPress={() => this.props.navigation.navigate("NovaReceita")} style={styles.botaoCriarReceita}>
                     <Text style={styles.textoCriarReceita}>Criar Receita</Text>
@@ -281,7 +274,7 @@ export default class PerfilComponent extends Network {
     renderViewReceitas(receitas){
         if (receitas.length > 0){
             return (
-                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { receitas, id_usuario_perfil: this.state.user.id_usuario })}>
+                <TouchableOpacity style={styles.viewReceitas} onPress={() => this.props.navigation.push("Receitas", { receitas, id_usuario_perfil: this.props.user.id_usuario })}>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
                         <View style={styles.viewInfoReceitas}>
                             <Text style={styles.tituloReceitas}>Receitas</Text>
@@ -296,7 +289,7 @@ export default class PerfilComponent extends Network {
                     </View>
                 </TouchableOpacity>
             );
-        } else if (this.state.user.sou_eu){
+        } else if (this.props.user.sou_eu){
             return (
                 <View style={styles.viewReceitas}>
                     <View style={{flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center'}}>
@@ -313,7 +306,7 @@ export default class PerfilComponent extends Network {
     }
 
     renderInfoPerfil(){
-        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa, receitas } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, idade, id_usuario, posts, foto, capa, receitas } = this.props.user;
         return (
             <View style={styles.viewPerfil}>
                 <View style={styles.capaUsuario}>
@@ -377,7 +370,7 @@ export default class PerfilComponent extends Network {
     }
 
     validarAlteracaoFoto(){
-        if (this.state.user.sou_eu){
+        if (this.props.user.sou_eu){
             this.setState({
                 modal: {
                     visible: true,
@@ -394,14 +387,14 @@ export default class PerfilComponent extends Network {
     }
 
     renderDescricaoRestaurante(color = '#000'){
-        if (this.state.user.descricao){
-            return <Text style={[styles.descricaoRestaurante, {color: color}]}>{this.state.user.descricao}</Text>;
+        if (this.props.user.descricao){
+            return <Text style={[styles.descricaoRestaurante, {color: color}]}>{this.props.user.descricao}</Text>;
         }
-        return <Text style={[styles.descricaoRestaurante, {color: color}]}>Conheça o {this.state.user.nome}!</Text>;
+        return <Text style={[styles.descricaoRestaurante, {color: color}]}>Conheça o {this.props.user.nome}!</Text>;
     }
 
     renderInfoPerfilRestaurante(){
-        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa, telefone, ddd } = this.state.user;
+        let { nome, descricao, seguidores, seguindo, sou_eu, is_seguindo_voce, is_seguindo, id_usuario, posts, foto, cor_texto, cor_fundo, capa, telefone, ddd } = this.props.user;
         let background = cor_fundo ? '#' + cor_fundo : '#fff';
         let color = cor_texto ? '#' + cor_texto : '#000';
         return (
@@ -487,7 +480,7 @@ export default class PerfilComponent extends Network {
     }
 
     renderBolinha(status_funcionamento){
-        if (!this.state.user.tem_horario) return null;
+        if (!this.props.user.tem_horario) return null;
         if (status_funcionamento == 'ABERTO'){
             return <View style={[styles.bola, styles.bolaVerde]}></View>
         } else if (status_funcionamento == 'FECHOU' || status_funcionamento == 'NAO_ABRIU'){
@@ -497,7 +490,7 @@ export default class PerfilComponent extends Network {
     }
 
     renderStatusFuncionamento(status_funcionamento){
-        if (!this.state.user.tem_horario) return null;
+        if (!this.props.user.tem_horario) return null;
         if (status_funcionamento == 'ABERTO'){
             return <Text style={[styles.textoStatus, styles.textoAberto]}>Aberto</Text>
         } else if (status_funcionamento == 'FECHOU' || status_funcionamento == 'NAO_ABRIU'){
@@ -506,20 +499,20 @@ export default class PerfilComponent extends Network {
     }
 
     renderTextoHorario(status_funcionamento){
-        if (!this.state.user.tem_horario) return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
+        if (!this.props.user.tem_horario) return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
         if (status_funcionamento == 'ABERTO'){
-            return <Text style={styles.horarioRestaurante}>Fecha às {this.state.user.horario_fechamento}</Text>
+            return <Text style={styles.horarioRestaurante}>Fecha às {this.props.user.horario_fechamento}</Text>
         } else if (status_funcionamento == 'FECHOU'){
-            return <Text style={styles.horarioRestaurante}>Fechou às {this.state.user.horario_fechamento}</Text>
+            return <Text style={styles.horarioRestaurante}>Fechou às {this.props.user.horario_fechamento}</Text>
         } else if (status_funcionamento == 'NAO_ABRIU'){
-            return <Text style={styles.horarioRestaurante}>Abre às {this.state.user.horario_abertura}</Text>
+            return <Text style={styles.horarioRestaurante}>Abre às {this.props.user.horario_abertura}</Text>
         } else {
             return <Text style={styles.horarioRestaurante}>Sem informação de horário</Text>
         }
     }
 
     renderModalRestaurante(){
-        if (this.state.user.is_restaurante){
+        if (this.props.user.is_restaurante){
             return (
                 <Modal
                     
@@ -537,21 +530,21 @@ export default class PerfilComponent extends Network {
                         <View style={[styles.row, styles.paddingInfoRestaurante, styles.headerInfoRestaurante]}>
                             <View style={[styles.column, {flex: 1}]}>
                                 <View style={[styles.row, styles.alignCenter]}>
-                                    <Text style={styles.tituloHeaderRestaurante}>{this.state.user.nome}</Text>
-                                    {this.renderBolinha(this.state.user.status_funcionamento)}
-                                    {this.renderStatusFuncionamento(this.state.user.status_funcionamento)}
+                                    <Text style={styles.tituloHeaderRestaurante}>{this.props.user.nome}</Text>
+                                    {this.renderBolinha(this.props.user.status_funcionamento)}
+                                    {this.renderStatusFuncionamento(this.props.user.status_funcionamento)}
                                 </View>
                                 <View style={[styles.row, styles.alignCenter, {marginTop: 10}]}>
                                     <Icon name="clock" size={15} color="#222" solid/>
-                                    {this.renderTextoHorario(this.state.user.status_funcionamento)}
+                                    {this.renderTextoHorario(this.props.user.status_funcionamento)}
                                 </View>
                                 <View style={[styles.row, styles.alignCenter, {marginTop: 5}]}>
                                     <Icon name="map-marker-alt" size={15} color="#222" solid/>
-                                    <Text style={styles.enderecoRestaurante}>{this.state.user.endereco.logradouro}{this.state.user.endereco.numero ? ',' : ''} {this.state.user.endereco.numero}</Text>
+                                    <Text style={styles.enderecoRestaurante}>{this.props.user.endereco.logradouro}{this.props.user.endereco.numero ? ',' : ''} {this.props.user.endereco.numero}</Text>
                                 </View>
                             </View>
                             {/* <View style={styles.viewFotoRestauranteInfo}>
-                                <Image resizeMethod="resize" source={{uri: this.state.user.foto ? this.state.user.foto : ""}} style={styles.imagemRestauranteInfo}/>
+                                <Image resizeMethod="resize" source={{uri: this.props.user.foto ? this.props.user.foto : ""}} style={styles.imagemRestauranteInfo}/>
                             </View> */}
                             <View style={styles.botaoFecharInfoRestaurante}>
                                 <TouchableOpacity onPress={() => this.setState({infoRestauranteVisible: false})}>
@@ -561,7 +554,7 @@ export default class PerfilComponent extends Network {
                         </View>
                         <View style={[styles.column, styles.paddingInfoRestaurante, styles.viewSobreRestaurante]}>
                             <Text style={styles.tituloSobreRestaurante}>Sobre</Text>
-                            <Text style={styles.sobreRestaurante}>{this.state.user.sobre}</Text>
+                            <Text style={styles.sobreRestaurante}>{this.props.user.sobre}</Text>
                         </View>
                     </View>
                 </Modal>

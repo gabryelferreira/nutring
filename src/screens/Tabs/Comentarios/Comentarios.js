@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, NativeModules, Platform, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, KeyboardAvoidingView, SafeAreaView } from 'react-native';
+import { View, Text, Image, Dimensions, NativeModules, Platform, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, FlatList, KeyboardAvoidingView, SafeAreaView, Keyboard } from 'react-native';
 const { StatusBarManager } = NativeModules;
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../../components/ImagemNutring/ImagemNutring';
@@ -40,8 +40,22 @@ export default class Comentarios extends Network {
         id_post: this.props.navigation.getParam('id_post', '-1'),
         comentario: "",
         comentando: false,
-        statusBarHeight: Platform.OS === 'ios' ? 20 : 0
+        statusBarHeight: Platform.OS === 'ios' ? 20 : 0,
+        btnLocation: 0
     }
+
+    componentWillMount(){
+        Keyboard.addListener('keyboardWillShow', this.keyboardWillShow.bind(this))
+        Keyboard.addListener('keyboardWillHide', this.keyboardWillHide.bind(this))
+    }
+
+    keyboardWillShow(e) {
+        this.setState({btnLocation: e.endCoordinates.height})
+      }
+    
+      keyboardWillHide(e) {
+        this.setState({btnLocation: 0})
+      }
 
     componentDidMount(){
         if (Platform.OS === 'ios'){
@@ -161,7 +175,7 @@ export default class Comentarios extends Network {
 
     renderCaixaTexto(){
         return (
-            <KeyboardAvoidingView style={styles.caixaTexto}>
+            <KeyboardAvoidingView style={[styles.caixaTexto, {bottom: this.state.btnLocation}]}>
                 <TextInput
                     placeholder="Escreva um comentário"
                     placeholderTextColor="rgb(153, 153, 153)"
@@ -227,6 +241,8 @@ export default class Comentarios extends Network {
 
 const styles = {
     caixaTexto: {
+        position: 'absolute',
+        left: 0, right: 0,
         height: 60,
         borderTopWidth: 1,
         borderTopColor: '#ddd',
@@ -234,7 +250,7 @@ const styles = {
         justifyContent: 'center',
         paddingHorizontal: 10,
         alignItems: 'center',
-        background: '#fff',
+        backgroundColor: '#fff',
     },
     caixaTextoComentario: {
         height: 40,
