@@ -80,8 +80,7 @@ export default class Feed extends Network {
         this.salvarToken();
         this.createNotificationListeners();
         
-        if (Platform.OS != 'ios')
-            SplashScreen.hide();
+        SplashScreen.hide();
     }
     
     async createNotificationListeners() {

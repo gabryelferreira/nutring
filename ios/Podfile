@@ -3,11 +3,20 @@
 
 target 'nutring' do
   # Comment the next line if you don't want to use dynamic frameworks
-  use_frameworks!
+  # use_frameworks!
 
   # Pods for nutring
-
   pod 'Firebase/Core'
-  pod 'Firebase/Messaging' 
+  pod 'Firebase/Messaging'
+  pod 'React', :path => '../node_modules/react-native'
+  pod 'yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
+  target 'nutring-tvOSTests' do
+    inherit! :search_paths
+    # Pods for testing
+    pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
+  end
 
 end

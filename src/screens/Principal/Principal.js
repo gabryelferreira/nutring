@@ -51,15 +51,13 @@ export default class Principal extends Component {
                 await this.setState({
                     carregando: false
                 })
-                if (Platform.OS != 'ios')
-                    SplashScreen.hide();
+                SplashScreen.hide();
             }
         } catch (error) {
             await this.setState({
                 carregando: false
             })
-            if (Platform.OS != 'ios')
-                    SplashScreen.hide();
+            SplashScreen.hide();
             console.error(error);
         }
 
