@@ -112,7 +112,7 @@ const styles = {
         height: 210,
         borderRadius: 5,
         marginRight: 5,
-        elevation: 1,
+        elevation: 2,
         backgroundColor: '#eee'
     },
     imagemDeFundo: {
