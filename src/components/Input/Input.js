@@ -54,7 +54,7 @@ const Input = (props) => {
                     multiline={props.multiline}
                     numberOfLines={props.numberOfLines}
                     autoCorrect={false}
-                    autoComplete={false}
+                    autoCompleteType="off"
                     editable={!props.disabled}
                     selectTextOnFocus={!props.disabled}
                     placeholder={props.placeholder}
