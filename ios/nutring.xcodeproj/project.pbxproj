@@ -52,11 +52,43 @@
 		7AE65AA2B45C47278484F65D /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 36C9FDE86B774940B7CBB590 /* Ionicons.ttf */; };
 		832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 832341B51AAA6A8300B99B32 /* libRCTText.a */; };
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
+		ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED297162215061F000B7C4FE /* JavaScriptCore.framework */; };
+		ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ED2971642150620600B7C4FE /* JavaScriptCore.framework */; };
 		AE7681EC52C949548AD9F1AC /* libRNCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D5ED56D21884E8EB64EE217 /* libRNCamera.a */; };
 		B8F77648AC50434DB6102A6C /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B4F24A23598048F6B5705D23 /* Foundation.ttf */; };
 		BB1FC075F6A44F118300E08F /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 06960AA608104756BC4AC0B8 /* EvilIcons.ttf */; };
 		BE16667BCE514208A678940A /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F7C625B0E6F4484E81AC4E2C /* AntDesign.ttf */; };
-		BF2A752BB31A454D9A7B7862 /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A844C92ED04435FA9DFBABE /* FontAwesome5_Brands.ttf */; };
+		BF2A752BB31A454D9A7B7862 /* FED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+@@ -358,6 +362,7 @@
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED297163215061F000B7C4FE /* JavaScriptCore.framework in Frameworks */,
+				ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */,
+				11D1A2F320CAFA9E000508D9 /* libRCTAnimation.a in Frameworks */,
+				146834051AC3E58100842450 /* libReact.a in Frameworks */,
+@@ -377,6 +382,7 @@
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				ED2971652150620600B7C4FE /* JavaScriptCore.framework in Frameworks */,
+				2D16E6881FA4F8E400B85C8A /* libReact.a in Frameworks */,
+				2D02E4C21E0B4AEC006451C7 /* libRCTAnimation.a in Frameworks */,
+				2D02E4C31E0B4AEC006451C7 /* libRCTImage-tvOS.a in Frameworks */,
+@@ -518,6 +524,8 @@
+		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
+				ED2971642150620600B7C4FE /* JavaScriptCore.framework */,
+				2D16E6891FA4F8E400B85C8A /* libReact.a */,
+			);
+			name = Frameworks;
+adbontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3A844C92ED04435FA9DFBABE /* FontAwesome5_Brands.ttf */; };
 		C0A1D0F0E2834111A13D999E /* libRNVectorIcons-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7A8E98D383034FE5BB882119 /* libRNVectorIcons-tvOS.a */; };
 		C1425331412044B2A1C29AC1 /* libRNFirebase.a in Frameworks */ = {isa = PBXBuildFile; fileRef = D69C76938DF948B89B52D9C6 /* libRNFirebase.a */; };
 		C211E1C276AF4CCEAD79CA57 /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 92CCC958C2A64D2C89A3265E /* SimpleLineIcons.ttf */; };
