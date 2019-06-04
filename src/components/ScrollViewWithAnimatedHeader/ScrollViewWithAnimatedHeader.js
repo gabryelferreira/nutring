@@ -83,7 +83,7 @@ export default class ScrollViewWithAnimatedHeader extends Component {
                 <Animated.View style={{width: imageWidth, height: testeHeight, position: 'absolute', left: 0, right: 0, top: 0, zIndex: 1, backgroundColor: 'rgba(0, 0, 0, .2)'}}>
                     <View style={{position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: '#eee', zIndex: 1}}></View>
                     <Animated.Text style={{position: 'absolute', left: 20, bottom: 20, color: '#fff', fontSize: 30, fontWeight: 'bold', opacity: textOpacity, zIndex: 3}}>{this.props.title}</Animated.Text>
-                    <Image resizeMethod="resize" style={{flex: 1, width: undefined, height: undefined, zIndex: 2}} source={this.props.image ? {uri: this.props.image} : require('../../assets/imgs/promocoes.jpg')}/>
+                    <Image resizeMethod="resize" style={{flex: 1, width: undefined, height: undefined, zIndex: 2}} source={this.props.image ? {uri: this.props.image} : require('../../assets/imgs/what_a_promocao.jpg')}/>
                 </Animated.View>
                 <ScrollView style={{zIndex: 3}}
                     onScroll={Animated.event([{
