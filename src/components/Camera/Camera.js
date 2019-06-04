@@ -134,7 +134,8 @@ export default class Camera extends Network {
     async getUltimaFotoGaleria(){
         CameraRoll.getPhotos({
             first: 1,
-            assetType: 'All'
+            assetType: "Photos",
+            groupTypes: "All"
         })
         // .then(r => this.setState({ photos: r.edges }))
         .then(r => {
@@ -315,7 +316,9 @@ export default class Camera extends Network {
 
     abrirGaleria(){
         CameraRoll.getPhotos({
-            first: 100
+            first: 100,
+            assetType: "Photos",
+            groupTypes: "All"
         })
         // .then(r => this.setState({ photos: r.edges }))
         .then(r => {
