@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, Picker, KeyboardAvoidingView, SafeAreaView, Platform } from 'react-native';
+import { View, Text, Image, Dimensions, TextInput, TouchableOpacity, ScrollView, ActivityIndicator, AsyncStorage, Picker, KeyboardAvoidingView, SafeAreaView, Platform, ActionSheetIOS } from 'react-native';
 import AutoHeightImage from 'react-native-auto-height-image';
 import ImagemNutring from '../../components/ImagemNutring/ImagemNutring';
 import Loader from '../../components/Loader/Loader';
@@ -36,7 +36,7 @@ export default class Cadastro extends Network {
         backup_dt_nasc: "",
         backup_cnpj: "",
         backup_cep: "",
-        sexo: "M",
+        sexo: "",
         ddi: "",
         ddd: "",
         telefone: "",
@@ -127,6 +127,7 @@ export default class Cadastro extends Network {
         let campos = [
             {campo: "nome", texto: "Nome", obrigatorio: true},
             {campo: "dt_nasc", texto: "Data de Nascimento", obrigatorio: true, validador: "data"},
+            {campo: "sexo", texto: "Gênero", obrigatorio: true},
             {campo: "email", texto: "Email", obrigatorio: true, validador: "email"},
             {campo: "usuario", texto: "Usuário", obrigatorio: true, validador: "usuario"},
             {campo: "senha", texto: "Senha", obrigatorio: true, validador: "senha"}
@@ -535,6 +536,45 @@ export default class Cadastro extends Network {
         );
     }
 
+    onSelectGenero(){
+        ActionSheetIOS.showActionSheetWithOptions(
+            {
+                options: ['Feminino', 'Masculino', 'Cancelar'],
+                cancelButtonIndex: 2,
+            },
+            (buttonIndex) => {
+                let sexo = '';
+                if (buttonIndex == 0) sexo = 'F';
+                else if (buttonIndex == 1) sexo = 'M';
+                this.setState({
+                    sexo
+                })
+            });
+    }
+
+    renderGenero(){
+        if (Platform.OS === 'ios'){
+            return (
+                <TouchableOpacity style={styles.actionSheet} onPress={() => this.onSelectGenero()}>
+                    <Text style={[styles.actionSheetText, !this.state.sexo && styles.noColorText]}>{this.state.sexo ? (this.state.sexo == 'M' ? 'Masculino' : 'Feminino') : 'Gênero'}</Text>
+                </TouchableOpacity>
+            );
+        }
+        return (
+            <View style={styles.picker}>
+                <Picker
+                    selectedValue={this.state.sexo}
+                    onValueChange={(sexo, _) => this.setState({ sexo }, function(){
+                        console.log("mudei o state do sexo e agr ta", this.state.sexo)
+                    })}
+                    >
+                    <Picker.Item label="Masculino" value="M" />
+                    <Picker.Item label="Feminino" value="F" />
+                </Picker>
+            </View>
+        );
+    }
+
     renderCadastroPessoa(){
         return (
             <View style={styles.container}>
@@ -564,17 +604,7 @@ export default class Cadastro extends Network {
                 maxLength={10}
                 />
                 <Label label={"Gênero"} icone={"transgender"}/>
-                <View style={styles.picker}>
-                    <Picker
-                        selectedValue={this.state.sexo}
-                        onValueChange={(sexo, _) => this.setState({ sexo }, function(){
-                            console.log("mudei o state do sexo e agr ta", this.state.sexo)
-                        })}
-                        >
-                        <Picker.Item label="Masculino" value="M" />
-                        <Picker.Item label="Feminino" value="F" />
-                    </Picker>
-                </View>
+                {this.renderGenero()}
                 
                 <Input
                 icone={"envelope"}
@@ -679,6 +709,23 @@ const styles = {
         flexDirection: 'column',
         paddingHorizontal: 30,
         paddingVertical: 30,
+    },
+    actionSheet: {
+        flex: 1,
+        height: 50,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 5,
+        backgroundColor: '#fafafa',
+        paddingHorizontal: 10,
+        justifyContent: 'center'
+    },
+    actionSheetText: {
+        fontSize: 14,
+        color: '#000'
+    },
+    noColorText: {
+        color: '#999'
     },
     backgroundImage: {
         height: imageHeight,
