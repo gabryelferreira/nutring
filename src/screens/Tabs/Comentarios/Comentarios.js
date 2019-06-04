@@ -199,7 +199,7 @@ export default class Comentarios extends Network {
         return (
             <FlatList
                 data={this.state.dados}
-                keyExtractor={(item, index) => item.id_post.toString()}
+                keyExtractor={(item, index) => item.id_comentario.toString()}
                 renderItem={({item, index}) => (
                     
                     <View>

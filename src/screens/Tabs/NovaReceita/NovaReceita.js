@@ -125,7 +125,7 @@ export default class NovaReceita extends Network {
             })
             this.abrirGaleria();
           } else {
-            console.log('Camera permission denied');
+            console.log('Gallery permission denied');
           }
         } catch (err) {
           console.warn(err);
@@ -134,7 +134,9 @@ export default class NovaReceita extends Network {
 
     abrirGaleria(){
         CameraRoll.getPhotos({
-            first: 100
+            first: 100,
+            assetType: "Photos",
+            groupTypes: "All"
         })
         // .then(r => this.setState({ photos: r.edges }))
         .then(r => {

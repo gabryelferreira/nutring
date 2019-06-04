@@ -115,7 +115,10 @@ export default class Camera extends Network {
             ultimaFotoGaleria: "https://cdn0.iconfinder.com/data/icons/Android-R2-png/512/Gallery-Android-R.png",
             statusBarHeight: 20
         };
-        if (Platform.OS === 'android') this.requisitarPermissaoCamera();
+        if (Platform.OS === 'android'){
+            this.requisitarPermissaoCamera();
+            this.requisitarPermissaoGaleria();
+        }
     }
 
     componentDidMount(){
@@ -167,7 +170,9 @@ export default class Camera extends Network {
             })
           } else {
             console.log('Camera permission denied');
-            this.props.navigation.goBack(null);
+            this.setState({
+                permissaoGaleria: true
+            })
           }
         } catch (err) {
           console.warn(err);
@@ -175,7 +180,7 @@ export default class Camera extends Network {
         }
     }
 
-    async requisitarPermissaoGaleria() {
+    async requisitarPermissaoGaleria(abrirGaleria) {
         try {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
@@ -194,8 +199,11 @@ export default class Camera extends Network {
                 permissaoGaleria: true
             })
             this.getUltimaFotoGaleria();
+            if (abrirGaleria){
+                this.abrirGaleria();
+            }
           } else {
-            console.log('Camera permission denied');
+            console.log('Gallery permission denied');
             this.props.navigation.goBack(null);
           }
         } catch (err) {
@@ -342,6 +350,7 @@ export default class Camera extends Network {
     }
 
     render(){
+        if (!this.state.permissaoGaleria) return <View></View>
         if (this.state.fotoTirada){
             return (
                 <SafeAreaView style={{flex: 1}}>
@@ -442,7 +451,7 @@ export default class Camera extends Network {
                         <View style={[styles.viewBotao, styles.alignEsquerda]}>
                             <TouchableOpacity disabled={this.state.uploading}
                                 style={styles.botaoGaleria}
-                                onPress={() => this.abrirGaleria()}
+                                onPress={() => this.requisitarPermissaoGaleria(true)}
                             >
                                 <Image resizeMethod="resize" source={{uri: this.state.ultimaFotoGaleria}} style={{flex: 1, height: undefined, width: undefined}}/>
                             </TouchableOpacity>
