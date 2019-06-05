@@ -132,11 +132,20 @@ export default class Camera extends Network {
     }
 
     async getUltimaFotoGaleria(){
-        CameraRoll.getPhotos({
-            first: 1,
-            assetType: "Photos",
-            groupTypes: "All"
-        })
+        let obj = {};
+        if (Platform.OS === 'ios'){
+            obj = {
+                first: 1,
+                assetType: "Photos",
+                groupTypes: "All"
+            }
+        } else {
+            obj = {
+                first: 1,
+                assetType: "Photos"
+            }
+        }
+        CameraRoll.getPhotos(obj)
         // .then(r => this.setState({ photos: r.edges }))
         .then(r => {
             if (r.edges.length > 0){
@@ -315,11 +324,20 @@ export default class Camera extends Network {
     }
 
     abrirGaleria(){
-        CameraRoll.getPhotos({
-            first: 100,
-            assetType: "Photos",
-            groupTypes: "All"
-        })
+        let obj = {};
+        if (Platform.OS === 'ios'){
+            obj = {
+                first: 100,
+                assetType: "Photos",
+                groupTypes: "All"
+            }
+        } else {
+            obj = {
+                first: 100,
+                assetType: "Photos"
+            }
+        }
+        CameraRoll.getPhotos(obj)
         // .then(r => this.setState({ photos: r.edges }))
         .then(r => {
             let fotos = [];

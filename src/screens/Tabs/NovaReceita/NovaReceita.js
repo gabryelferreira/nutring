@@ -133,11 +133,20 @@ export default class NovaReceita extends Network {
     }
 
     abrirGaleria(){
-        CameraRoll.getPhotos({
-            first: 100,
-            assetType: "Photos",
-            groupTypes: "All"
-        })
+        let obj = {};
+        if (Platform.OS === 'ios'){
+            obj = {
+                first: 100,
+                assetType: "Photos",
+                groupTypes: "All"
+            }
+        } else {
+            obj = {
+                first: 100,
+                assetType: "Photos"
+            }
+        }
+        CameraRoll.getPhotos(obj)
         // .then(r => this.setState({ photos: r.edges }))
         .then(r => {
             let fotos = [];

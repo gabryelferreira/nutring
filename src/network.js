@@ -3,10 +3,10 @@ import urlencode from './url';
 import { AsyncStorage } from 'react-native';
 export default class Network extends Component {
 
-    url = "http://nutring.com.br/api/";
+    // url = "http://nutring.com.br/api/";
     // url = "http://beta.nutring.com.br/api/";
     // url = "http://10.0.2.2:8100/";
-    // url = "http://api.nutring.com.br/";
+    url = "http://api.nutring.com.br/";
 
     constructor(props){
         super(props);
@@ -31,6 +31,7 @@ export default class Network extends Component {
         console.log("body = ", options.body);
         try {
             let result = await fetch(this.url + _function, options);
+            console.log("result eh igual a ", result);
             result = await result.json();
             console.log("RESULT", result)
             let error = await this.treatError(result);
