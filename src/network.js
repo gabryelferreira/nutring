@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import urlencode from './url';
-import { AsyncStorage } from 'react-native';
+import { AsyncStorage, Platform } from 'react-native';
 export default class Network extends Component {
 
     // url = "http://nutring.com.br/api/";
@@ -28,10 +28,11 @@ export default class Network extends Component {
         options.body = urlencode(data);
 
         console.log("function = " + _function)
-        console.log("body = ", options.body);
+        if (Platform.OS !== 'ios'){
+            console.log("body = ", options.body);
+        }
         try {
             let result = await fetch(this.url + _function, options);
-            console.log("result eh igual a ", result);
             result = await result.json();
             console.log("RESULT", result)
             let error = await this.treatError(result);

@@ -128,6 +128,7 @@ export default class Camera extends Network {
                     statusBarHeight: statusBar.height
                 });
             });
+            this.getUltimaFotoGaleria();
         }
     }
 
@@ -472,7 +473,7 @@ export default class Camera extends Network {
                         <View style={[styles.viewBotao, styles.alignEsquerda]}>
                             <TouchableOpacity disabled={this.state.uploading}
                                 style={styles.botaoGaleria}
-                                onPress={() => this.requisitarPermissaoGaleria(true)}
+                                onPress={() => Platform.OS === 'ios' ? this.abrirGaleria() : this.requisitarPermissaoGaleria(true)}
                             >
                                 <Image resizeMethod="resize" source={{uri: this.state.ultimaFotoGaleria}} style={{flex: 1, height: undefined, width: undefined}}/>
                             </TouchableOpacity>

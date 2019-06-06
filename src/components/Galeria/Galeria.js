@@ -35,6 +35,11 @@ const Header = ({onCloseClick}) => {
 const Galeria = ({fotos, onPress, onClose}) => {
 
     handleOnPress = (foto) => {
+        if (Platform.OS === 'ios'){
+            const appleId = foto.substring(5, 41);
+            const ext = 'JPG';
+            foto = `assets-library://asset/asset.${ext}?id=${appleId}&ext=${ext}`;
+        }
         onPress(foto)
     }
 
