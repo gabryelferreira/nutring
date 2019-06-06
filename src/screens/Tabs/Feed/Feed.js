@@ -91,7 +91,7 @@ export default class Feed extends Network {
         this.notificationListener = firebase.notifications().onNotification((notification) => {
             console.log("recebi notificacao bb")
             const { title, body } = notification;
-            this.showAlert(title, body);
+            // this.showAlert(title, body);
         });
       
         /*
@@ -99,7 +99,7 @@ export default class Feed extends Network {
         * */
         this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen) => {
             const { title, body } = notificationOpen.notification;
-            this.showAlert(title, body);
+            // this.showAlert(title, body);
         });
       
         /*
@@ -108,7 +108,7 @@ export default class Feed extends Network {
         const notificationOpen = await firebase.notifications().getInitialNotification();
         if (notificationOpen) {
             const { title, body } = notificationOpen.notification;
-            this.showAlert(title, body);
+            // this.showAlert(title, body);
         }
         /*
         * Triggered for data only payload in foreground
